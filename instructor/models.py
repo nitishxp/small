@@ -25,7 +25,7 @@ class CourseHomeWorkModel(models.Model):
     # will save constraints in array form
     constraints = models.TextField()
     course = models.ForeignKey(CourseModel)
-    attachment = models.TextField()
+    attachment = models.TextField(null=True)
 
     class Meta:
         db_table = 'course_homework'

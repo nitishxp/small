@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from models import CourseModel, CourseHomeWorkModel
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
+from django.utils.datastructures import MultiValueDictKeyError
 
 
 def index(request):
@@ -43,4 +44,40 @@ def homework(request, pk):
         homework_obj.course = CourseModel.objects.get(pk=pk)
         homework_obj.save()
 
-    return render(request, 'homework.html', {'constraints': constraints})
+        # process the attachments now
+        file_path = process_attachments(request, pk, homework_obj.id)
+
+        # Now update the filepath in db
+        CourseHomeWorkModel.objects.filter(pk=homework_obj.id).update(
+            attachment=file_path)
+
+    homework = CourseHomeWorkModel.objects.all()
+    return render(request, 'homework.html', {
+        'constraints': constraints,
+        'homework': homework
+    })
+
+
+def process_attachments(request, course_id, homework_id):
+
+    import os
+    try:
+        f = request.FILES['attachment']
+    except MultiValueDictKeyError:
+        return None
+
+    # creation of folder
+    temp_dir = '/static/courses/' + str(course_id) + '/' + str(
+        homework_id) + '/'
+    dir_path = BASE_DIR + temp_dir
+
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    file_path = dir_path + f.name
+    destination = open(file_path, 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+    destination.close()
+
+    return temp_dir + f.name

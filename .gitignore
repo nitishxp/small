@@ -224,3 +224,6 @@ $RECYCLE.BIN/
 .idea
 
 # End of https://www.gitignore.io/api/linux,django,python,windows,pycharm,visualstudiocode
+
+# attachment
+static/courses

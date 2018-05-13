@@ -39,6 +39,35 @@
         <br>
         <input type="submit" value="submit">
     </form>
+    <table>
+        <tr>
+            <th>HomeWork Name</th>
+            <th>Gradde Deadline</th>
+            <th>HomeWork Deadline</th>
+            <th>Constraints</th>
+            <th>Course</th>
+            <th>Attachment</th>
+        </tr>
+
+        {% for c in homework %}
+        <tr>
+            <td>{{c.homework_name}}</td>
+            <td>{{c.grade_deadline}}</td>
+            <td>{{c.homework_deadline}}</td>
+            <td>{{c.constraints }}</td>
+            <td>{{c.course.course_name}}</td>
+            <td>
+                {% if c.attachment is None %}
+                    No Attachement
+                {% else %}
+                    <a href="{{c.attachment}}">Click To Download</a>
+                {% endif %}
+                
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
 </body>
 <script>
     var limit = 3
