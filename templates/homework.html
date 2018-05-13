@@ -1,0 +1,68 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>
+            HomeWork Name
+        </label>
+        <input type="text" name="homework_name">
+        <br>
+        <label>
+            Grade DeadLine
+        </label>
+        <input type="date" name="grade_deadline">
+        <br>
+        <label>
+            HomeWork DeadLine
+        </label>
+        <input type="date" name="homework_deadline">
+        <br>
+        <label>
+            Attachement
+        </label>
+        <input type="file" name="attachment">
+        <br>
+        <label>
+            Select Constraints
+        </label>
+        <br>
+        <input type="checkbox" value="random" name="constraints">Random
+        <br> {% for c in constraints %}
+        <input type="checkbox" value="{{c.id}}" name="constraints"> {{c.title}}
+        <br> {% endfor %}
+        <br>
+        <input type="submit" value="submit">
+    </form>
+</body>
+<script>
+    var limit = 3
+    $("input[type='checkbox']").on('change', function () {
+        var ischecked = $(this).is(":checked")
+        if ($(this).val() == "random") {
+            if (ischecked) {
+                // make all checkbox readonly and unchecked except current one                
+                $("input[type='checkbox']").prop('checked', false).attr('disabled', true)
+                // $("input[type='checkbox']").attr('disabled', true)
+                $(this).prop('checked', true)
+
+                $(this).attr('disabled', false)
+            }
+            else {
+                $("input[type='checkbox']").attr('disabled', false)
+            }
+
+        } else {
+            if ($(this).siblings(':checked').length >= limit) {
+                this.checked = false;
+            }
+        }
+    })
+</script>
+
+</html>

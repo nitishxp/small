@@ -1,0 +1,43 @@
+<html>
+<form method="POST">
+    {% csrf_token %}
+    <label>
+        Course Id:
+    </label>
+    <input type="text" name="course_id">
+    <br>
+    <label>
+        Name:
+    </label>
+    <input type="text" name="course_name">
+    <br>
+    <label>
+        No of Student:
+    </label>
+    <input type="number" min="1" name="no_of_student">
+    <br>
+    <input type="submit" value="Submit">
+    <br>
+</form>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>course_name</th>
+        <th>HomeWork</th>
+    </tr>
+    {% for c in course %}
+    <tr>
+        <td>
+            {{c.course_id}}
+        </td>
+        <td>
+            {{c.course_name}}
+        </td>
+        <td>
+            <a href="{% url 'instructor__homework' c.id %}">Goto HomeWork</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</html>
