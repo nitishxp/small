@@ -52,6 +52,7 @@ def homework(request, pk):
             attachment=file_path)
 
     homework = CourseHomeWorkModel.objects.all()
+    
     return render(request, 'homework.html', {
         'constraints': constraints,
         'homework': homework
