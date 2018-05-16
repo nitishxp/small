@@ -1,0 +1,20 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div>
+        <form method="POST">
+            {% csrf_token %}
+            {% for c in constraints %}
+                <h4>{{c.question}} </h4>
+                {% for d in c.options %}
+                    <input type="radio" name="{{c.id}}" value="{{d.value}}" required>{{d.content}}<br>
+                {% endfor %}
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
+
+        </div>
+    </body>
+</html>
