@@ -9,7 +9,7 @@
             {% for c in constraints %}
                 <h4>{{c.question}} </h4>
                 {% for d in c.options %}
-                    <input type="radio" name="{{c.id}}" value="{{d.value}}" required>{{d.content}}<br>
+                    <input type="radio" name="{{c.id}}" value="{{d.value}}" required {% if d.value == c.selected %} checked  {% endif %}>{{d.content}}<br>                    
                 {% endfor %}
             {% endfor %}
             <input type="submit" value="Submit">
