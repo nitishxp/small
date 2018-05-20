@@ -20,9 +20,27 @@ def course(request):
         course_obj = CourseModel()
         course_obj.course_id = request.POST['course_id']
         course_obj.course_name = request.POST['course_name']
-        course_obj.no_of_student = request.POST['no_of_student']
+        course_obj.grading_rubric = request.POST['grading_rubric']
+        course_obj.appeal_role = request.POST['appeal_role']
         course_obj.instructor = request.user
         course_obj.save()
+
+        # after the course have been save now save the assignments
+        assignments = {}
+        for d in request.POST:
+            data = request.POST[d]
+            d = d.split("___")
+            if len(d) > 1:
+                if d[0] in assignments.keys():
+                    assignments[d[0]][d[1]] = data
+                else:
+                    assignments[d[0]] = {}
+                    assignments[d[0]]['homework_name'] = d[0]
+                    assignments[d[0]][d[1]] = data
+
+        for c in assignments:
+            assignments[c]['course'] = course_obj
+            CourseHomeWorkModel.objects.create(**assignments[c])
 
     course = CourseModel.objects.filter(instructor=request.user)
 
@@ -30,10 +48,7 @@ def course(request):
 
 
 def homework(request, pk):
-
     constraints = Constraints.objects.all()
-    print request.POST
-
     if request.method == "POST":
         print request.POST.getlist('constraints')
         homework_obj = CourseHomeWorkModel()
@@ -82,3 +97,10 @@ def process_attachments(request, course_id, homework_id):
     destination.close()
 
     return temp_dir + f.name
+
+
+def edit_course(request,pk):
+    
+    course = CourseModel.objects.filter(pk=pk).first()
+    homework = CourseHomeWorkModel.objects.filter(course=pk)
+    return render(request, 'edit_course.html',{'course': course,'homework': homework})

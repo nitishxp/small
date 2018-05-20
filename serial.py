@@ -1,38 +1,17 @@
-import serial
-def bits_to_hex(user8bit): # convert the 8-bit user input to hex
-    numInt = int(user8bit, 2)
-    strHex = hex(numInt)
-    userHex = strHex[2:].zfill(2)
-    # make sure the payload is a two-digit hex
-    return userHex
+shift = ['6:00-12:00','12:00-14:00','14:00-18:00','18:00-21:00']
+avaiable_time = ['6:30-10','10:00-12:00','14:00-18:00','9:00-21:00','11:00-15:00','18:00-20:00','8:00-18:00']
+for c in avaiable_time:
+    for d in shift:
+        
+        # attraction time
+        a = c.replace(':','.').split('-')
+        a_start_time = float(a[0])
+        a_end_time = float(a[1])
 
+        # shift time
+        s = d.replace(':','.').split('-')
+        s_start_time = float(s[0])
+        s_end_time = float(s[1])
 
-port = "COM3"
-ser = serial.Serial(port, 19200, timeout=0.5)
-print(ser.name + ' is open.')
-
-while True:
-    input = raw_input("Enter HEX cmd or 'exit'>> ")
-    if input == 'exit':
-        ser.close()
-        print(port + ' is closed.')
-        exit()
-
-    elif len(input) == 8:
-        # user enters new register value, convert it into hex
-        newRegisterValue = bits_to_hex(input)
-        ser.write(newRegisterValue.decode('hex') + '\r\n')
-        print('Saving...' + newRegisterValue)
-        print('Receiving...')
-        out = ser.read(1)
-        for byte in out:
-            print(byte)  # present ascii
-
-    else:
-        cmd = input
-        print('Sending...' + cmd)
-        ser.write(cmd.decode('hex') + '\r\n')
-        print('Receiving...')
-        out = ser.read(1)
-        for byte in out:
-            print(byte)  # present ascii
+        if (a_start_time >= s_start_time and a_end_time <= s_end_time) or (a_start_time < s_end_time and (s_end_time < a_end_time or a_end_time > s_start_time )) :
+            print c ,"==============", d

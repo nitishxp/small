@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <label>
+            Course Id:
+        </label>
+        <input type="text" name="course_id" value="{{ course.course_id }}" required>
+        <br>
+        <label>
+            Name:
+        </label>
+        <input type="text" name="course_name" value="{{ course.course_name }}" required>
+        <br>
+        <label>
+            Add grading rubric
+        </label>
+        <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}" required>
+        <br>
+        <label>
+            Explain the appeal role
+        </label>
+        <input type="textarea" name="appeal_role" value="{{ course.appeal_role }}" required>
+        <br>
+        <input type="button" value="Add Assignments" id="add_assignments">
+        <table class="homework_assignment">
+            {% for c in homework %}
+            <tr>
+                <td>
+                    <label> Assignment {{ c.homework_name }} Deadline </label>
+                    <br>
+                    <input type="date" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'Y-m-d' }}" required>
+                </td>
+                <td>
+                    <label> Grading Deadline </label>
+                    <br>
+                    <input type="date" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'Y-m-d' }}" required>
+                </td>
+                <td>
+                    <label> Grouping Constraints </label>
+                    <br>
+                    <select name="{{ c.homework_name }}___constraints" required>
+                        <option value="random"> Random Group </option>
+                        <option value="similar_schedule"> Group Similar Schedule </option>
+                        <option value="similar_commitment_level"> Group Similar Commitment Level </option>
+                        <option value="similar_skills"> Group Similar Skills </option>
+                        <option value="different_skills"> Group different Skills </option>
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <input type="submit" value="Submit">
+        <br>
+    </form>
+</body>
+<script>
+    $("#add_assignments").on('click', function () {
+        var currentAssignmentLength = $(".homework_assignment tr").length
+        currentAssignmentLength++;
+        var template = "<tr>";
+        template += "<td>";
+        template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
+        template += '<input type="date" name="' + currentAssignmentLength + '___homework_deadline" required>'
+        template += '</td>'
+        template += '<td>'
+        template += '<label>Grading Deadline</label><br>'
+        template += '<input type="date" name="' + currentAssignmentLength + '___grade_deadline" required>'
+        template += '</td>'
+        template += '<td>'
+        template += '<label>Grouping Constraints</label><br>'
+        template += '<select name="' + currentAssignmentLength + '___constraints">'
+        template += '<option value="random"> Random Group </option>'
+        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
+        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
+        template += '<option value="similar_skills"> Group Similar Skills </option>'
+        template += '<option value="different_skills"> Group different Skills </option>'
+        template += '</select>'
+        template += '</td>'
+        template += '</tr>'
+
+        $(".homework_assignment").append(template)
+    })
+
+</script>
+
+</html>
