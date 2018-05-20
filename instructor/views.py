@@ -7,6 +7,7 @@ from models import CourseModel, CourseHomeWorkModel
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
 from django.utils.datastructures import MultiValueDictKeyError
+from students.models import StudentCourseModel
 
 
 def index(request):
@@ -67,7 +68,7 @@ def homework(request, pk):
             attachment=file_path)
 
     homework = CourseHomeWorkModel.objects.all()
-    
+
     return render(request, 'homework.html', {
         'constraints': constraints,
         'homework': homework
@@ -99,8 +100,14 @@ def process_attachments(request, course_id, homework_id):
     return temp_dir + f.name
 
 
-def edit_course(request,pk):
-    
+def edit_course(request, pk):
+
     course = CourseModel.objects.filter(pk=pk).first()
     homework = CourseHomeWorkModel.objects.filter(course=pk)
-    return render(request, 'edit_course.html',{'course': course,'homework': homework})
+    enrolled_student = StudentCourseModel.objects.filter(course=pk)
+    return render(
+        request, 'edit_course.html', {
+            'course': course,
+            'homework': homework,
+            'enrolled_student': enrolled_student
+        })

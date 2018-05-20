@@ -10,9 +10,9 @@
             {% csrf_token %}
             <h4> In which course you are enrolled?</h4>
             <select name="course" required>
-                <option value="">Select</option>
+                <option value="">Select {{ selected_course }}</option>
                 {% for c in course %}
-                <option value="{{ c.id }}">{{ c.course_name }} </option>
+                <option value="{{ c.id }}" {% if c.id|slugify == selected_course|slugify %} selected {% endif %}>{{ c.course_name }} </option>
                 {% endfor %}
             </select>
             {% for c in constraints %}

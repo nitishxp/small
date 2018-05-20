@@ -1,8 +1,10 @@
 <html>
+
 <head>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 </head>
+
 <body>
     <form method="POST">
         {% csrf_token %}
@@ -39,46 +41,49 @@
             <td>Course Id</td>
         </tr>
         {% for c in course %}
-            <tr>
-                <td> {{ c.course_name }} </td>
-                <td><a href="{% url 'instructor__edit_course' c.id %}"> {{ c.course_id }}</a> </td>
-            </tr>
+        <tr>
+            <td> {{ c.course_name }} </td>
+            <td>
+                <a href="{% url 'instructor__edit_course' c.id %}"> {{ c.course_id }}</a>
+            </td>
+        </tr>
         {% endfor %}
     </table>
 </body>
 <script>
-    $("#add_assignments").on('click',function(){
+    $("#add_assignments").on('click', function () {
         var currentAssignmentLength = $(".homework_assignment tr").length
-        currentAssignmentLength++ ;
+        currentAssignmentLength++;
         var template = "<tr>";
-                template += "<td>";
-                    template += "<label>Assignment "+ currentAssignmentLength +" Deadline</label><br>"
-                    template += '<input type="date" name="'+ currentAssignmentLength +'___homework_deadline" required>'
-                template += '</td>'
-                template += '<td>'
-                    template += '<label>Grading Deadline</label><br>'
-                    template += '<input type="date" name="'+ currentAssignmentLength +'___grade_deadline" required>'
-                template += '</td>'
-                template += '<td>'
-                    template += '<label>Grouping Constraints</label><br>'
-                    template +='<select name="'+ currentAssignmentLength +'___constraints">'
-                        template += '<option value="random"> Random Group </option>'
-                        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
-                        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
-                        template += '<option value="similar_skills"> Group Similar Skills </option>'
-                        template += '<option value="different_skills"> Group different Skills </option>'
-                    template += '</select>'
-                template += '</td>'
-            template += '</tr>'
-                
+        template += "<td>";
+        template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
+        template += '<input type="date" name="' + currentAssignmentLength + '___homework_deadline" required>'
+        template += '</td>'
+        template += '<td>'
+        template += '<label>Grading Deadline</label><br>'
+        template += '<input type="date" name="' + currentAssignmentLength + '___grade_deadline" required>'
+        template += '</td>'
+        template += '<td>'
+        template += '<label>Grouping Constraints</label><br>'
+        template += '<select name="' + currentAssignmentLength + '___constraints">'
+        template += '<option value="random"> Random Group </option>'
+        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
+        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
+        template += '<option value="similar_skills"> Group Similar Skills </option>'
+        template += '<option value="different_skills"> Group different Skills </option>'
+        template += '</select>'
+        template += '</td>'
+        template += '</tr>'
+
         $(".homework_assignment").append(template)
     })
 
     initializeHomeWork()
-    
-    function initializeHomeWork(){
+
+    function initializeHomeWork() {
         $("#add_assignments").trigger('click')
     }
 
 </script>
+
 </html>

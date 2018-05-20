@@ -56,6 +56,19 @@
             </tr>
             {% endfor %}
         </table>
+        <h1>Student Grouping</h1>
+        <table>
+            <tr>
+                <th>Student Name</th>
+                <th>Enrollment Status</th>
+            </tr>
+            {% for c in enrolled_student %}
+            <tr>
+                <td>{{ c.user.username }}</td>
+                <td><input type= "checkbox"  value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %} > </td>
+            </tr>
+            {% endfor %}
+        </table>
         <br>
         <input type="submit" value="Submit">
         <br>

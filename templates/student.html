@@ -1,0 +1,28 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <a href="{% url 'student__enroll' %}"> Enroll For Course </a>
+    <table>
+        <tr>
+            <td>
+                Course Name
+            </td>
+            <td>
+                Course Id
+            </td>
+        </tr>
+        {% for c in student_course %}
+        <tr>
+            <td> {{ c.course.course_name }} </td>
+            <td>
+                <a href="{% url 'student__student_course' c.course.id %}"> {{ c.course.course_id }} </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
