@@ -9,4 +9,7 @@ urlpatterns = [
     url(r'course/(?P<pk>[0-9]+)/$',
         edit_course,
         name="instructor__edit_course"),
+    url(r'do_grouping/(?P<pk>[0-9]+)/$',
+        do_grouping,
+        name="instructor__do_grouping"),
 ]

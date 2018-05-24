@@ -7,7 +7,7 @@ from models import CourseModel, CourseHomeWorkModel
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
 from django.utils.datastructures import MultiValueDictKeyError
-from students.models import StudentCourseModel
+from students.models import StudentCourseModel,StudentConstraintsModel
 
 
 def index(request):
@@ -111,3 +111,40 @@ def edit_course(request, pk):
             'homework': homework,
             'enrolled_student': enrolled_student
         })
+
+def partition(lst, n):
+    division = len(lst) / float(n)
+    return [ lst[int(round(division * i)): int(round(division * (i + 1)))] for i in xrange(n) ]
+
+def do_grouping(request, pk):
+
+    # first fetch the homework related to the course
+    homework = CourseHomeWorkModel.objects.filter(course=pk)
+
+    # constraints_student = {}
+    # constaints = Constraints.objects.all()
+    # for c in constaints:
+    #     constraints_student[c.title] = []
+    #     student = StudentConstraintsModel.objects.filter(course=pk,constraint=c.id)
+    #     for s in student:
+    #         constraints_student[c.title].append(s.user.id)
+
+    # print constraints_student
+
+    # second fetch the student who are part of the course
+    enrolled_student = StudentCourseModel.objects.filter(course=pk,enrollment_status=True)
+    
+    group = []
+
+    for c in homework:
+        if c.constraints == "random":
+            for d in enrolled_student:
+                group.append(d.user.id)
+            # split the student in to random n groups
+
+            t = do_grouping(group,2)
+        
+        if c.constraints == "":
+            pass
+    
+    print group

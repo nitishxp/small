@@ -23,7 +23,7 @@ class CourseHomeWorkModel(models.Model):
     homework_name = models.TextField()
     grade_deadline = models.DateField()
     homework_deadline = models.DateField()
-    
+
     # will save constraints in array form
     constraints = models.TextField()
     course = models.ForeignKey(CourseModel)
@@ -33,9 +33,26 @@ class CourseHomeWorkModel(models.Model):
     class Meta:
         db_table = 'course_homework'
 
+
 class StudentCourseEnrolledModel(models.Model):
     course = models.ForeignKey(CourseModel)
     student = models.TextField()
 
     class Meta:
         db_table = 'course_student'
+
+
+class HomeworkGroupMember(models.Model):
+    user = models.ForeignKey(UserModel)
+
+    class Meta:
+        db_table = 'homework_group_member'
+
+
+class HomeworkGroup(models.Model):
+    homework = models.ForeignKey(CourseHomeWorkModel)
+    course = models.ForeignKey(CourseModel)
+    group = models.TextField()
+
+    class Meta:
+        db_table = 'homework_group_master'
