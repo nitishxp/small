@@ -3,11 +3,13 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from models import CourseModel, CourseHomeWorkModel
+from models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
 from django.utils.datastructures import MultiValueDictKeyError
-from students.models import StudentCourseModel,StudentConstraintsModel
+from students.models import StudentCourseModel, StudentConstraintsModel
+import random
+from users.models import UserModel
 
 
 def index(request):
@@ -112,9 +114,17 @@ def edit_course(request, pk):
             'enrolled_student': enrolled_student
         })
 
-def partition(lst, n):
-    division = len(lst) / float(n)
-    return [ lst[int(round(division * i)): int(round(division * (i + 1)))] for i in xrange(n) ]
+
+def chunkIt(seq, num):
+    avg = len(seq) / float(num)
+    out = []
+    last = 0.0
+
+    while last < len(seq):
+        out.append(seq[int(last):int(last + avg)])
+        last += avg
+    return out
+
 
 def do_grouping(request, pk):
 
@@ -122,8 +132,8 @@ def do_grouping(request, pk):
     homework = CourseHomeWorkModel.objects.filter(course=pk)
 
     # constraints_student = {}
-    # constaints = Constraints.objects.all()
-    # for c in constaints:
+    # constraints = Constraints.objects.all()
+    # for c in constraints:
     #     constraints_student[c.title] = []
     #     student = StudentConstraintsModel.objects.filter(course=pk,constraint=c.id)
     #     for s in student:
@@ -132,19 +142,31 @@ def do_grouping(request, pk):
     # print constraints_student
 
     # second fetch the student who are part of the course
-    enrolled_student = StudentCourseModel.objects.filter(course=pk,enrollment_status=True)
-    
-    group = []
+    enrolled_student = StudentCourseModel.objects.filter(
+        course=pk, enrollment_status=True)
+    course = CourseModel.objects.get(pk=pk)
 
     for c in homework:
+        group = []
         if c.constraints == "random":
             for d in enrolled_student:
                 group.append(d.user.id)
+            random.shuffle(group)
             # split the student in to random n groups
+            t = chunkIt(group, 3)
 
-            t = do_grouping(group,2)
+        # first delete the existing homework course relation
+        HomeworkGroup.objects.filter(homework=c, course=course).delete()
         
-        if c.constraints == "":
-            pass
-    
-    print group
+        for g in t:
+            if len(g) > 0:
+                import uuid
+                group_id = uuid.uuid1().hex
+                # create group id
+                group_obj = HomeworkGroup.objects.create(
+                    homework=c, course=course, group=group_id)
+
+                # now insert group member to the group
+                for m in g:
+                    member_obj = HomeworkGroupMember.objects.create(
+                        user=UserModel.objects.get(pk=m), group=group_obj)

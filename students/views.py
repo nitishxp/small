@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from models import StudentConstraintsModel, StudentCourseModel
 from constraints.models import Constraints
-from instructor.models import CourseModel
+from instructor.models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember
 
 # Create your views here.
 
@@ -82,6 +82,7 @@ def student_course(request, course_id):
     student_selected_constraints = StudentConstraintsModel.objects.filter(
         user=request.user, course=course_id)
     constraints = []
+
     for c in constraints_db:
         t = {}
         t['id'] = c.id
@@ -98,8 +99,18 @@ def student_course(request, course_id):
 
     course = CourseModel.objects.all()
 
-    return render(request, 'studentcourse.html', {
-        'constraints': constraints,
-        'course': course,
-        'selected_course': course_id
-    })
+    course_obj = CourseModel.objects.filter(pk=course_id)
+
+    # first fetch the group which user is part of
+    homework_group = HomeworkGroupMember.objects.filter(
+        user=request.user, group__course=course_obj).order_by('group__homework__homework_name')
+
+    print homework_group
+
+    return render(
+        request, 'studentcourse.html', {
+            'constraints': constraints,
+            'course': course,
+            'selected_course': course_id,
+            'homework': homework_group
+        })

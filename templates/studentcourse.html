@@ -24,6 +24,26 @@
         </form>
 
     </div>
+    <div>
+        <table>
+            <tr>
+                <th>Assignment</th>
+                <th>Group </th>
+                <th>Deadline </th>
+                <th>Grade</th>
+                <th>Explanation</th>
+            </tr>
+            {% for c in homework %}
+            <tr>
+                <td>{{ c.group.homework.homework_name }}</td>
+                <td>{{ c.group.homework.homework_name }}</td>
+                <td>{{ c.group.homework.homework_deadline }}</td>
+                <td>{{ c.group.homework.homework_name }}</td>
+                <td>{{ c.group.homework.homework_name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 
 </html>

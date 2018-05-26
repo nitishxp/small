@@ -42,17 +42,20 @@ class StudentCourseEnrolledModel(models.Model):
         db_table = 'course_student'
 
 
-class HomeworkGroupMember(models.Model):
-    user = models.ForeignKey(UserModel)
-
-    class Meta:
-        db_table = 'homework_group_member'
-
-
 class HomeworkGroup(models.Model):
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
-    group = models.TextField()
+    group = models.TextField(unique=True)
+    grade = models.TextField(default=0)
+
 
     class Meta:
         db_table = 'homework_group_master'
+
+
+class HomeworkGroupMember(models.Model):
+    user = models.ForeignKey(UserModel)
+    group = models.ForeignKey(HomeworkGroup, to_field='group',on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'homework_group_member'
