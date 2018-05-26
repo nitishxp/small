@@ -76,6 +76,17 @@ def enroll(request):
     })
 
 
+def return_member_name(group_id):
+    name_obj = HomeworkGroupMember.objects.filter(
+        group=HomeworkGroup.objects.get(
+            group=group_id)).values_list('user__role')
+    name = []
+    for c in name_obj:
+        name.append(c[0])
+
+    return ",".join(name)
+
+
 def student_course(request, course_id):
 
     constraints_db = Constraints.objects.all()
@@ -101,16 +112,28 @@ def student_course(request, course_id):
 
     course_obj = CourseModel.objects.filter(pk=course_id)
 
-    # first fetch the group which user is part of
-    homework_group = HomeworkGroupMember.objects.filter(
-        user=request.user, group__course=course_obj).order_by('group__homework__homework_name')
+    assignment = []
 
-    print homework_group
+    # first fetch the group which user is part of
+    homework_group_id = HomeworkGroupMember.objects.filter(
+        user=request.user, group__course=course_obj).order_by(
+            "group__homework__homework_name").values_list('group')
+
+    for c in homework_group_id:
+
+        group_details = HomeworkGroup.objects.get(group=c[0])
+        t = {}
+        t['assignment_name'] = group_details.homework.homework_name
+        t['members'] = return_member_name(c[0])
+        t['deadline'] = group_details.homework.homework_deadline
+        t['explanation'] = ""
+        t['grade'] = ""
+        assignment.append(t)
 
     return render(
         request, 'studentcourse.html', {
             'constraints': constraints,
             'course': course,
             'selected_course': course_id,
-            'homework': homework_group
+            'homework': assignment
         })

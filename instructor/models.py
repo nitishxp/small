@@ -46,8 +46,7 @@ class HomeworkGroup(models.Model):
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
     group = models.TextField(unique=True)
-    grade = models.TextField(default=0)
-
+    attachments = models.TextField(null=True)
 
     class Meta:
         db_table = 'homework_group_master'
@@ -55,7 +54,20 @@ class HomeworkGroup(models.Model):
 
 class HomeworkGroupMember(models.Model):
     user = models.ForeignKey(UserModel)
-    group = models.ForeignKey(HomeworkGroup, to_field='group',on_delete=models.CASCADE)
+    group = models.ForeignKey(
+        HomeworkGroup, to_field='group', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'homework_group_member'
+
+
+class HomeworkGroupGrade(models.Model):
+
+    group = models.ForeignKey(
+        HomeworkGroup, to_field='group', on_delete=models.CASCADE)
+    grade = models.TextField(default=0)
+    explanation = models.TextField(null=True)
+    grader = models.ForeignKey(UserModel)
+
+    class Meta:
+        db_table = 'homework_group_grade'

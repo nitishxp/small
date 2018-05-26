@@ -1,9 +1,7 @@
 <html>
-
 <head>
 
 </head>
-
 <body>
     <div>
         <form method="POST">
@@ -22,8 +20,8 @@
             <br> {% endfor %} {% endfor %}
             <input type="submit" value="Submit">
         </form>
-
     </div>
+    <hr>
     <div>
         <table>
             <tr>
@@ -35,15 +33,16 @@
             </tr>
             {% for c in homework %}
             <tr>
-                <td>{{ c.group.homework.homework_name }}</td>
-                <td>{{ c.group.homework.homework_name }}</td>
-                <td>{{ c.group.homework.homework_deadline }}</td>
-                <td>{{ c.group.homework.homework_name }}</td>
-                <td>{{ c.group.homework.homework_name }}</td>
+                <td>{{ c.assignment_name }}</td>
+                <td>{{ c.members }}</td>
+                <td>{{ c.deadline }}</td>
+                <td>{{ c.group.grade }}</td>
+                <td>{{ c.explanation }}</td>
             </tr>
             {% endfor %}
         </table>
     </div>
+    <hr>
 </body>
 
 </html>
