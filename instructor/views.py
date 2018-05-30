@@ -3,13 +3,14 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember
+from models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember, GroupCombinationModel
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
 from django.utils.datastructures import MultiValueDictKeyError
 from students.models import StudentCourseModel, StudentConstraintsModel
 import random
 from users.models import UserModel
+from itertools import permutations
 
 
 def index(request):
@@ -157,7 +158,8 @@ def do_grouping(request, pk):
 
         # first delete the existing homework course relation
         HomeworkGroup.objects.filter(homework=c, course=course).delete()
-        
+
+        groups_with_random_grader = {}
         for g in t:
             if len(g) > 0:
                 import uuid
@@ -170,3 +172,35 @@ def do_grouping(request, pk):
                 for m in g:
                     member_obj = HomeworkGroupMember.objects.create(
                         user=UserModel.objects.get(pk=m), group=group_obj)
+
+                random.shuffle(g)
+                groups_with_random_grader[group_id] = g[0]
+
+        # now its time to iterate the group with random grader
+        temp_group = []
+        for g in groups_with_random_grader:
+            temp_group.append(g)
+
+        GroupCombinationModel.objects.filter(
+            homework=c, course=course).delete()
+
+        for pg in permutations(temp_group, 2):
+            user = groups_with_random_grader[pg[1]]
+            GroupCombinationModel.objects.create(
+                homework=c,
+                course=course,
+                group=HomeworkGroup.objects.get(group=pg[0]),
+                grader_group=HomeworkGroup.objects.get(group=pg[1]),
+                grader_user=UserModel.objects.get(pk=user))
+
+        # select a default entry for each group
+        for g in groups_with_random_grader:
+            current_group = GroupCombinationModel.objects.filter(group=g).first()
+            if current_group:
+                current_group_grader_group = current_group.grader_group.group
+                print current_group_grader_group,g
+                GroupCombinationModel.objects.filter(group=current_group_grader_group,grader_group=g).delete()
+                current_group.active = True
+                current_group.save()
+
+        print "##"  

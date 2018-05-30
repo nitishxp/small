@@ -79,7 +79,7 @@ def enroll(request):
 def return_member_name(group_id):
     name_obj = HomeworkGroupMember.objects.filter(
         group=HomeworkGroup.objects.get(
-            group=group_id)).values_list('user__role')
+            group=group_id)).values_list('user__username')
     name = []
     for c in name_obj:
         name.append(c[0])
@@ -92,8 +92,8 @@ def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
     student_selected_constraints = StudentConstraintsModel.objects.filter(
         user=request.user, course=course_id)
-    constraints = []
 
+    constraints = []
     for c in constraints_db:
         t = {}
         t['id'] = c.id
@@ -109,11 +109,8 @@ def student_course(request, course_id):
         constraints.append(t)
 
     course = CourseModel.objects.all()
-
     course_obj = CourseModel.objects.filter(pk=course_id)
-
     assignment = []
-
     # first fetch the group which user is part of
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user, group__course=course_obj).order_by(

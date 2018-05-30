@@ -71,3 +71,24 @@ class HomeworkGroupGrade(models.Model):
 
     class Meta:
         db_table = 'homework_group_grade'
+
+
+class GroupCombinationModel(models.Model):
+
+    group = models.ForeignKey(
+        HomeworkGroup,
+        to_field='group',
+        on_delete=models.CASCADE,
+        related_name='group1')
+    grader_group = models.ForeignKey(
+        HomeworkGroup,
+        to_field='group',
+        on_delete=models.CASCADE,
+        related_name='group2')
+    grader_user = models.ForeignKey(UserModel)
+    homework = models.ForeignKey(CourseHomeWorkModel)
+    course = models.ForeignKey(CourseModel)
+    active = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'group_group_combination'
