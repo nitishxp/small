@@ -46,7 +46,7 @@ class HomeworkGroup(models.Model):
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
     group = models.TextField(unique=True)
-    attachments = models.TextField(null=True)
+    attachment = models.TextField(null=True)
 
     class Meta:
         db_table = 'homework_group_master'

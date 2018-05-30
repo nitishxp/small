@@ -113,15 +113,15 @@ def student_course(request, course_id):
     assignment = []
     # first fetch the group which user is part of
     homework_group_id = HomeworkGroupMember.objects.filter(
-        user=request.user, group__course=course_obj).order_by(
-            "group__homework__homework_name").values_list('group')
+        user=request.user, group__course=course_obj,group__attachment__isnull=True).order_by(
+            "group__homework__homework_name")
 
     for c in homework_group_id:
-
-        group_details = HomeworkGroup.objects.get(group=c[0])
+        group = c.group.group
+        group_details = HomeworkGroup.objects.get(group=group)
         t = {}
         t['assignment_name'] = group_details.homework.homework_name
-        t['members'] = return_member_name(c[0])
+        t['members'] = return_member_name(group)
         t['deadline'] = group_details.homework.homework_deadline
         t['explanation'] = ""
         t['grade'] = ""
@@ -132,5 +132,6 @@ def student_course(request, course_id):
             'constraints': constraints,
             'course': course,
             'selected_course': course_id,
-            'homework': assignment
+            'homework': assignment,
+            'file_upload': homework_group_id.first()
         })
