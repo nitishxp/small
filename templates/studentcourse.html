@@ -7,10 +7,10 @@
         <form method="POST">
             {% csrf_token %}
             <h4> In which course you are enrolled?</h4>
-            <select name="course" required>
+            <select name="course" disabled>
                 <option value="">Select {{ selected_course }}</option>
                 {% for c in course %}
-                <option value="{{ c.id }}" {% if c.id|slugify == selected_course|slugify %} selected {% endif %}>{{ c.course_name }} </option>
+                <option value="{{ c.id }}" {% if c.id|slugify == selected_course|slugify %} selected {% endif %} readonly>{{ c.course_name }} </option>
                 {% endfor %}
             </select>
             {% for c in constraints %}
@@ -46,8 +46,9 @@
     <h1>
         Upload Assignment {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}}
         <div>
-            <form>
-                <input type="file">
+            <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="{{ file_upload.group.id }}">
                 <input type="submit" value="Submit"> 
             </form>
         </div>

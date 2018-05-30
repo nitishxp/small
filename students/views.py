@@ -135,3 +135,7 @@ def student_course(request, course_id):
             'homework': assignment,
             'file_upload': homework_group_id.first()
         })
+
+def upload_assignment(request):
+    pass
+    print request.FILES

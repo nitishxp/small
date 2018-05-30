@@ -4,4 +4,5 @@ urlpatterns = [
     url(r'^$', index, name="student__index"),
     url(r'^enroll/$', enroll, name="student__enroll"),
     url(r'^course/(?P<course_id>[0-9]+)/$', student_course, name="student__student_course"),
+    url(r'^upload_assignment/$', upload_assignment, name="student__upload_assignment"),
 ]
