@@ -33,8 +33,8 @@
             </tr>
             {% for c in homework %}
             <tr>
-                <td>{{ c.assignment_name }}</td>
-                <td>{{ c.members }}</td>
+                <td>{{ c.assignment_name }}   </td>
+                <td>{{ c.members }} </td>
                 <td>{{ c.deadline }}</td>
                 <td>{{ c.group.grade }}</td>
                 <td>{{ c.explanation }}</td>
@@ -44,7 +44,7 @@
     </div>
     <hr>
     <h1>
-        Upload Assignment {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}}
+        Upload Assignment {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}}
         <div>
             <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -55,6 +55,21 @@
     </h1>
     <hr>
     <h2>Peer Evalutaion</h2>
+    {% for c in peerevalutation %}
+        <div>
+            <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}"> 
+                Assignment {{ c.homework.homework_name }}<br>
+                <a href="{{c.group.attachment}}">Download File</a>
+                <br>
+                    Grading Rubric: Hello this is dummy text {{c.group.id}}  {{c.id}}
+                <br>
+                <label>Grade</label> <input type="text" name="test"> <br>
+                <label>Explanation</label> <input type="text" name="test"> <br>
+                <input type="submit">
+                <hr>
+            </form>
+        </div>
+    {% endfor %}
 </body>
 
 </html>

@@ -6,7 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from models import StudentConstraintsModel, StudentCourseModel
 from constraints.models import Constraints
-from instructor.models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember
+from instructor.models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember, GroupCombinationModel
+from grade.settings import BASE_DIR
 
 # Create your views here.
 
@@ -77,13 +78,12 @@ def enroll(request):
 
 
 def return_member_name(group_id):
+
     name_obj = HomeworkGroupMember.objects.filter(
-        group=HomeworkGroup.objects.get(
-            group=group_id)).values_list('user__username')
+        group=HomeworkGroup.objects.get(group=group_id))
     name = []
     for c in name_obj:
-        name.append(c[0])
-
+        name.append(c.user.first_name)
     return ",".join(name)
 
 
@@ -113,9 +113,11 @@ def student_course(request, course_id):
     assignment = []
     # first fetch the group which user is part of
     homework_group_id = HomeworkGroupMember.objects.filter(
-        user=request.user, group__course=course_obj,group__attachment__isnull=True).order_by(
+        user=request.user,
+        group__course=course_obj,
+        group__attachment__isnull=True).order_by(
             "group__homework__homework_name")
-
+    #
     for c in homework_group_id:
         group = c.group.group
         group_details = HomeworkGroup.objects.get(group=group)
@@ -125,7 +127,16 @@ def student_course(request, course_id):
         t['deadline'] = group_details.homework.homework_deadline
         t['explanation'] = ""
         t['grade'] = ""
+        t['group_id'] = group_details.group
         assignment.append(t)
+    #
+    peerevalutation = GroupCombinationModel.objects.filter(
+        grader_user=request.user,
+        active=True,
+        group__course=course_obj,
+        peerevalutation=False,
+        group__attachment__isnull=False).order_by(
+            "group__homework__homework_name")
 
     return render(
         request, 'studentcourse.html', {
@@ -133,9 +144,37 @@ def student_course(request, course_id):
             'course': course,
             'selected_course': course_id,
             'homework': assignment,
-            'file_upload': homework_group_id.first()
+            'file_upload': homework_group_id.first(),
+            'peerevalutation': peerevalutation
         })
 
+
+def process_attachments(f, group_id):
+    import os
+
+    # creation of folder
+    temp_dir = '/static/courses/' + str(group_id) + '/'
+    dir_path = BASE_DIR + temp_dir
+
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+
+    file_path = dir_path + f.name
+    destination = open(file_path, 'wb+')
+    for chunk in f.chunks():
+        destination.write(chunk)
+    destination.close()
+
+    return temp_dir + f.name
+
+
 def upload_assignment(request):
+    for c in request.FILES:
+        filepath = process_attachments(request.FILES[c], c)
+        HomeworkGroup.objects.filter(pk=c).update(attachment=filepath)
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def peervaluation(request, combination_id, group_id):
     pass
-    print request.FILES

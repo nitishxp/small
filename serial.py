@@ -4,11 +4,11 @@ itenary = []
 
 avaiable_time = [
     {
-        "time": "0.00-18.30",
+        "time": "0.00-4.30,6.0-7.0,7.0-8.0",
         "duration": "2"
     },
     {
-        "time": "0.0-23.59",
+        "time": "0.0-0.59,4.0-8.0",
         "duration": "1"
     }
 ]
@@ -54,43 +54,51 @@ def blah(time, value, itenary):
         return True, itenary
 
 
-for c in avaiable_time:
-    start = float(c['time'].split('-')[0])
-    end = float(c['time'].split('-')[1])
-    shift_start = float(shift.split('-')[0])
-    shift_end = float(shift.split('-')[1])
-    shift_duration = shift_end - shift_start
-    duration = float(c['duration'])
-    time = c['time']
+for d in avaiable_time: #######################################
+    something = False #######################################
+    for c in d['time'].split(',') : ################################
 
-    if (duration) > shift_duration:
-        continue
+        if something: #######################3
+            continue ###############################
 
-    if (start >= shift_start
-            and end <= shift_end) or (start < shift_end and
-                                      (shift_end < end or end > shift_start)):
-        # good to go
-        # now calculate the time difference i.e how much it will expand in current itenary
-        if (start - shift_start) > 0:
-            # print "c"
-            # fill the itenary with current start plus duration value
-            # value = [start, start + duration]
-            timeslot = return_possible_time(start, shift_end, duration)
-            # print timeslot
-        #
-        if (start - shift_start) <= 0:
-            # print "d", time
-            timeslot = return_possible_time(shift_start, shift_end, duration)
-            print timeslot,itenary,'itenaroy'
+        start = float(c.split('-')[0])  #################
+        end = float(c.split('-')[1])   ###################
+        shift_start = float(shift.split('-')[0])
+        shift_end = float(shift.split('-')[1])
+        shift_duration = shift_end - shift_start
+        duration = float(d['duration']) #################3
+        time = d['time'] ########################################
 
-        for value in timeslot:
-            # print value, time
-            v = blah(time, value, itenary)
-            # print 'v', v
-            if v[0]:
-                itenary = v[1]            
-                break
+        if (duration) > shift_duration:
+            continue
 
+        if (start >= shift_start
+                and end <= shift_end) or (start < shift_end and
+                                        (shift_end < end or end > shift_start)):
+            # good to go
+            # now calculate the time difference i.e how much it will expand in current itenary
+            if (start - shift_start) > 0:
+                # print "c"
+                # fill the itenary with current start plus duration value
+                # value = [start, start + duration]
+                timeslot = return_possible_time(start, shift_end, duration)
+                # print timeslot
+            #
+            if (start - shift_start) <= 0:
+                # print "d", time
+                timeslot = return_possible_time(shift_start, shift_end, duration)
+                print timeslot,itenary,'itenaroy'
+
+            for value in timeslot:
+                # print value, time
+                v = blah(time, value, itenary)
+                # print 'v', v
+                if v[0]:
+                    itenary = v[1] 
+                    something = True   #######################
+                    break
+
+print "###"
 print itenary
 # def chunkIt(seq, num):
 #     avg = len(seq) / float(num)

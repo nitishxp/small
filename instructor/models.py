@@ -89,6 +89,7 @@ class GroupCombinationModel(models.Model):
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
     active = models.BooleanField(default=False)
+    peerevalutation = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'group_group_combination'
