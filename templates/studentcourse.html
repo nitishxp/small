@@ -44,7 +44,7 @@
     </div>
     <hr>
     <h1>
-        Upload Assignment 
+        Upload Assignment {{file_upload.group.homework.homework_name}} 
         <!-- {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}} -->
         <div>
             <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
