@@ -1,10 +1,8 @@
 <html>
-
 <head>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 </head>
-
 <body>
     <form method="POST">
         {% csrf_token %}
@@ -56,22 +54,28 @@
             </tr>
             {% endfor %}
         </table>
-        <h1>Student Grouping</h1>
-        <table>
-            <tr>
-                <th>Student Name</th>
-                <th>Enrollment Status</th>
-            </tr>
-            {% for c in enrolled_student %}
-            <tr>
-                <td>{{ c.user.username }}</td>
-                <td><input type= "checkbox"  value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %} > </td>
-            </tr>
-            {% endfor %}
-        </table>
         <br>
         <input type="submit" value="Submit">
         <br>
+    </form>
+
+    <h1>Student Grouping</h1>
+    <table>
+        <tr>
+            <th>Student Name</th>
+            <th>Enrollment Status</th>
+        </tr>
+        {% for c in enrolled_student %}
+        <tr>
+            <td>{{ c.user.username }} {{ c.user.first_name }} </td>
+            <td>
+                <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}> </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Do Grouping">
     </form>
 </body>
 <script>

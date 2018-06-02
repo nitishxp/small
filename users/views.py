@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from users.models import UserModel
 from django.contrib.auth import authenticate, login as auth_login
 
@@ -37,9 +37,9 @@ def login(request):
         if user is not None:
             auth_login(request, user)
             if user.role == "student":
-                return HttpResponse('student')
+                return HttpResponseRedirect(reverse('student__index'))
             if user.role == "instructor":
-                return HttpResponse('instructor')
+                return HttpResponseRedirect(reverse('instructor__index'))
             # Redirect to a success page.
         else:
             pass

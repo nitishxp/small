@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember, GroupCombinationModel
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
@@ -112,7 +112,8 @@ def edit_course(request, pk):
         request, 'edit_course.html', {
             'course': course,
             'homework': homework,
-            'enrolled_student': enrolled_student
+            'enrolled_student': enrolled_student,
+            'course_pk': pk
         })
 
 
@@ -154,7 +155,7 @@ def do_grouping(request, pk):
                 group.append(d.user.id)
             random.shuffle(group)
             # split the student in to random n groups
-            t = chunkIt(group, 3)
+            t = chunkIt(group, 2)
 
         # first delete the existing homework course relation
         HomeworkGroup.objects.filter(homework=c, course=course).delete()
@@ -195,12 +196,15 @@ def do_grouping(request, pk):
 
         # select a default entry for each group
         for g in groups_with_random_grader:
-            current_group = GroupCombinationModel.objects.filter(group=g).first()
+            current_group = GroupCombinationModel.objects.filter(
+                group=g).first()
             if current_group:
                 current_group_grader_group = current_group.grader_group.group
-                print current_group_grader_group,g
-                GroupCombinationModel.objects.filter(group=current_group_grader_group,grader_group=g).delete()
+                print current_group_grader_group, g
+                GroupCombinationModel.objects.filter(
+                    group=current_group_grader_group, grader_group=g).delete()
                 current_group.active = True
                 current_group.save()
 
-        print "##"  
+        # print "##"
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
