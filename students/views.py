@@ -4,10 +4,13 @@ import ast
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from models import StudentConstraintsModel, StudentCourseModel
+from models import (StudentConstraintsModel, StudentCourseModel)
 from constraints.models import Constraints
-from instructor.models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember, GroupCombinationModel
+from instructor.models import (CourseModel, CourseHomeWorkModel, HomeworkGroup,
+                               HomeworkGroupMember, GroupCombinationModel,
+                               HomeworkGroupGrade)
 from grade.settings import BASE_DIR
+from django.db.models import Avg
 
 # Create your views here.
 
@@ -87,6 +90,18 @@ def return_member_name(group_id):
     return ",".join(name)
 
 
+def return_grade_explanation(group_id):
+    grade = []
+    explanation = []
+    for c in HomeworkGroupGrade.objects.filter(group=group_id):
+        grade.append(int(c.grade))
+        explanation.append(c.explanation)
+
+    if len(grade) > 0:
+        return sum(grade) / len(grade), " ".join(explanation)
+    return "", ""
+
+
 def student_course(request, course_id):
 
     constraints_db = Constraints.objects.all()
@@ -94,6 +109,7 @@ def student_course(request, course_id):
         user=request.user, course=course_id)
 
     constraints = []
+    users_group = []
     for c in constraints_db:
         t = {}
         t['id'] = c.id
@@ -114,19 +130,19 @@ def student_course(request, course_id):
     # first fetch the group which user is part of
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
-        group__course=course_obj,
-        group__attachment__isnull=True).order_by(
-            "group__homework__homework_name")
+        group__course=course_obj).order_by("group__homework__homework_name")
     #
     for c in homework_group_id:
         group = c.group.group
         group_details = HomeworkGroup.objects.get(group=group)
+        users_group.append(group_details.group)
+        grade, explanation = return_grade_explanation(group)
         t = {}
         t['assignment_name'] = group_details.homework.homework_name
         t['members'] = return_member_name(group)
         t['deadline'] = group_details.homework.homework_deadline
-        t['explanation'] = ""
-        t['grade'] = ""
+        t['explanation'] = explanation
+        t['grade'] = grade
         t['group_id'] = group_details.group
         assignment.append(t)
     #
@@ -138,6 +154,15 @@ def student_course(request, course_id):
         group__attachment__isnull=False).order_by(
             "group__homework__homework_name")
 
+    homework_group_id = HomeworkGroupMember.objects.filter(
+        user=request.user,
+        group__course=course_obj,
+        group__attachment__isnull=True).order_by(
+            "group__homework__homework_name")
+
+    grade = HomeworkGroupGrade.objects.filter(
+        group__in=users_group).order_by("group__homework__homework_name")
+
     return render(
         request, 'studentcourse.html', {
             'constraints': constraints,
@@ -145,7 +170,8 @@ def student_course(request, course_id):
             'selected_course': course_id,
             'homework': assignment,
             'file_upload': homework_group_id.first(),
-            'peerevalutation': peerevalutation
+            'peerevalutation': peerevalutation,
+            'grade': grade
         })
 
 
@@ -177,4 +203,23 @@ def upload_assignment(request):
 
 
 def peervaluation(request, combination_id, group_id):
-    pass
+    # make combination_id peerevalutation value = false
+    # and HomeworkGroupGrade table to be updated to corresponding
+    # group_id
+    grade = request.POST['grade']
+    explanation = request.POST['explanation']
+
+    # update the homework group grade table
+    homework_grade_obj = HomeworkGroupGrade()
+    homework_grade_obj.grade = grade
+    homework_grade_obj.explanation = explanation
+    homework_grade_obj.grader = request.user
+    homework_grade_obj.group = HomeworkGroup.objects.get(pk=group_id)
+    homework_grade_obj.save()
+
+    # update the current peerevaluation value = false so that grader can not reevaluate the same
+    # combination again and again
+    GroupCombinationModel.objects.filter(pk=combination_id).update(
+        peerevalutation=True)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

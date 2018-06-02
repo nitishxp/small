@@ -36,7 +36,7 @@
                 <td>{{ c.assignment_name }}   </td>
                 <td>{{ c.members }} </td>
                 <td>{{ c.deadline }}</td>
-                <td>{{ c.group.grade }}</td>
+                <td>{{ c.grade }}</td>
                 <td>{{ c.explanation }}</td>
             </tr>
             {% endfor %}
@@ -44,7 +44,8 @@
     </div>
     <hr>
     <h1>
-        Upload Assignment {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}}
+        Upload Assignment 
+        <!-- {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}} -->
         <div>
             <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -58,18 +59,32 @@
     {% for c in peerevalutation %}
         <div>
             <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}"> 
+                {% csrf_token %}
                 Assignment {{ c.homework.homework_name }}<br>
                 <a href="{{c.group.attachment}}">Download File</a>
                 <br>
                     Grading Rubric: Hello this is dummy text {{c.group.id}}  {{c.id}}
                 <br>
-                <label>Grade</label> <input type="text" name="test"> <br>
-                <label>Explanation</label> <input type="text" name="test"> <br>
+                <label>Grade</label> <input type="number" name="grade" required> <br>
+                <label>Explanation</label> <input type="text" name="explanation" required> <br>
                 <input type="submit">
                 <hr>
             </form>
         </div>
     {% endfor %}
+    <hr>
+    <h2>Grades</h2>
+    {% for c in grade %}
+        <div>
+            <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}"> 
+                {% csrf_token %}
+                Assignment {{ c.group.homework.homework_name }} Grade {{ c.grade }} <br>
+                Explanation: {{c.explanation}}
+            </form>
+            <br>
+        </div>
+    {% endfor %}
+    <hr>
 </body>
 
 </html>
