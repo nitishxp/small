@@ -84,6 +84,14 @@
             <br>
         </div>
     {% endfor %}
+    {% if grade %}
+    <form method="POST">
+        {% csrf_token %}
+        <label>Appeal Reason</label>
+        <textarea rows="10" cols="100"></textarea><br>
+        <input type="submit" value="Appeal">
+    </form>
+    {% endif %}
     <hr>
 </body>
 

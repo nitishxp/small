@@ -105,6 +105,34 @@ def process_attachments(request, course_id, homework_id):
 
 def edit_course(request, pk):
 
+    if request.method == "POST":
+
+        course_obj = CourseModel.objects.filter(pk=pk).update(
+            course_name=request.POST['course_name'],
+            grading_rubric=request.POST['grading_rubric'],
+            appeal_role=request.POST['appeal_role']
+        )
+
+        # after the course have been updated now save the assignments
+        assignments = {}
+        for d in request.POST:
+            data = request.POST[d]
+            d = d.split("___")
+            if len(d) > 1:
+                if d[0] in assignments.keys():
+                    assignments[d[0]][d[1]] = data
+                else:
+                    assignments[d[0]] = {}
+                    assignments[d[0]]['homework_name'] = d[0]
+                    assignments[d[0]][d[1]] = data
+
+        for c in assignments:
+            CourseHomeWorkModel.objects.update_or_create(
+                course=CourseModel.objects.get(pk=pk),
+                homework_name=c,
+                defaults=assignments[c]
+            )
+
     course = CourseModel.objects.filter(pk=pk).first()
     homework = CourseHomeWorkModel.objects.filter(course=pk)
     enrolled_student = StudentCourseModel.objects.filter(course=pk)
