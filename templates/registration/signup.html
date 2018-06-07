@@ -1,13 +1,26 @@
 <html>
-    <form method="POST">
-        {% csrf_token %}
-            <input type="text" name="username">
-            <input type="text" name="password">
-            <select  name="role">
-                <option value="student">Student</option>
-                <option value="instructor">instructor</option>
-            </select>
-            <input type="submit" value="Submit">
-    </form>
-    
+<form method="POST">
+    {% csrf_token %}
+    <label>First Name</label>
+    <input type="text" name="first_name" required>
+    <br>
+    <label>Last Name</label>
+    <input type="text" name="last_name" required>
+    <br>
+    <label> UserName </label>
+    <input type="text" name="username" required>
+    <br>
+    <label> Password</label>
+    <input type="text" name="password" required>
+    <br>
+    <label>User Type</label>
+    <select name="role">
+        <option value="student">Student</option>
+        <option value="instructor">instructor</option>
+    </select>
+    <br>
+
+    <input type="submit" value="Submit">
+</form>
+
 </html>

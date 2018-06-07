@@ -11,7 +11,10 @@ from django.contrib.auth import authenticate, login as auth_login
 def signup(request):
     if request.method == "POST":
         print request.POST
-        user = UserModel(username=request.POST['username'])
+        user = UserModel(
+            username=request.POST['username'],
+            last_name=request.POST.get('last_name'),
+            first_name=request.POST.get('first_name'))
         user.set_password(request.POST['password'])
         user.save()
     return render(request, 'registration/signup.html')
