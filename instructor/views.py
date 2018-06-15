@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember, GroupCombinationModel
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
@@ -14,12 +14,10 @@ from itertools import permutations
 
 
 def index(request):
-
     return render(request, 'instructor.html')
 
 
 def course(request):
-
     if request.method == "POST":
         course_obj = CourseModel()
         course_obj.course_id = request.POST['course_id']
@@ -79,7 +77,6 @@ def homework(request, pk):
 
 
 def process_attachments(request, course_id, homework_id):
-
     import os
     try:
         f = request.FILES['attachment']
@@ -104,7 +101,6 @@ def process_attachments(request, course_id, homework_id):
 
 
 def edit_course(request, pk):
-
     if request.method == "POST":
 
         course_obj = CourseModel.objects.filter(pk=pk).update(
@@ -155,7 +151,6 @@ def chunkIt(seq, num):
 
 
 def do_grouping(request, pk):
-
     # first fetch the homework related to the course
     homework = CourseHomeWorkModel.objects.filter(course=pk)
 
@@ -181,12 +176,16 @@ def do_grouping(request, pk):
                 group.append(d.user.id)
             random.shuffle(group)
             # split the student in to random n groups
-            t = chunkIt(group, 5)
+            partition = chunkIt(group, 5)
 
-        # first delete the existing homework course relation
-        HomeworkGroup.objects.filter(homework=c, course=course).delete()
+            t = [x for x in partition if x != []]
 
         groups_with_random_grader = {}
+
+        # delete the previous group model if exists
+        HomeworkGroup.objects.filter(
+            homework=c, course=course).delete()
+
         for g in t:
             if len(g) > 0:
                 import uuid
@@ -197,42 +196,50 @@ def do_grouping(request, pk):
 
                 # now insert group member to the group
                 for m in g:
-                    member_obj = HomeworkGroupMember.objects.create(
+                    HomeworkGroupMember.objects.create(
                         user=UserModel.objects.get(pk=m), group=group_obj)
 
-                random.shuffle(g)
-                groups_with_random_grader[group_id] = g[0]
+                groups_with_random_grader[group_id] = random.sample(g, 3)
 
+        # return JsonResponse(groups_with_random_grader, safe=False)
         # now its time to iterate the group with random grader
+        # in order to make the group_id list so that
+        # we can make a permutations to the group id
         temp_group = []
         for g in groups_with_random_grader:
             temp_group.append(g)
 
-        GroupCombinationModel.objects.filter(
-            homework=c, course=course).delete()
-
         for pg in permutations(temp_group, 2):
-            user = groups_with_random_grader[pg[1]]
-            GroupCombinationModel.objects.create(
-                homework=c,
-                course=course,
-                group=HomeworkGroup.objects.get(group=pg[0]),
-                grader_group=HomeworkGroup.objects.get(group=pg[1]),
-                grader_user=UserModel.objects.get(pk=user))
+            print pg
+            for peer_grader in groups_with_random_grader[pg[1]]:
+                GroupCombinationModel.objects.create(
+                    homework=c,
+                    course=course,
+                    group=HomeworkGroup.objects.get(group=pg[0]),
+                    grader_group=HomeworkGroup.objects.get(group=pg[1]),
+                    grader_user=UserModel.objects.get(pk=peer_grader))
 
         # select a default entry for each group
+        # ie if select A-B then delete B-A
         for g in groups_with_random_grader:
+
+            # select A-B
             current_group = GroupCombinationModel.objects.filter(
                 group=g).first()
+
             if current_group:
+                # delete B-A
                 current_group_grader_group = current_group.grader_group.group
-                print current_group_grader_group, g
                 GroupCombinationModel.objects.filter(
                     group=current_group_grader_group, grader_group=g).delete()
-                current_group.active = True
-                current_group.save()
 
-        # print "##"
+                group = current_group.group.group
+                grader_group = current_group.grader_group.group
+
+                # now set all A-B active = True because of different grader
+                GroupCombinationModel.objects.filter(
+                    group=group, grader_group=grader_group).update(active=True)
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 

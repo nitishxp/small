@@ -12,6 +12,7 @@ from instructor.models import (CourseModel, CourseHomeWorkModel, HomeworkGroup,
 from grade.settings import BASE_DIR
 from django.db.models import Avg
 
+
 # Create your views here.
 
 
@@ -26,7 +27,6 @@ def index(request):
 
 
 def enroll(request):
-
     if request.method == "POST":
         # first save the course to StudentCourseModel
         course = CourseModel.objects.get(pk=request.POST['course'])
@@ -81,7 +81,6 @@ def enroll(request):
 
 
 def return_member_name(group_id):
-
     name_obj = HomeworkGroupMember.objects.filter(
         group=HomeworkGroup.objects.get(group=group_id))
     name = []
@@ -103,7 +102,6 @@ def return_grade_explanation(group_id):
 
 
 def student_course(request, course_id):
-
     constraints_db = Constraints.objects.all()
     student_selected_constraints = StudentConstraintsModel.objects.filter(
         user=request.user, course=course_id)
@@ -152,13 +150,13 @@ def student_course(request, course_id):
         group__course=course_obj,
         peerevalutation=False,
         group__attachment__isnull=False).order_by(
-            "group__homework__homework_name")
+        "group__homework__homework_name")
 
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__attachment__isnull=True).order_by(
-            "group__homework__homework_name")
+        "group__homework__homework_name")
 
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
