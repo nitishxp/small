@@ -9,6 +9,6 @@ from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 class UserModel(AbstractUser):
 
     role = models.TextField(null=True,default='student')
-    
+    name = models.TextField(null=True)
     class Meta:
         db_table = 'users'

@@ -12,4 +12,7 @@ urlpatterns = [
     url(r'do_grouping/(?P<pk>[0-9]+)/$',
         do_grouping,
         name="instructor__do_grouping"),
+    url(r'student_upload/(?P<pk>[0-9]+)/$',
+        student_upload,
+        name="instructor__student_upload"),
 ]

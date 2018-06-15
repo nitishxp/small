@@ -110,8 +110,7 @@ def edit_course(request, pk):
         course_obj = CourseModel.objects.filter(pk=pk).update(
             course_name=request.POST['course_name'],
             grading_rubric=request.POST['grading_rubric'],
-            appeal_role=request.POST['appeal_role']
-        )
+            appeal_role=request.POST['appeal_role'])
 
         # after the course have been updated now save the assignments
         assignments = {}
@@ -130,8 +129,7 @@ def edit_course(request, pk):
             CourseHomeWorkModel.objects.update_or_create(
                 course=CourseModel.objects.get(pk=pk),
                 homework_name=c,
-                defaults=assignments[c]
-            )
+                defaults=assignments[c])
 
     course = CourseModel.objects.filter(pk=pk).first()
     homework = CourseHomeWorkModel.objects.filter(course=pk)
@@ -183,7 +181,7 @@ def do_grouping(request, pk):
                 group.append(d.user.id)
             random.shuffle(group)
             # split the student in to random n groups
-            t = chunkIt(group, 2)
+            t = chunkIt(group, 5)
 
         # first delete the existing homework course relation
         HomeworkGroup.objects.filter(homework=c, course=course).delete()
@@ -235,4 +233,33 @@ def do_grouping(request, pk):
                 current_group.save()
 
         # print "##"
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def student_upload(request, pk):
+    import csv
+    csv_file = request.FILES["student_upload"]
+    file_data = csv_file.read().decode("utf-8").splitlines()
+    lines = csv.DictReader(file_data)
+
+    for line in lines:
+        user = UserModel.objects.filter(username=line['Login ID'])
+
+        if not user.exists():
+            user = UserModel.objects.create_user(
+                username=line['Login ID'], name=line['Student'])
+            user.set_password(line['Login ID'])
+            user.save()
+
+        course = CourseModel.objects.get(pk=pk)
+        student_user = UserModel.objects.get(username=line['Login ID'])
+
+        StudentCourseModel.objects.update_or_create(
+            user=student_user,
+            course=course,
+            defaults={
+                'user': student_user,
+                'course': course
+            })
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

@@ -86,7 +86,7 @@ def return_member_name(group_id):
         group=HomeworkGroup.objects.get(group=group_id))
     name = []
     for c in name_obj:
-        name.append(c.user.first_name)
+        name.append(c.user.name)
     return ",".join(name)
 
 
