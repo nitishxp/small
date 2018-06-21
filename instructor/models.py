@@ -47,6 +47,8 @@ class HomeworkGroup(models.Model):
     course = models.ForeignKey(CourseModel)
     group = models.TextField(unique=True)
     attachment = models.TextField(null=True)
+    total_member = models.IntegerField(default=0)
+    appeal_done_count = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'homework_group_master'
@@ -85,7 +87,7 @@ class GroupCombinationModel(models.Model):
         to_field='group',
         on_delete=models.CASCADE,
         related_name='group2')
-    grader_user = models.ForeignKey(UserModel)
+    grader_user = models.ForeignKey(UserModel, to_field='username')
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
     active = models.BooleanField(default=False)

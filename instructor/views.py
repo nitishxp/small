@@ -193,7 +193,10 @@ def do_grouping(request, pk):
                 group_id = uuid.uuid1().hex
                 # create group id
                 group_obj = HomeworkGroup.objects.create(
-                    homework=c, course=course, group=group_id)
+                    homework=c,
+                    course=course,
+                    group=group_id,
+                    total_member=len(g))
 
                 # now insert group member to the group
                 for m in g:
