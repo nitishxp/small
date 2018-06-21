@@ -176,6 +176,8 @@ def do_grouping(request, pk):
                 group.append(d.user.id)
             random.shuffle(group)
             # split the student in to random n groups
+            # here i can ask emma to provide me the range of students
+            # and how many group i want to have
             partition = chunkIt(group, 5)
 
             t = [x for x in partition if x != []]
