@@ -183,8 +183,7 @@ def do_grouping(request, pk):
         groups_with_random_grader = {}
 
         # delete the previous group model if exists
-        HomeworkGroup.objects.filter(
-            homework=c, course=course).delete()
+        HomeworkGroup.objects.filter(homework=c, course=course).delete()
 
         for g in t:
             if len(g) > 0:
@@ -238,7 +237,8 @@ def do_grouping(request, pk):
 
                 # now set all A-B active = True because of different grader
                 GroupCombinationModel.objects.filter(
-                    group=group, grader_group=grader_group).update(active=True)
+                    group=group,
+                    grader_group=grader_group).update(active=True)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
@@ -250,16 +250,16 @@ def student_upload(request, pk):
     lines = csv.DictReader(file_data)
 
     for line in lines:
-        user = UserModel.objects.filter(username=line['Login ID'])
+        user = UserModel.objects.filter(username=line['SIS User ID'])
 
         if not user.exists():
             user = UserModel.objects.create_user(
-                username=line['Login ID'], name=line['Student'])
-            user.set_password(line['Login ID'])
+                username=line['SIS User ID'], name=line['Student'])
+            user.set_password(line['SIS User ID'])
             user.save()
 
         course = CourseModel.objects.get(pk=pk)
-        student_user = UserModel.objects.get(username=line['Login ID'])
+        student_user = UserModel.objects.get(username=line['SIS User ID'])
 
         StudentCourseModel.objects.update_or_create(
             user=student_user,
