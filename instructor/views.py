@@ -242,8 +242,10 @@ def do_grouping(request, pk):
 
                 # now set all A-B active = True because of different grader
                 GroupCombinationModel.objects.filter(
-                    group=group,
-                    grader_group=grader_group).update(active=True)
+                    group=group, grader_group=grader_group).update(
+                        active=True, is_used=True)
+
+        GroupCombinationModel.objects.filter(active=False).delete()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

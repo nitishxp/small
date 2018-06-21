@@ -92,6 +92,7 @@ class GroupCombinationModel(models.Model):
     course = models.ForeignKey(CourseModel)
     active = models.BooleanField(default=False)
     peerevalutation = models.BooleanField(default=False)
+    is_used = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'group_group_combination'
