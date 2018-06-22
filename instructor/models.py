@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from users.models import UserModel
 
+
 # Create your models here.
 
 
@@ -49,6 +50,7 @@ class HomeworkGroup(models.Model):
     attachment = models.TextField(null=True)
     total_member = models.IntegerField(default=0)
     appeal_done_count = models.IntegerField(default=0)
+    appeal_canceled = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'homework_group_master'
@@ -64,7 +66,6 @@ class HomeworkGroupMember(models.Model):
 
 
 class HomeworkGroupGrade(models.Model):
-
     group = models.ForeignKey(
         HomeworkGroup, to_field='group', on_delete=models.CASCADE)
     grade = models.TextField(default=0)
@@ -76,7 +77,6 @@ class HomeworkGroupGrade(models.Model):
 
 
 class GroupCombinationModel(models.Model):
-
     group = models.ForeignKey(
         HomeworkGroup,
         to_field='group',
@@ -96,3 +96,18 @@ class GroupCombinationModel(models.Model):
 
     class Meta:
         db_table = 'group_group_combination'
+
+
+class AppealGraderModel(models.Model):
+
+    class Meta:
+        db_table = 'appeal_grader_master'
+
+    group = models.ForeignKey(
+        HomeworkGroup,
+        to_field='group',
+        on_delete=models.CASCADE)
+
+    appeal_grader = models.ForeignKey(UserModel)
+    appeal_explanation = models.TextField()
+    grade = models.IntegerField()

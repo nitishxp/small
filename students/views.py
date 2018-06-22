@@ -161,6 +161,51 @@ def student_course(request, course_id):
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
 
+    grade_dic = []
+
+    for c in range(0, len(grade)):
+        homework_name = grade[c].group.homework.homework_name
+        has_appeal_done = grade[c].group.appeal_done_count
+        appeal_canceled = grade[c].group.appeal_canceled
+
+        if c == 0:
+            current = homework_name
+            change = False
+        else:
+            if current != homework_name:
+                current = homework_name
+                change = True
+            else:
+                change = False
+
+        print "appeal_canceled",appeal_canceled,'has_appealded',has_appeal_done
+        # now append the appeal array
+        print change
+        if change:
+            if has_appeal_done == 0:
+                appeal = {}
+                appeal['type'] = 'appeal'
+                appeal['group'] = grade_dic[c - 1]['group']
+                appeal['appeal_canceled'] = grade_dic[c - 1]['appeal_canceled']
+                grade_dic.append(appeal)
+
+        temp = {}
+        temp['type'] = 'grade'
+        temp['homework_name'] = homework_name
+        temp['grade'] = grade[c].grade
+        temp['explanation'] = grade[c].explanation
+        temp['group'] = grade[c].group.group
+        temp['appeal_canceled'] = appeal_canceled
+        grade_dic.append(temp)
+
+        if c == len(grade) - 1:
+            if has_appeal_done == 0 :
+                appeal = {}
+                appeal['type'] = 'appeal'
+                appeal['group'] = grade_dic[len(grade_dic)-1]['group']
+                appeal['appeal_canceled'] = grade_dic[len(grade_dic)-1]['appeal_canceled']
+                grade_dic.append(appeal)
+
     return render(
         request, 'studentcourse.html', {
             'constraints': constraints,
@@ -169,7 +214,7 @@ def student_course(request, course_id):
             'homework': assignment,
             'file_upload': homework_group_id.first(),
             'peerevalutation': peerevalutation,
-            'grade': grade
+            'grade': grade_dic
         })
 
 

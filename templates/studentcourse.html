@@ -44,13 +44,13 @@
     </div>
     <hr>
     <h1>
-        Upload Assignment {{file_upload.group.homework.homework_name}} 
+        Upload Assignment {{file_upload.group.homework.homework_name}}
         <!-- {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}} -->
         <div>
             <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="file" name="{{ file_upload.group.id }}">
-                <input type="submit" value="Submit"> 
+                <input type="submit" value="Submit">
             </form>
         </div>
     </h1>
@@ -58,7 +58,7 @@
     <h2>Peer Evalutaion</h2>
     {% for c in peerevalutation %}
         <div>
-            <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}"> 
+            <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}">
                 {% csrf_token %}
                 Assignment {{ c.homework.homework_name }}<br>
                 <a href="{{c.group.attachment}}">Download File</a>
@@ -75,23 +75,23 @@
     <hr>
     <h2>Grades</h2>
     {% for c in grade %}
+        {% if c.type == "grade" %}
         <div>
-            <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}"> 
-                {% csrf_token %}
-                Assignment {{ c.group.homework.homework_name }} Grade {{ c.grade }} <br>
-                Explanation: {{c.explanation}}
-            </form>
-            <br>
+                Assignment {{ c.homework_name }} Grade {{ c.grade }} <br>
+                Explanation: {{c.explanation}}<br>
         </div>
+        {% endif %}
+
+        {% if c.type == "appeal" and not c.appeal_canceled %}
+            <form method="POST">
+                {% csrf_token %}
+                <label>Appeal Reason for group {{c.group}}</label>
+                <textarea rows="10" cols="100"></textarea><br>
+                <input type="submit" value="Appeal">
+                <input type="submit" value="Don't Appeal">
+            </form><br>
+        {% endif %}
     {% endfor %}
-    {% if grade %}
-    <form method="POST">
-        {% csrf_token %}
-        <label>Appeal Reason</label>
-        <textarea rows="10" cols="100"></textarea><br>
-        <input type="submit" value="Appeal">
-    </form>
-    {% endif %}
     <hr>
 </body>
 
