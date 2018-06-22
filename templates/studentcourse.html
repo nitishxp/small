@@ -46,6 +46,7 @@
     <h1>
         Upload Assignment {{file_upload.group.homework.homework_name}}
         <!-- {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}} -->
+        {% if file_upload %}
         <div>
             <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -53,6 +54,7 @@
                 <input type="submit" value="Submit">
             </form>
         </div>
+        {% endif %}
     </h1>
     <hr>
     <h2>Peer Evalutaion</h2>
@@ -82,10 +84,10 @@
         </div>
         {% endif %}
 
-        {% if c.type == "appeal" and not c.appeal_canceled %}
-            <form method="POST">
+        {% if c.type == "appeal" and c.appeal_done_status %}
+            <form method="POST" action="{% url 'student__appeal' c.group %}">
                 {% csrf_token %}
-                <label>Appeal Reason for group {{c.group}}</label>
+                <label>Appeal Reason for group</label>
                 <textarea rows="10" cols="100"></textarea><br>
                 <input type="submit" value="Appeal">
                 <input type="submit" value="Don't Appeal">

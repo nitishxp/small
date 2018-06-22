@@ -50,7 +50,7 @@ class HomeworkGroup(models.Model):
     attachment = models.TextField(null=True)
     total_member = models.IntegerField(default=0)
     appeal_done_count = models.IntegerField(default=0)
-    appeal_canceled = models.BooleanField(default=False)
+    appeal_done_status = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'homework_group_master'
@@ -60,6 +60,7 @@ class HomeworkGroupMember(models.Model):
     user = models.ForeignKey(UserModel)
     group = models.ForeignKey(
         HomeworkGroup, to_field='group', on_delete=models.CASCADE)
+    has_appealed = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'homework_group_member'

@@ -166,7 +166,7 @@ def student_course(request, course_id):
     for c in range(0, len(grade)):
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
-        appeal_canceled = grade[c].group.appeal_canceled
+        appeal_done_status = grade[c].group.appeal_done_status
 
         if c == 0:
             current = homework_name
@@ -178,15 +178,15 @@ def student_course(request, course_id):
             else:
                 change = False
 
-        print "appeal_canceled",appeal_canceled,'has_appealded',has_appeal_done
+        # print "appeal_canceled",appeal_canceled,'has_appealded',has_appeal_done
         # now append the appeal array
-        print change
+        # print change
         if change:
             if has_appeal_done == 0:
                 appeal = {}
                 appeal['type'] = 'appeal'
                 appeal['group'] = grade_dic[c - 1]['group']
-                appeal['appeal_canceled'] = grade_dic[c - 1]['appeal_canceled']
+                appeal['appeal_done_status'] = grade_dic[c - 1]['appeal_done_status']
                 grade_dic.append(appeal)
 
         temp = {}
@@ -195,15 +195,15 @@ def student_course(request, course_id):
         temp['grade'] = grade[c].grade
         temp['explanation'] = grade[c].explanation
         temp['group'] = grade[c].group.group
-        temp['appeal_canceled'] = appeal_canceled
+        temp['appeal_done_status'] = appeal_done_status
         grade_dic.append(temp)
 
         if c == len(grade) - 1:
-            if has_appeal_done == 0 :
+            if has_appeal_done == 0:
                 appeal = {}
                 appeal['type'] = 'appeal'
-                appeal['group'] = grade_dic[len(grade_dic)-1]['group']
-                appeal['appeal_canceled'] = grade_dic[len(grade_dic)-1]['appeal_canceled']
+                appeal['group'] = grade_dic[len(grade_dic) - 1]['group']
+                appeal['appeal_done_status'] = grade_dic[len(grade_dic) - 1]['appeal_done_status']
                 grade_dic.append(appeal)
 
     return render(
@@ -264,5 +264,15 @@ def peervaluation(request, combination_id, group_id):
     # combination again and again
     GroupCombinationModel.objects.filter(pk=combination_id).update(
         peerevalutation=True)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def appeal(request, group):
+    # update the appeal_done_count status and make appeal_done_status=False
+    group_obj = HomeworkGroup.objects.filter(group=group).update(appeal_done_count=1, appeal_done_status=False)
+
+    # update the group member table about the appeal has been done by the user
+    has_appealed = HomeworkGroupMember.objects.filter(group=group, user=request.user).update(has_appealed=True)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
