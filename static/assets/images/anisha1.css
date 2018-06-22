@@ -1,0 +1,21 @@
+.border{
+   border: 2px solid #0077b5 !important;
+   border-radius: 45px;
+   background-color:#0077b5 ;
+   padding: 10px;
+   color: #FFFFFF ;
+   }
+.blue {
+   color: blue;
+   background-color:pink;
+}
+.color{
+   color: #ffa05d ;
+}
+.center{
+   margin: 0px 50px 0px 50px;
+}
+.header_border{
+   color: #1dc8c1 ;
+   border-bottom: 2px solid #1dc8c1 ;
+}

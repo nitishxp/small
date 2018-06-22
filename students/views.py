@@ -103,8 +103,6 @@ def return_grade_explanation(group_id):
 
 def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
-    student_selected_constraints = StudentConstraintsModel.objects.filter(
-        user=request.user, course=course_id)
 
     constraints = []
     users_group = []
@@ -158,11 +156,16 @@ def student_course(request, course_id):
         group__attachment__isnull=True).order_by(
         "group__homework__homework_name")
 
+    homework_appeal = HomeworkGroupMember.objects.filter(
+        user=request.user,
+        group__course=course_obj, group__appeal_done_status=False, has_appealed=False).order_by(
+        "group__homework__homework_name").select_related('group')
+
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
 
     grade_dic = []
-
+    current = None
     for c in range(0, len(grade)):
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
@@ -177,10 +180,6 @@ def student_course(request, course_id):
                 change = True
             else:
                 change = False
-
-        # print "appeal_canceled",appeal_canceled,'has_appealded',has_appeal_done
-        # now append the appeal array
-        # print change
         if change:
             if has_appeal_done == 0:
                 appeal = {}
@@ -214,7 +213,8 @@ def student_course(request, course_id):
             'homework': assignment,
             'file_upload': homework_group_id.first(),
             'peerevalutation': peerevalutation,
-            'grade': grade_dic
+            'grade': grade_dic,
+            'homework_appeal': homework_appeal
         })
 
 
@@ -270,9 +270,12 @@ def peervaluation(request, combination_id, group_id):
 
 def appeal(request, group):
     # update the appeal_done_count status and make appeal_done_status=False
-    group_obj = HomeworkGroup.objects.filter(group=group).update(appeal_done_count=1, appeal_done_status=False)
+    group_obj = HomeworkGroup.objects.get(group=group)
+    group_obj.appeal_done_count = group_obj.appeal_done_count + 1
+    group_obj.appeal_done_status = False
+    group_obj.save()
 
     # update the group member table about the appeal has been done by the user
-    has_appealed = HomeworkGroupMember.objects.filter(group=group, user=request.user).update(has_appealed=True)
+    HomeworkGroupMember.objects.filter(group=group, user=request.user).update(has_appealed=True)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

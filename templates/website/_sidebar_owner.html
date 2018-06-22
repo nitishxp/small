@@ -1,0 +1,104 @@
+<div class="col-md-3 left_col menu_fixed">
+    <div class="left_col scroll-view">
+        <div class="navbar nav_title" style="border: 0;">
+            <div class="site_title">
+                <img src="/static/images/mia.png " class="img-circle" style="width: 45px !important;border: 1px solid rgba(38,185,154,.88);">
+                    <span>FROLICIN</span>
+                    <!-- <i class="fa fa-paw"></i> <span>TUPLE FROLICS</span> -->
+                    </div>
+        </div>
+
+            <div class="clearfix"></div>
+
+            <!-- menu profile quick info -->
+        <div class="profile clearfix">
+                <div class="profile_pic">
+                    <img src="/static/images/user-icon-6.png" class="img-circle profile_img">
+            </div>
+                    <div class="profile_info">
+                        <span>Welcome,</span>
+                        <h2>Owner</h2>
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
+
+        <br />
+
+                <!-- sidebar menu -->
+        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+
+                        <ul class="nav side-menu">
+                            <li><a><i class="fa fa-home"></i> Inventory <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'products___index' %}">List</a></li>
+                                    <li><a href="{% url 'products___add' %}">Add</a></li>
+                                    <li>
+                                        <a href="{% url 'products___category' %}">Category</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'products___subcategory' %}">Sub Category</a>
+                                    </li>
+                                    {% comment %} <li><a href="{% url 'products___index' %}">List</a></li> {% endcomment %}
+                                </ul>
+                            </li>
+                            {% comment %} <li><a><i class="fa fa-line-chart"></i> Predictions <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'predict'%}">Sales prediction</a></li>
+                                    <li><a href="{% url 'trigger_list' %}">Campaign Trigger</a></li>
+                                    <li><a href="{% url 'campaign_analysis' %}">Campaign Analysis</a></li>
+                                </ul>
+                            </li> {% endcomment %}
+                             <!-- <li><a><i class="fa fa-user"></i> Customers </a></li> -->
+                             <li><a href="{% url 'sales___index' %}"><i class="fa fa-bar-chart"></i> Sales </a></li>
+
+                            <li><a><i class="fa fa-home"></i> Enitity <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'stores___index' %}">List</a></li>
+                                    <li><a href="{% url 'stores___add' %}">Add</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-home"></i> Store Managers <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'storemanagers___add' %}">Add New</a></li>
+                                    <li><a href="{% url 'storemanagers___index' %}">List</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-home"></i> Customers <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'users___index' %}">List</a></li>
+                                    <li><a href="{% url 'users___add' %}">Add</a></li>
+                                </ul>
+                            </li>
+                            <!-- <li><a><i class="fa fa-edit"></i> Restaurants <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'restaurants'%}">List</a></li>
+                                    <li><a href="#">Add</a></li>
+                                    <li><a href="/restaurants/dummy/">Dummy</a></li>
+                                </ul>
+                            </li> -->
+
+                        </ul>
+
+                    </div>
+                </div>
+                <!-- /sidebar menu -->
+
+        <!-- /menu footer buttons -->
+        <div class="sidebar-footer hidden-small">
+                    <a data-toggle="tooltip" data-placement="top" title="Settings">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Lock">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="{% url 'custom_logout' %}">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+                </div>
+                <!-- /menu footer buttons -->
+    </div>
+        </div>

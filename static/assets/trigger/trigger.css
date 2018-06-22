@@ -1,0 +1,36 @@
+.show_panel_btn{
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.show_panel_btn .fa-plus {
+    font-size: 50px;
+    padding: 25px;
+}
+.btn-success .fa-play{
+    font-size: 50px;
+    padding: 15px;
+}
+.btn-success .fa-power-off{
+     font-size: 50px;
+    padding: 10px;
+}
+.triggeremove{
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+.x_header{
+    color: #2A3F54;
+    border-bottom: 2px solid #2A3F54;
+}
+.x_header_camp{
+    color: #1ABB9C;
+    border-bottom: 2px solid #1ABB9C;
+}
+.bg_color{
+    background-color:#73879C;
+    color: white;
+}
+.bg_color_camp{
+    background-color:#1ABB9C;
+    color: white;
+}
