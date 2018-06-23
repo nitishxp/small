@@ -107,10 +107,10 @@
                                     {% for c in homework %}
                                     <tr>
                                         <td>{{ c.assignment_name }}</td>
-                                        <td>{{ c.members }}</td>
+                                        <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade }}</td>
-                                        <td>{{ c.explanation }}</td>
+                                        <td>{{ c.explanation|linebreaks  }}</td>
                                     </tr>
                                     {% endfor %}
                                 </table>

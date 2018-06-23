@@ -97,7 +97,7 @@ def return_member_name(group_id):
     name = []
     for c in name_obj:
         name.append(c.user.name)
-    return ",".join(name)
+    return "\n".join(name)
 
 
 def return_grade_explanation(group_id):
@@ -108,7 +108,7 @@ def return_grade_explanation(group_id):
         explanation.append(c.explanation)
 
     if len(grade) > 0:
-        return sum(grade) / len(grade), " ".join(explanation)
+        return sum(grade) / len(grade), "\n".join(explanation)
     return "", ""
 
 
