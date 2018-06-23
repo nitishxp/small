@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import ast
+import random
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from users.models import UserModel
 from models import (
     StudentConstraintsModel,
     StudentCourseModel,
@@ -288,15 +290,48 @@ def peervaluation(request, combination_id, group_id):
 
 
 def appeal(request, group):
-    # update the appeal_done_count status and make appeal_done_status=False
 
+    # here find out the person who can become grader
+    # i.e first select the people who are part of the current group
+    group_obj = HomeworkGroup.objects.get(group=group)
+
+    user_not = []
+    total_user = []
+    user_in_current_group_dic = HomeworkGroupMember.objects.filter(
+        group=group).values_list('user')
+
+    grader_group_user_dic = GroupCombinationModel.objects.filter(
+        group=group).values_list('grader_user__id')
+
+    for c in user_in_current_group_dic:
+        user_not.append(c[0])
+
+    for c in grader_group_user_dic:
+        user_not.append(c[0])
+
+    total_user_in_course_dic = StudentCourseModel.objects.filter(
+        course=group_obj.course, enrollment_status=True).values_list('user')
+
+    for c in total_user_in_course_dic:
+        total_user.append(c[0])
+
+    # these are the remaining users that can become appeal_grader
+    remaining_user = list(set(total_user) - set(user_not))
+
+    if not len(remaining_user):
+        return HttpResponse('Error Occureed', status=500)
+    # now select 1 user who will become the appeal grader
+
+    appeal_user = random.sample(remaining_user, 1)[0]
+
+    # update the appeal_done_count status and make appeal_done_status=False
     if request.method == "POST":
         # here i can iterate the number of grader who will evaluate the appeal
-        group_obj = HomeworkGroup.objects.get(group=group)
         appeal_obj = AppealGraderModel()
         appeal_obj.group = group_obj
         appeal_obj.appeal_explanation = request.POST['appeal_explanation']
         appeal_obj.course = group_obj.course
+        appeal_obj.appeal_grader = UserModel.objects.get(pk=appeal_user)
         appeal_obj.appeal_by_user = request.user
         appeal_obj.save()
 
