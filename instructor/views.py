@@ -146,11 +146,15 @@ def edit_course(request, pk):
     enrolled_student = StudentCourseModel.objects.filter(course=pk)
 
     all_grades = {}
+    group_grades = {}
+
     for h in homework:
         homework_group = HomeworkGroup.objects.filter(
             course=course, homework=h)
+        #
         for g in homework_group:
             grade = g.grade
+            #
             for members in HomeworkGroupMember.objects.filter(group=g):
                 user_id = members.user.id
                 users_obj = members.user
@@ -161,6 +165,7 @@ def edit_course(request, pk):
                     all_grades[user_id]['grade'].append(grade)
                 else:
                     all_grades[user_id]['grade'].append(grade)
+        #
 
     # now sum the all_grades
     for c in all_grades:
@@ -173,7 +178,8 @@ def edit_course(request, pk):
             'homework': homework,
             'enrolled_student': enrolled_student,
             'course_pk': pk,
-            'all_grades': all_grades
+            'all_grades': all_grades,
+            'group_grades': 'group_grades'
         })
 
 
