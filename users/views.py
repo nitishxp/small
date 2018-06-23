@@ -42,7 +42,7 @@ def login(request):
             if user.role == "student":
                 return HttpResponseRedirect(reverse('student__index'))
             if user.role == "instructor":
-                return HttpResponseRedirect(reverse('instructor__index'))
+                return HttpResponseRedirect(reverse('instructor__course'))
             # Redirect to a success page.
         else:
             pass
