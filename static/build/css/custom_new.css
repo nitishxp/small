@@ -1,0 +1,183 @@
+@-webkit-keyframes uil-ring-anim {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes uil-ring-anim {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes uil-ring-anim {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes uil-ring-anim {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes uil-ring-anim {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.uil-ring-css {
+  background: none;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+.uil-ring-css > div {
+  position: absolute;
+  display: block;
+  width: 160px;
+  height: 160px;
+  top: 20px;
+  left: 20px;
+  border-radius: 80px;
+  box-shadow: 0 3px 0 0 #26B99A;
+  -webkit-transform-origin: 80px 81.5px;
+  transform-origin: 80px 81.5px;
+  -webkit-animation: uil-ring-anim 1s linear infinite;
+  animation: uil-ring-anim 1s linear infinite;
+}
+
+td.details-control {
+  background: url('https://datatables.net/examples/resources/details_open.png') no-repeat center center;
+  cursor: pointer;
+}
+tr.shown td.details-control {
+  background: url('https://datatables.net/examples/resources/details_close.png') no-repeat center center;
+}
+
+
+/* Scrollbar */
+.themed-scrollbar::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 2px;
+	background-color: #F5F5F5;
+}
+
+.themed-scrollbar::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: #F5F5F5;
+}
+
+.themed-scrollbar::-webkit-scrollbar-thumb
+{
+	border-radius: 1px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: rgba(38,185,154,.88);
+}
+/*End Scrollbar */
+
+/* Chatbot */
+
+div.absolute {
+  position: fixed;
+  right: 15px;
+  bottom: 35px;
+  z-index: 99;
+  display: none;
+  margin-bottom: 45px;
+}
+.massage-container{
+  padding: 10px;
+  overflow: hidden;
+  display: flex;
+}
+.messages{
+  background-color: #eeeeff;
+  padding: 5px;
+  border-radius: 10px;
+}
+.btn-circle-lg {
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  padding: 13px 0;
+  font-size: 25px;
+  line-height: 2.00;
+  border-radius: 70px;
+  float: right;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.img-container{
+  border: 1px solid;
+  width: 55px;
+  height: 55px;
+  margin: 5px 10px 5px 0;
+  border-radius: 50%;
+  padding: 5px 9px;
+}
+.img-container img{
+  width: 100%;
+  border-radius: 50%;
+}
+.chat-footer{
+  /*padding: 5px;*/
+}
+#chat_window{
+  background-color: #FFFFFF;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.69);
+  display:none;
+  border-radius:15px;
+}
+
+.padded {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.send_msg{
+  color: #fff;
+  background-color: rgba(38,185,154,.88);
+  border-color: rgba(38,185,154,.88);
+  border-radius: 20px;
+  padding: 10px;
+  width: auto !important;
+  max-width: 300px;
+  min-width: 45px;
+  text-align: left;
+}
+.received_msg{
+  background: #2A3F54 ;
+  color: white;
+  border-color: #2A3F54 ;
+  border-radius: 20px;
+  padding: 10px;
+  width: auto !important;
+  max-width: 300px;
+  min-width: 45px;
+  text-align: left;
+}
+
+/* End Chatbot */
