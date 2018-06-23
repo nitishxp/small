@@ -24,7 +24,7 @@
                 </a>
             </li>
             <li>
-                <a href="#step-55" class="selected">
+                <a href="#step-55" class="{% if grades %} selected {% else %} disabled {% endif %}">
                     <span class="step_no">Grades</span>
                 </a>
             </li>
@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div id="step-44" class="content" style="display: {% if peerevalutation %} block {% else %} none {% endif %}">>
+            <div id="step-44" class="content" style="display: {% if peerevalutation %} block {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -161,7 +161,7 @@
                     </div>
                 </div>
             </div>
-            <div id="step-55" class="content">
+            <div id="step-55" class="content" style="display: {% if grade %} block {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
