@@ -4,39 +4,60 @@
 
         <ul class="list-unstyled wizard_steps anchor">
             <li>
-                <a href="#step-11" class="selected">
+                <a href="#personal_info" class="selected">
                     <span class="step_no">Personal Info</span>
                 </a>
             </li>
             <li>
-                <a href="#step-22" class="selected">
+                <a href="#course_info" class="selected">
+                    <span class="step_no">Course Info</span>
+                </a>
+            </li>
+            <li>
+                <a href="#group" class="selected">
                     <span class="step_no">Group</span>
                 </a>
             </li>
             <li>
-                <a href="#step-33" class="{% if file_upload %} selected {% else %} disabled {% endif %}">
+                <a href="#upload" class="{% if file_upload %} selected {% else %} disabled {% endif %}">
                     <span class="step_no">Upload</span>
                 </a>
             </li>
             <li>
-                <a href="#step-44" class="{% if peerevalutation %} selected {% else %} disabled {% endif %}">
+                <a href="#peer_evaluation" class="{% if peerevalutation %} selected {% else %} disabled {% endif %}">
                     <span class="step_no">Peer Evaluation</span>
                 </a>
             </li>
             <li>
-                <a href="#step-55" class="{% if grades %} selected {% else %} disabled {% endif %}">
+                <a href="#grades" class="{% if grades %} selected {% else %} disabled {% endif %}">
                     <span class="step_no">Grades</span>
                 </a>
             </li>
         </ul>
 
         <div class="stepContainer">
-            <div id="step-11" class="content" style="display: block;">
+            <div id="personal_info" class="content" style="display: block">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
                                 <h2> Personal Info </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <h1>Personal Info</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div id="course_info" class="content" style="display: block;">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Course Info </h2>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
@@ -46,16 +67,14 @@
                                     <select name="course" disabled>
                                         <option value="">Select {{ selected_course }}</option>
                                         {% for c in course %}
-                                        <option value="{{ c.id }}" {% if c.id|slugify == selected_course|slugify %} selected {% endif %}
-                                                readonly>{{ c.course_name }}
+                                        <option value="{{ c.id }}" {% if c.id|slugify == selected_course|slugify %} selected {% endif %} readonly>{{ c.course_name }}
                                         </option>
                                         {% endfor %}
                                     </select>
                                     {% for c in constraints %}
                                     <h4>{{c.question}} </h4>
                                     {% for d in c.options %}
-                                    <input type="radio" name="{{c.id}}" value="{{d.value}}" required {% if d.value == c.selected %}
-                                           checked {% endif %}>{{d.content}}
+                                    <input type="radio" name="{{c.id}}" value="{{d.value}}" required {% if d.value == c.selected %} checked {% endif %}>{{d.content}}
                                     <br> {% endfor %} {% endfor %}
                                     <input type="submit" value="Submit">
                                 </form>
@@ -65,8 +84,7 @@
                 </div>
             </div>
 
-            <div id="step-22" class="content">
-
+            <div id="group" class="content">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -95,10 +113,10 @@
                                 </table>
                                 {% for c in homework_appeal %}
                                 <div>
-                                    <form method="POST" action="{% url 'student__appeal' c.group.group %}">
+                                    <form method="GET" action="{% url 'student__appeal' c.group.group %}">
                                         {% csrf_token %}
                                         <label>Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
-                                        <input type="submit" value="Yes" >
+                                        <input type="submit" value="Yes">
                                         <input type="button" value="No">
                                     </form>
                                 </div>
@@ -108,7 +126,7 @@
                     </div>
                 </div>
             </div>
-            <div id="step-33" class="content" style="display: {% if file_upload %} block {% else %} none {% endif %}">
+            <div id="upload" class="content" style="display: {% if file_upload %} block {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -120,8 +138,7 @@
                                 Upload Assignment {{file_upload.group.homework.homework_name}}
                                 <!-- {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}} -->
                                 <div>
-                                    <form action="{% url 'student__upload_assignment' %}" method="POST"
-                                          enctype="multipart/form-data">
+                                    <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <input type="file" name="{{ file_upload.group.id }}">
                                         <input type="submit" value="Submit">
@@ -133,7 +150,7 @@
                 </div>
             </div>
 
-            <div id="step-44" class="content" style="display: {% if peerevalutation %} block {% else %} none {% endif %}">
+            <div id="peer_evaluation" class="content" style="display: {% if peerevalutation %} block {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -144,14 +161,17 @@
                             <div class="x_content">
                                 {% for c in peerevalutation %}
                                 <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}">
-                                    {% csrf_token %}
-                                    Assignment {{ c.homework.homework_name }}<br>
+                                    {% csrf_token %} Assignment {{ c.homework.homework_name }}
+                                    <br>
                                     <a href="{{c.group.attachment}}">Download File</a>
+                                    <br> Grading Rubric: Hello this is dummy text {{c.group.id}} {{c.id}}
                                     <br>
-                                    Grading Rubric: Hello this is dummy text {{c.group.id}} {{c.id}}
+                                    <label>Grade</label>
+                                    <input type="number" name="grade" required>
                                     <br>
-                                    <label>Grade</label> <input type="number" name="grade" required> <br>
-                                    <label>Explanation</label> <input type="text" name="explanation" required> <br>
+                                    <label>Explanation</label>
+                                    <input type="text" name="explanation" required>
+                                    <br>
                                     <input type="submit">
                                     <hr>
                                 </form>
@@ -161,7 +181,7 @@
                     </div>
                 </div>
             </div>
-            <div id="step-55" class="content" style="display: {% if grade %} block {% else %} none {% endif %}">
+            <div id="grades" class="content" style="display: {% if grade %} block {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -170,24 +190,22 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                {% for c in grade %}
-                                {% if c.type == "grade" %}
+                                {% for c in grade %} {% if c.type == "grade" %}
                                 <div>
-                                    <label> Assignment {{ c.homework_name }} Grade </label> {{ c.grade }} <br>
-                                    Explanation: {{c.explanation}}<br>
+                                    <label> Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
+                                    <br> Explanation: {{c.explanation}}
+                                    <br>
                                 </div>
-                                {% endif %}
-                                {% if c.type == "appeal" and c.appeal_done_status %}
+                                {% endif %} {% if c.type == "appeal" and c.appeal_done_status %}
                                 <form method="POST" action="{% url 'student__appeal' c.group %}">
                                     {% csrf_token %}
                                     <label>Appeal Reason for group</label>
-                                    <textarea rows="10" cols="100"></textarea><br>
+                                    <textarea rows="10" cols="100" name="appeal_explanation" required></textarea>
+                                    <br>
                                     <input type="submit" value="Appeal">
                                     <input type="button" value="Don't Appeal">
                                 </form>
-                                <br>
-                                {% endif %}
-                                {% endfor %}
+                                <br> {% endif %} {% endfor %}
 
                             </div>
                         </div>

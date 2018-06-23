@@ -4,14 +4,22 @@ import ast
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from models import (StudentConstraintsModel, StudentCourseModel)
+from models import (
+    StudentConstraintsModel,
+    StudentCourseModel,
+)
 from constraints.models import Constraints
-from instructor.models import (CourseModel, CourseHomeWorkModel, HomeworkGroup,
-                               HomeworkGroupMember, GroupCombinationModel,
-                               HomeworkGroupGrade)
+from instructor.models import (
+    CourseModel,
+    CourseHomeWorkModel,
+    HomeworkGroup,
+    HomeworkGroupMember,
+    GroupCombinationModel,
+    HomeworkGroupGrade,
+    AppealGraderModel,
+)
 from grade.settings import BASE_DIR
 from django.db.models import Avg
-
 
 # Create your views here.
 
@@ -148,18 +156,20 @@ def student_course(request, course_id):
         group__course=course_obj,
         peerevalutation=False,
         group__attachment__isnull=False).order_by(
-        "group__homework__homework_name")
+            "group__homework__homework_name")
 
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__attachment__isnull=True).order_by(
-        "group__homework__homework_name")
+            "group__homework__homework_name")
 
     homework_appeal = HomeworkGroupMember.objects.filter(
         user=request.user,
-        group__course=course_obj, group__appeal_done_status=False, has_appealed=False).order_by(
-        "group__homework__homework_name").select_related('group')
+        group__course=course_obj,
+        group__appeal_done_status=False,
+        has_appealed=False).order_by(
+            "group__homework__homework_name").select_related('group')
 
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
@@ -170,6 +180,7 @@ def student_course(request, course_id):
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
         appeal_done_status = grade[c].group.appeal_done_status
+        appeal_reject_status = grade[c].group.appeal_reject_status
 
         if c == 0:
             current = homework_name
@@ -185,7 +196,10 @@ def student_course(request, course_id):
                 appeal = {}
                 appeal['type'] = 'appeal'
                 appeal['group'] = grade_dic[c - 1]['group']
-                appeal['appeal_done_status'] = grade_dic[c - 1]['appeal_done_status']
+                appeal['appeal_done_status'] = grade_dic[c - 1][
+                    'appeal_done_status']
+                appeal['appeal_reject_status'] = grade_dic[c - 1][
+                    'appeal_reject_status']
                 grade_dic.append(appeal)
 
         temp = {}
@@ -195,6 +209,7 @@ def student_course(request, course_id):
         temp['explanation'] = grade[c].explanation
         temp['group'] = grade[c].group.group
         temp['appeal_done_status'] = appeal_done_status
+        temp['appeal_reject_status'] = appeal_reject_status
         grade_dic.append(temp)
 
         if c == len(grade) - 1:
@@ -202,9 +217,13 @@ def student_course(request, course_id):
                 appeal = {}
                 appeal['type'] = 'appeal'
                 appeal['group'] = grade_dic[len(grade_dic) - 1]['group']
-                appeal['appeal_done_status'] = grade_dic[len(grade_dic) - 1]['appeal_done_status']
+                appeal['appeal_done_status'] = grade_dic[len(grade_dic) - 1][
+                    'appeal_done_status']
+                appeal['appeal_reject_status'] = grade_dic[len(grade_dic) - 1][
+                    'appeal_reject_status']
                 grade_dic.append(appeal)
 
+    print grade_dic
     return render(
         request, 'studentcourse.html', {
             'constraints': constraints,
@@ -270,12 +289,24 @@ def peervaluation(request, combination_id, group_id):
 
 def appeal(request, group):
     # update the appeal_done_count status and make appeal_done_status=False
+
+    if request.method == "POST":
+        # here i can iterate the number of grader who will evaluate the appeal
+        group_obj = HomeworkGroup.objects.get(group=group)
+        appeal_obj = AppealGraderModel()
+        appeal_obj.group = group_obj
+        appeal_obj.appeal_explanation = request.POST['appeal_explanation']
+        appeal_obj.course = group_obj.course
+        appeal_obj.appeal_by_user = request.user
+        appeal_obj.save()
+
     group_obj = HomeworkGroup.objects.get(group=group)
     group_obj.appeal_done_count = group_obj.appeal_done_count + 1
     group_obj.appeal_done_status = False
     group_obj.save()
 
     # update the group member table about the appeal has been done by the user
-    HomeworkGroupMember.objects.filter(group=group, user=request.user).update(has_appealed=True)
+    HomeworkGroupMember.objects.filter(
+        group=group, user=request.user).update(has_appealed=True)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
