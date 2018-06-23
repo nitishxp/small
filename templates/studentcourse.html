@@ -97,9 +97,8 @@
                                 <div>
                                     <form method="POST" action="{% url 'student__appeal' c.group.group %}">
                                         {% csrf_token %}
-                                        <label>Are you want to appeal for Assignment No {{
-                                            c.group.homework.homework_name }} </label>
-                                        <input type="submit" value="Yes" class="form form-control">
+                                        <label>Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
+                                        <input type="submit" value="Yes" >
                                         <input type="button" value="No">
                                     </form>
                                 </div>
