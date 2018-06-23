@@ -19,12 +19,12 @@
             </li>
             <li>
                 <a href="#student_grouping" class="selected">
-                    <span class="step_no">Student Grouping</span>
+                    <span class="step_no">Grouping</span>
                 </a>
             </li>
             <li>
-                <a href="#student_grades" class="selected">
-                    <span class="step_no">Grades</span>
+                <a href="#all_grades" class="selected">
+                    <span class="step_no">All Grades</span>
                 </a>
             </li>
             <li>
@@ -166,36 +166,52 @@
                     </div>
                 </div>
             </div>
-            <div id="student_grades" class="content" style="display: block">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h2> Personal Info </h2>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-                                    <h1>Personal Info</h1>
-                                </div>
+            <div id="all_grades" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Grades </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table">
+                                    <tr>
+                                        <th> Name </th>
+                                        {% for c in homework %}
+                                        <th>HW {{ c.homework_name }}</th>
+                                        {% endfor %}
+                                        <th> Total </th>
+                                    </tr>
+                                    {% for key,values in all_grades.items %}
+                                    <tr>
+                                        <td>{{ values.name }}</td>
+                                        {% for grade in values.grade %}
+                                            <td> {{ grade }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="peer_grades" class="content" style="display: block">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="x_panel">
-                                    <div class="x_title">
-                                        <h2> Personal Info </h2>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="x_content">
-                                        <h1>Personal Info</h1>
-                                    </div>
-                                </div>
+            </div>
+            <div id="peer_grades" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Peer Grades </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <h1>Personal Info</h1>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
         </div>
 
     </div>

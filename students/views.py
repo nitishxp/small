@@ -268,7 +268,7 @@ def student_course(request, course_id):
         course=course_obj,
         appeal_grader=request.user.id,
         appeal_visible_status=True)
-    
+
     appeal_grader = []
 
     for c in appeal_grader_obj:
@@ -325,15 +325,23 @@ def peervaluation(request, combination_id, group_id):
     # group_id
     grade = request.POST['grade']
     explanation = request.POST['explanation']
+    group_obj = HomeworkGroup.objects.get(pk=group_id)
 
     # update the homework group grade table
-    homework_grade_obj = HomeworkGroupGrade()
-    homework_grade_obj.grade = grade
-    homework_grade_obj.explanation = explanation
-    homework_grade_obj.grader = request.user
-    homework_grade_obj.group = HomeworkGroup.objects.get(pk=group_id)
-    homework_grade_obj.save()
+    homework_grade_obj = HomeworkGroupGrade.objects.update_or_create(
+        group=group_obj,
+        grader=request.user,
+        defaults={
+            'explanation': explanation,
+            'grade': grade
+        })
 
+    # find the average of the grade and save it
+    total_grade = HomeworkGroupGrade.objects.filter(group=group_obj).aggregate(
+        Avg('grade'))
+    total_grade = int(round(total_grade['grade__avg']))
+    group_obj.grade = total_grade
+    group_obj.save()
     # update the current peerevaluation value = false so that grader can not reevaluate the same
     # combination again and again
     GroupCombinationModel.objects.filter(pk=combination_id).update(
@@ -443,15 +451,22 @@ def submit_appeal_peer_grade(request, group):
 
 def submit_appeal_grade(request, group):
 
-
     # i can make the homeworkgroup model calculate grade using the summation
     # of all appeal grader
     if request.method == "POST":
+
         group_obj = HomeworkGroup.objects.get(group=group)
         appeal_obj = AppealGraderModel.objects.filter(
             group=group_obj, appeal_grader=request.user).update(
                 appeal_explanation=request.POST['appeal_explanation'],
                 grade=request.POST['grade'],
                 appeal_visible_status=False)
+
+        total_grade = AppealGraderModel.objects.filter(
+            group=group_obj).aggregate(Avg('grade'))
+
+        total_grade = int(round(total_grade['grade__avg']))
+        group_obj.grade = total_grade
+        group_obj.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

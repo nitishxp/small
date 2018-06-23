@@ -70,7 +70,7 @@ class HomeworkGroupMember(models.Model):
 class HomeworkGroupGrade(models.Model):
     group = models.ForeignKey(
         HomeworkGroup, to_field='group', on_delete=models.CASCADE)
-    grade = models.TextField(default=0)
+    grade = models.IntegerField(default=0)
     explanation = models.TextField(null=True)
     grader = models.ForeignKey(UserModel)
 
