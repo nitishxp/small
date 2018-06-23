@@ -2,12 +2,25 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from models import CourseModel, CourseHomeWorkModel, HomeworkGroup, HomeworkGroupMember, GroupCombinationModel
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
+from models import (
+    CourseModel,
+    CourseHomeWorkModel,
+    HomeworkGroup,
+    HomeworkGroupMember,
+    GroupCombinationModel,
+)
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
 from django.utils.datastructures import MultiValueDictKeyError
-from students.models import StudentCourseModel, StudentConstraintsModel
+from students.models import (
+    StudentCourseModel,
+    StudentConstraintsModel,
+)
 import random
 from users.models import UserModel
 from itertools import permutations
@@ -128,14 +141,39 @@ def edit_course(request, pk):
                 defaults=assignments[c])
 
     course = CourseModel.objects.filter(pk=pk).first()
-    homework = CourseHomeWorkModel.objects.filter(course=pk)
+    homework = CourseHomeWorkModel.objects.filter(
+        course=pk).order_by('homework_name')
     enrolled_student = StudentCourseModel.objects.filter(course=pk)
+
+    all_grades = {}
+    for h in homework:
+        homework_group = HomeworkGroup.objects.filter(
+            course=course, homework=h)
+        for g in homework_group:
+            grade = g.grade
+            for members in HomeworkGroupMember.objects.filter(group=g):
+                user_id = members.user.id
+                users_obj = members.user
+                if user_id not in all_grades.keys():
+                    all_grades[user_id] = {}
+                    all_grades[user_id]['name'] = users_obj.name
+                    all_grades[user_id]['grade'] = []
+                    all_grades[user_id]['grade'].append(grade)
+                else:
+                    all_grades[user_id]['grade'].append(grade)
+
+    # now sum the all_grades
+    for c in all_grades:
+        sum_grade = sum(all_grades[c]['grade'])
+        all_grades[c]['grade'].append(sum_grade)
+
     return render(
         request, 'edit_course.html', {
             'course': course,
             'homework': homework,
             'enrolled_student': enrolled_student,
-            'course_pk': pk
+            'course_pk': pk,
+            'all_grades': all_grades
         })
 
 

@@ -1,90 +1,222 @@
-<html>
-<head>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-</head>
-<body>
-    <form method="POST">
-        {% csrf_token %}
-        <label>
-            Course Id:
-        </label>
-        <input type="text" name="course_id" value="{{ course.course_id }}" required>
-        <br>
-        <label>
-            Name:
-        </label>
-        <input type="text" name="course_name" value="{{ course.course_name }}" required>
-        <br>
-        <label>
-            Add grading rubric
-        </label>
-        <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}" required>
-        <br>
-        <label>
-            Explain the appeal role
-        </label>
-        <input type="textarea" name="appeal_role" value="{{ course.appeal_role }}" required>
-        <br>
-        <input type="button" value="Add Assignments" id="add_assignments">
-        <table class="homework_assignment">
-            {% for c in homework %}
-            <tr>
-                <td>
-                    <label> Assignment {{ c.homework_name }} Deadline </label>
-                    <br>
-                    <input type="date" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'Y-m-d' }}" required>
-                </td>
-                <td>
-                    <label> Grading Deadline </label>
-                    <br>
-                    <input type="date" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'Y-m-d' }}" required>
-                </td>
-                <td>
-                    <label> Grouping Constraints </label>
-                    <br>
-                    <select name="{{ c.homework_name }}___constraints" required>
-                        <option value="random"> Random Group </option>
-                        <option value="similar_schedule"> Group Similar Schedule </option>
-                        <option value="similar_commitment_level"> Group Similar Commitment Level </option>
-                        <option value="similar_skills"> Group Similar Skills </option>
-                        <option value="different_skills"> Group different Skills </option>
-                    </select>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <br>
-        <input type="submit" value="Submit">
-        <br>
-    </form>
-    <h1>Student Upload</h1>
-    <div>
-        <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="file" accept=".csv" required="True" name="student_upload">
-            <input type="submit" value="Upload">
-        </form>
+{% extends "website/_base.html" %} {% block main_content %}
+<div class="x_content">
+    <div class="form_wizard wizard_verticle">
+        <ul class="list-unstyled wizard_steps anchor">
+            <li>
+                <a href="#course_info" class="selected">
+                    <span class="step_no">Course Info</span>
+                </a>
+            </li>
+            <li>
+                <a href="#student_upload" class="selected">
+                    <span class="step_no">Student Upload</span>
+                </a>
+            </li>
+            <li>
+                <a href="#student_enrollment" class="selected">
+                    <span class="step_no">Enrollment</span>
+                </a>
+            </li>
+            <li>
+                <a href="#student_grouping" class="selected">
+                    <span class="step_no">Grouping</span>
+                </a>
+            </li>
+            <li>
+                <a href="#all_grades" class="selected">
+                    <span class="step_no">All Grades</span>
+                </a>
+            </li>
+            <li>
+                <a href="#peer_grades" class="selected">
+                    <span class="step_no">Peer Grades</span>
+                </a>
+            </li>
+        </ul>
+        <div class="stepContainer">
+            <div id="course_info" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Create Course </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <label>
+                                        Course Id:
+                                    </label>
+                                    <input type="text" name="course_id" value="{{ course.course_id }}" required>
+                                    <br>
+                                    <label>
+                                        Name:
+                                    </label>
+                                    <input type="text" name="course_name" value="{{ course.course_name }}" required>
+                                    <br>
+                                    <label>
+                                        Add grading rubric
+                                    </label>
+                                    <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}" required>
+                                    <br>
+                                    <label>
+                                        Explain the appeal role
+                                    </label>
+                                    <input type="textarea" name="appeal_role" value="{{ course.appeal_role }}" required>
+                                    <br>
+                                    <input type="button" value="Add Assignments" id="add_assignments">
+                                    <table class="homework_assignment">
+                                        {% for c in homework %}
+                                        <tr>
+                                            <td>
+                                                <label> Assignment {{ c.homework_name }} Deadline </label>
+                                                <br>
+                                                <input type="date" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'Y-m-d' }}" required>
+                                            </td>
+                                            <td>
+                                                <label> Grading Deadline </label>
+                                                <br>
+                                                <input type="date" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'Y-m-d' }}" required>
+                                            </td>
+                                            <td>
+                                                <label> Grouping Constraints </label>
+                                                <br>
+                                                <select name="{{ c.homework_name }}___constraints" required>
+                                                    <option value="random"> Random Group </option>
+                                                    <option value="similar_schedule"> Group Similar Schedule </option>
+                                                    <option value="similar_commitment_level"> Group Similar Commitment Level </option>
+                                                    <option value="similar_skills"> Group Similar Skills </option>
+                                                    <option value="different_skills"> Group different Skills </option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                    <br>
+                                    <input type="submit" value="Submit">
+                                    <br>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="student_upload" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Student Upload </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <input type="file" accept=".csv" required="True" name="student_upload">
+                                    <input type="submit" value="Upload">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="student_enrollment" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Course Student </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table">
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Enrollment Status</th>
+                                    </tr>
+                                    {% for c in enrolled_student %}
+                                    <tr>
+                                        <td>{{ c.user.name }} </td>
+                                        <td>
+                                            <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}> </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="student_grouping" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Student Grouping </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="submit" value="Do Grouping">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="all_grades" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Grades </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table">
+                                    <tr>
+                                        <th> Name </th>
+                                        {% for c in homework %}
+                                        <th>HW {{ c.homework_name }}</th>
+                                        {% endfor %}
+                                        <th> Total </th>
+                                    </tr>
+                                    {% for key,values in all_grades.items %}
+                                    <tr>
+                                        <td>{{ values.name }}</td>
+                                        {% for grade in values.grade %}
+                                            <td> {{ grade }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="peer_grades" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Peer Grades </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <h1>Personal Info</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <h1>Student Grouping</h1>
-    <table>
-        <tr>
-            <th>Student Name</th>
-            <th>Enrollment Status</th>
-        </tr>
-        {% for c in enrolled_student %}
-        <tr>
-            <td>{{ c.user.name }} </td>
-            <td>
-                <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}> </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Do Grouping">
-    </form>
-</body>
+</div>
+
 <script>
     $("#add_assignments").on('click', function () {
         var currentAssignmentLength = $(".homework_assignment tr").length
@@ -116,3 +248,5 @@
 </script>
 
 </html>
+
+{% endblock %}

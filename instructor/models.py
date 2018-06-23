@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import models
 from users.models import UserModel
 
-
 # Create your models here.
 
 
@@ -49,8 +48,10 @@ class HomeworkGroup(models.Model):
     group = models.TextField(unique=True)
     attachment = models.TextField(null=True)
     total_member = models.IntegerField(default=0)
+    grade = models.IntegerField()
     appeal_done_count = models.IntegerField(default=0)
     appeal_done_status = models.BooleanField(default=True)
+    appeal_reject_status = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'homework_group_master'
@@ -69,7 +70,7 @@ class HomeworkGroupMember(models.Model):
 class HomeworkGroupGrade(models.Model):
     group = models.ForeignKey(
         HomeworkGroup, to_field='group', on_delete=models.CASCADE)
-    grade = models.TextField(default=0)
+    grade = models.IntegerField(default=0)
     explanation = models.TextField(null=True)
     grader = models.ForeignKey(UserModel)
 
@@ -89,6 +90,7 @@ class GroupCombinationModel(models.Model):
         on_delete=models.CASCADE,
         related_name='group2')
     grader_user = models.ForeignKey(UserModel, to_field='username')
+    # appeal_grader = models.ForeignKey(UserModel, to_field='username')
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
     active = models.BooleanField(default=False)
@@ -100,15 +102,37 @@ class GroupCombinationModel(models.Model):
 
 
 class AppealGraderModel(models.Model):
-
     class Meta:
         db_table = 'appeal_grader_master'
 
     group = models.ForeignKey(
-        HomeworkGroup,
-        to_field='group',
-        on_delete=models.CASCADE)
+        HomeworkGroup, to_field='group', on_delete=models.CASCADE)
 
-    appeal_grader = models.ForeignKey(UserModel)
+    appeal_grader = models.ForeignKey(
+        UserModel, null=True, on_delete=models.CASCADE)
     appeal_explanation = models.TextField()
-    grade = models.IntegerField()
+    appeal_reason = models.TextField()
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
+    grade = models.IntegerField(null=True)
+    appeal_by_user = models.ForeignKey(
+        UserModel, related_name='appeal_by_user', on_delete=models.CASCADE)
+    appeal_visible_status = models.BooleanField(default=False)
+
+
+class PeerEvaluationModel(models.Model):
+    class Meta:
+        db_table = 'peer_evaluation'
+
+    group = models.ForeignKey(
+        HomeworkGroup, to_field='group', on_delete=models.CASCADE)
+    peer_grader = models.ForeignKey(
+        UserModel,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='peer_grader')
+    peer_explanation = models.TextField()
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
+    grade = models.IntegerField(null=True)
+    appeal_grader = models.ForeignKey(
+        UserModel, related_name='appeal_grader', on_delete=models.CASCADE)
+    homework = models.ForeignKey(CourseHomeWorkModel)

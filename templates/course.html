@@ -1,59 +1,93 @@
-<html>
-
-<head>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-</head>
-
-<body>
-    <form method="POST">
-        {% csrf_token %}
-        <label>
-            Course Id:
-        </label>
-        <input type="text" name="course_id" required>
-        <br>
-        <label>
-            Name:
-        </label>
-        <input type="text" name="course_name" required>
-        <br>
-        <label>
-            Add grading rubric
-        </label>
-        <input type="textarea" name="grading_rubric" required>
-        <br>
-        <label>
-            Explain the appeal role
-        </label>
-        <input type="textarea" name="appeal_role" required>
-        <br>
-        <input type="button" value="Add Assignments" id="add_assignments">
-        <table class="homework_assignment">
-        </table>
-        <br>
-        <label>Student Upload Details </label>
-        <input type="file" accept=".csv" name="student_file.csv" required>
-        <br>
-        <br>
-        <input type="submit" value="Submit">
-        <br>
-    </form>
-    <table>
-        <tr>
-            <td>Course Name</td>
-            <td>Course Id</td>
-        </tr>
-        {% for c in course %}
-        <tr>
-            <td> {{ c.course_name }} </td>
-            <td>
-                <a href="{% url 'instructor__edit_course' c.id %}"> {{ c.course_id }}</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
+{% extends "website/_base.html" %} {% block main_content %}
+<div class="x_content">
+    <div class="form_wizard wizard_verticle">
+        <ul class="list-unstyled wizard_steps anchor">
+            <li>
+                <a href="#create_course" class="selected">
+                    <span class="step_no">Create Course</span>
+                </a>
+            </li>
+            <li>
+                <a href="#course" class="{% if course %} selected {% else %} disabled {% endif %}">
+                    <span class="step_no">List Course</span>
+                </a>
+            </li>
+        </ul>
+        <div class="stepContainer">
+            <div id="create_course" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Create Course </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <label>
+                                        Course Id:
+                                    </label>
+                                    <input type="text" name="course_id" required>
+                                    <br>
+                                    <label>
+                                        Name:
+                                    </label>
+                                    <input type="text" name="course_name" required>
+                                    <br>
+                                    <label>
+                                        Add grading rubric
+                                    </label>
+                                    <input type="textarea" name="grading_rubric" required>
+                                    <br>
+                                    <label>
+                                        Explain the appeal role
+                                    </label>
+                                    <input type="textarea" name="appeal_role" required>
+                                    <br>
+                                    <input type="button" value="Add Assignments" id="add_assignments">
+                                    <table class="homework_assignment table">
+                                    </table>
+                                    <br>
+                                    <input type="submit" value="Submit">
+                                    <br>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="course" class="content" style="display: {% if course %} block {% else %} none {% endif %}">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> List Course </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table">
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>Course Id</th>
+                                    </tr>
+                                    {% for c in course %}
+                                    <tr>
+                                        <td> {{ c.course_name }} </td>
+                                        <td>
+                                            <a href="{% url 'instructor__edit_course' c.id %}"> {{ c.course_id }}</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $("#add_assignments").on('click', function () {
         var currentAssignmentLength = $(".homework_assignment tr").length
@@ -88,6 +122,4 @@
         $("#add_assignments").trigger('click')
     }
 
-</script>
-
-</html>
+</script> {% endblock %}

@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import ast
+import random
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from models import (StudentConstraintsModel, StudentCourseModel)
+from users.models import UserModel
+from models import (
+    StudentConstraintsModel,
+    StudentCourseModel,
+)
 from constraints.models import Constraints
-from instructor.models import (CourseModel, CourseHomeWorkModel, HomeworkGroup,
-                               HomeworkGroupMember, GroupCombinationModel,
-                               HomeworkGroupGrade)
+from instructor.models import (
+    CourseModel,
+    CourseHomeWorkModel,
+    HomeworkGroup,
+    HomeworkGroupMember,
+    GroupCombinationModel,
+    HomeworkGroupGrade,
+    AppealGraderModel,
+    PeerEvaluationModel,
+)
 from grade.settings import BASE_DIR
 from django.db.models import Avg
-
 
 # Create your views here.
 
@@ -101,6 +112,42 @@ def return_grade_explanation(group_id):
     return "", ""
 
 
+def get_grade_homework(group):
+
+    grade = HomeworkGroupGrade.objects.filter(
+        group=group).order_by("group__homework__homework_name")
+
+    grade_dic = []
+    peer_grader = []
+    for c in range(0, len(grade)):
+        homework_name = grade[c].group.homework.homework_name
+        has_appeal_done = grade[c].group.appeal_done_count
+        appeal_done_status = grade[c].group.appeal_done_status
+        appeal_reject_status = grade[c].group.appeal_reject_status
+        temp = {}
+        temp['type'] = 'grade'
+        temp['homework_name'] = homework_name
+        temp['grade'] = grade[c].grade
+        temp['explanation'] = grade[c].explanation
+        temp['group'] = grade[c].group.group
+        temp['appeal_done_status'] = appeal_done_status
+        temp['appeal_reject_status'] = appeal_reject_status
+        temp['group_obj'] = grade[c].group
+        grade_dic.append(temp)
+
+        # check if the current grader has already been graded
+        grading_done = PeerEvaluationModel.objects.filter(
+            group=grade[c].group, peer_grader=grade[c].grader).exists()
+        if not grading_done:
+            peer = {}
+            peer['group'] = grade[c].group.group
+            peer['user'] = grade[c].grader
+            peer['grade'] = grade[c].grade
+            peer_grader.append(peer)
+
+    return [grade_dic, peer_grader]
+
+
 def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
 
@@ -140,6 +187,8 @@ def student_course(request, course_id):
         t['explanation'] = explanation
         t['grade'] = grade
         t['group_id'] = group_details.group
+        t['group_obj'] = group_details
+
         assignment.append(t)
     #
     peerevalutation = GroupCombinationModel.objects.filter(
@@ -148,18 +197,20 @@ def student_course(request, course_id):
         group__course=course_obj,
         peerevalutation=False,
         group__attachment__isnull=False).order_by(
-        "group__homework__homework_name")
+            "group__homework__homework_name")
 
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__attachment__isnull=True).order_by(
-        "group__homework__homework_name")
+            "group__homework__homework_name")
 
     homework_appeal = HomeworkGroupMember.objects.filter(
         user=request.user,
-        group__course=course_obj, group__appeal_done_status=False, has_appealed=False).order_by(
-        "group__homework__homework_name").select_related('group')
+        group__course=course_obj,
+        group__appeal_done_status=False,
+        has_appealed=False).order_by(
+            "group__homework__homework_name").select_related('group')
 
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
@@ -170,6 +221,7 @@ def student_course(request, course_id):
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
         appeal_done_status = grade[c].group.appeal_done_status
+        appeal_reject_status = grade[c].group.appeal_reject_status
 
         if c == 0:
             current = homework_name
@@ -185,7 +237,10 @@ def student_course(request, course_id):
                 appeal = {}
                 appeal['type'] = 'appeal'
                 appeal['group'] = grade_dic[c - 1]['group']
-                appeal['appeal_done_status'] = grade_dic[c - 1]['appeal_done_status']
+                appeal['appeal_done_status'] = grade_dic[c - 1][
+                    'appeal_done_status']
+                appeal['appeal_reject_status'] = grade_dic[c - 1][
+                    'appeal_reject_status']
                 grade_dic.append(appeal)
 
         temp = {}
@@ -195,6 +250,7 @@ def student_course(request, course_id):
         temp['explanation'] = grade[c].explanation
         temp['group'] = grade[c].group.group
         temp['appeal_done_status'] = appeal_done_status
+        temp['appeal_reject_status'] = appeal_reject_status
         grade_dic.append(temp)
 
         if c == len(grade) - 1:
@@ -202,8 +258,25 @@ def student_course(request, course_id):
                 appeal = {}
                 appeal['type'] = 'appeal'
                 appeal['group'] = grade_dic[len(grade_dic) - 1]['group']
-                appeal['appeal_done_status'] = grade_dic[len(grade_dic) - 1]['appeal_done_status']
+                appeal['appeal_done_status'] = grade_dic[len(grade_dic) - 1][
+                    'appeal_done_status']
+                appeal['appeal_reject_status'] = grade_dic[len(grade_dic) - 1][
+                    'appeal_reject_status']
                 grade_dic.append(appeal)
+
+    appeal_grader_obj = AppealGraderModel.objects.filter(
+        course=course_obj,
+        appeal_grader=request.user.id,
+        appeal_visible_status=True)
+
+    appeal_grader = []
+
+    for c in appeal_grader_obj:
+        result = get_grade_homework(c.group.group)
+        temp = {}
+        temp['grade'] = result[0]
+        temp['peer_grader'] = result[1]
+        appeal_grader.append(temp)
 
     return render(
         request, 'studentcourse.html', {
@@ -214,7 +287,8 @@ def student_course(request, course_id):
             'file_upload': homework_group_id.first(),
             'peerevalutation': peerevalutation,
             'grade': grade_dic,
-            'homework_appeal': homework_appeal
+            'homework_appeal': homework_appeal,
+            'appeal_grader': appeal_grader,
         })
 
 
@@ -251,15 +325,23 @@ def peervaluation(request, combination_id, group_id):
     # group_id
     grade = request.POST['grade']
     explanation = request.POST['explanation']
+    group_obj = HomeworkGroup.objects.get(pk=group_id)
 
     # update the homework group grade table
-    homework_grade_obj = HomeworkGroupGrade()
-    homework_grade_obj.grade = grade
-    homework_grade_obj.explanation = explanation
-    homework_grade_obj.grader = request.user
-    homework_grade_obj.group = HomeworkGroup.objects.get(pk=group_id)
-    homework_grade_obj.save()
+    homework_grade_obj = HomeworkGroupGrade.objects.update_or_create(
+        group=group_obj,
+        grader=request.user,
+        defaults={
+            'explanation': explanation,
+            'grade': grade
+        })
 
+    # find the average of the grade and save it
+    total_grade = HomeworkGroupGrade.objects.filter(group=group_obj).aggregate(
+        Avg('grade'))
+    total_grade = int(round(total_grade['grade__avg']))
+    group_obj.grade = total_grade
+    group_obj.save()
     # update the current peerevaluation value = false so that grader can not reevaluate the same
     # combination again and again
     GroupCombinationModel.objects.filter(pk=combination_id).update(
@@ -269,13 +351,122 @@ def peervaluation(request, combination_id, group_id):
 
 
 def appeal(request, group):
+
+    # here find out the person who can become grader
+    # i.e first select the people who are part of the current group
+    group_obj = HomeworkGroup.objects.get(group=group)
+
+    user_not = []
+    total_user = []
+    user_in_current_group_dic = HomeworkGroupMember.objects.filter(
+        group=group).values_list('user')
+
+    grader_group_user_dic = GroupCombinationModel.objects.filter(
+        group=group).values_list('grader_user__id')
+
+    for c in user_in_current_group_dic:
+        user_not.append(c[0])
+
+    for c in grader_group_user_dic:
+        user_not.append(c[0])
+
+    total_user_in_course_dic = StudentCourseModel.objects.filter(
+        course=group_obj.course, enrollment_status=True).values_list('user')
+
+    for c in total_user_in_course_dic:
+        total_user.append(c[0])
+
+    # these are the remaining users that can become appeal_grader
+    remaining_user = list(set(total_user) - set(user_not))
+
+    if not len(remaining_user):
+        return HttpResponse('Error Occureed', status=500)
+
+    # now select 1 user who will become the appeal grader
+    appeal_user = random.sample(remaining_user, 1)[0]
+
     # update the appeal_done_count status and make appeal_done_status=False
+    if request.method == "POST":
+        # here i can iterate the number of grader who will evaluate the appeal
+        appeal_obj = AppealGraderModel()
+        appeal_obj.group = group_obj
+        appeal_obj.appeal_reason = request.POST['appeal_reason']
+        appeal_obj.course = group_obj.course
+        appeal_obj.appeal_grader = UserModel.objects.get(pk=appeal_user)
+        appeal_obj.appeal_by_user = request.user
+        appeal_obj.save()
+
     group_obj = HomeworkGroup.objects.get(group=group)
     group_obj.appeal_done_count = group_obj.appeal_done_count + 1
     group_obj.appeal_done_status = False
     group_obj.save()
 
+    # now if the desired count has been met make the appeal visible to the appeal grader
+    if group_obj.total_member == group_obj.appeal_done_count:
+        AppealGraderModel.objects.filter(group=group_obj).update(
+            appeal_visible_status=True)
+
     # update the group member table about the appeal has been done by the user
-    HomeworkGroupMember.objects.filter(group=group, user=request.user).update(has_appealed=True)
+    HomeworkGroupMember.objects.filter(
+        group=group, user=request.user).update(has_appealed=True)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def submit_appeal_peer_grade(request, group):
+    group_obj = HomeworkGroup.objects.get(group=group)
+
+    course = group_obj.course
+    homework = group_obj.homework
+
+    peer_grading = {}
+
+    if request.method == "POST":
+        for c in request.POST.keys():
+            if c != 'csrfmiddlewaretoken':
+                split_current = c.split('__')
+                user = split_current[1]
+                column = split_current[0]
+                if user not in peer_grading.keys():
+                    peer_grading[user] = {}
+                    peer_grading[user]['peer_grader'] = UserModel.objects.get(
+                        pk=user)
+                    peer_grading[user][column] = request.POST[c]
+                    peer_grading[user]['group'] = group_obj
+                    peer_grading[user]['course'] = course
+                    peer_grading[user]['appeal_grader'] = request.user
+                    peer_grading[user]['homework'] = homework
+                else:
+                    peer_grading[user][column] = request.POST[c]
+
+        for c in peer_grading:
+            PeerEvaluationModel.objects.update_or_create(
+                group=group_obj,
+                peer_grader=peer_grading[c]['peer_grader'],
+                defaults=peer_grading[c])
+
+    # return HttpResponse('sad')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def submit_appeal_grade(request, group):
+
+    # i can make the homeworkgroup model calculate grade using the summation
+    # of all appeal grader
+    if request.method == "POST":
+
+        group_obj = HomeworkGroup.objects.get(group=group)
+        appeal_obj = AppealGraderModel.objects.filter(
+            group=group_obj, appeal_grader=request.user).update(
+                appeal_explanation=request.POST['appeal_explanation'],
+                grade=request.POST['grade'],
+                appeal_visible_status=False)
+
+        total_grade = AppealGraderModel.objects.filter(
+            group=group_obj).aggregate(Avg('grade'))
+
+        total_grade = int(round(total_grade['grade__avg']))
+        group_obj.grade = total_grade
+        group_obj.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

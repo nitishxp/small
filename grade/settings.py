@@ -79,7 +79,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'small',
-        'HOST': 'localhost',
+        'HOST': 'apifrolic.tuple-mia.com',
         'PORT': '5432',
         'USER': 'my_username',
         'PASSWORD': 'my_password'
