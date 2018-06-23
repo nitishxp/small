@@ -33,6 +33,11 @@
                     <span class="step_no">Grades</span>
                 </a>
             </li>
+            <li>
+                <a href="#appeal_grader" class="{% if appeal_grader %} selected {% else %} disabled {% endif %}">
+                    <span class="step_no">Appeal Grader</span>
+                </a>
+            </li>
         </ul>
 
         <div class="stepContainer">
@@ -212,6 +217,65 @@
                     </div>
                 </div>
             </div>
+            <div id="appeal_grader" class="content" style="display: {% if appeal_grader %} block {% else %} none {% endif %}">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2> Appeal Grader </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    {% for values in appeal_grader %}                                    
+                                        {% for c in values.grade %}
+                                            {% if forloop.first  %}
+                                            <a href="{{c.group_obj.attachment}}">Download File</a>
+                                            {% endif %}
+                                            <div>
+                                                <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
+                                                <br> Explanation: {{c.explanation}}
+                                                <br>
+                                            </div>
+                                            {% if forloop.last %}
+                                                <hr>
+                                                <h5>Assignment Grade</h5>
+                                                <form method="POST" action="">
+                                                    {% csrf_token %} Assignment {{ c.homework_name }}
+                                                    <br>
+                                                    <label>Grade</label>
+                                                    <input type="number" name="grade" required>
+                                                    <br>
+                                                    <label>Explanation</label>
+                                                    <input type="text" name="explanation" required>
+                                                    <br>
+                                                    <input type="submit">
+                                                </form>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <hr>
+                                        <h5>Peer Evaluator</h5>
+                                            {% for c in values.peer_grader %}
+                                                {% if forloop.first %}
+                                                <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}">
+                                                {% csrf_token %}
+                                                {% endif %}
+                                                <label>Grade {{ forloop.counter }} </label>
+                                                <input type="number" name="grade__{{c.user.id}}" required>
+                                                <br>
+                                                <label>Explanation</label>
+                                                <input type="text" name="peer_explanation__{{c.user.id}}" required>
+                                                <br>
+                                                {% if forloop.last %}
+                                                <input type="submit" value="Submit Grade">
+                                                </form>
+                                                {% endif %}
+                                            {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
 

@@ -19,6 +19,7 @@ from instructor.models import (
     GroupCombinationModel,
     HomeworkGroupGrade,
     AppealGraderModel,
+    PeerEvaluationModel,
 )
 from grade.settings import BASE_DIR
 from django.db.models import Avg
@@ -111,6 +112,37 @@ def return_grade_explanation(group_id):
     return "", ""
 
 
+def get_grade_homework(group):
+
+    grade = HomeworkGroupGrade.objects.filter(
+        group=group).order_by("group__homework__homework_name")
+
+    grade_dic = []
+    peer_grader = []
+    for c in range(0, len(grade)):
+        homework_name = grade[c].group.homework.homework_name
+        has_appeal_done = grade[c].group.appeal_done_count
+        appeal_done_status = grade[c].group.appeal_done_status
+        appeal_reject_status = grade[c].group.appeal_reject_status
+        temp = {}
+        temp['type'] = 'grade'
+        temp['homework_name'] = homework_name
+        temp['grade'] = grade[c].grade
+        temp['explanation'] = grade[c].explanation
+        temp['group'] = grade[c].group.group
+        temp['appeal_done_status'] = appeal_done_status
+        temp['appeal_reject_status'] = appeal_reject_status
+        temp['group_obj'] = grade[c].group
+        grade_dic.append(temp)
+
+        peer = {}
+        peer['group'] = grade[c].group.group
+        peer['user'] = grade[c].grader
+        peer_grader.append(peer)
+
+    return [grade_dic, peer_grader]
+
+
 def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
 
@@ -150,6 +182,8 @@ def student_course(request, course_id):
         t['explanation'] = explanation
         t['grade'] = grade
         t['group_id'] = group_details.group
+        t['group_obj'] = group_details
+
         assignment.append(t)
     #
     peerevalutation = GroupCombinationModel.objects.filter(
@@ -225,7 +259,18 @@ def student_course(request, course_id):
                     'appeal_reject_status']
                 grade_dic.append(appeal)
 
-    print grade_dic
+    appeal_grader_obj = AppealGraderModel.objects.filter(
+        course=course_obj, appeal_grader=request.user)
+
+    appeal_grader = []
+
+    for c in appeal_grader_obj:
+        result = get_grade_homework(c.group.group)
+        temp = {}
+        temp['grade'] = result[0]
+        temp['peer_grader'] = result[1]
+        appeal_grader.append(temp)
+
     return render(
         request, 'studentcourse.html', {
             'constraints': constraints,
@@ -235,7 +280,8 @@ def student_course(request, course_id):
             'file_upload': homework_group_id.first(),
             'peerevalutation': peerevalutation,
             'grade': grade_dic,
-            'homework_appeal': homework_appeal
+            'homework_appeal': homework_appeal,
+            'appeal_grader': appeal_grader,
         })
 
 
@@ -320,8 +366,8 @@ def appeal(request, group):
 
     if not len(remaining_user):
         return HttpResponse('Error Occureed', status=500)
-    # now select 1 user who will become the appeal grader
 
+    # now select 1 user who will become the appeal grader
     appeal_user = random.sample(remaining_user, 1)[0]
 
     # update the appeal_done_count status and make appeal_done_status=False
@@ -345,3 +391,36 @@ def appeal(request, group):
         group=group, user=request.user).update(has_appealed=True)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def submit_appeal_grade(request, group):
+    group_obj = HomeworkGroup.objects.get(group=group)
+
+    course = group_obj.course
+    homework = group_obj.homework
+
+    peer_grading = {}
+
+    if request.method == "POST":
+        for c in request.POST.keys():
+            if c != 'csrfmiddlewaretoken':
+                split_current = c.split('__')
+                user = split_current[1]
+                column = split_current[0]
+                if user not in peer_grading.keys():
+                    peer_grading[user] = {}
+                    peer_grading[user]['peer_grader'] = UserModel.objects.get(
+                        pk=user)
+                    peer_grading[user][column] = request.POST[c]
+                    peer_grading[user]['group'] = group_obj
+                    peer_grading[user]['course'] = course
+                    peer_grading[user]['appeal_grader'] = request.user
+                    peer_grading[user]['homework'] = homework
+                else:
+                    peer_grading[user][column] = request.POST[c]
+
+        for c in peer_grading:
+            PeerEvaluationModel.objects.create(**peer_grading[c])
+
+    return HttpResponse('sad')
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

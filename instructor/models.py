@@ -115,3 +115,22 @@ class AppealGraderModel(models.Model):
     appeal_by_user = models.ForeignKey(
         UserModel, related_name='appeal_by_user', on_delete=models.CASCADE)
     appeal_visible_status = models.BooleanField(default=False)
+
+
+class PeerEvaluationModel(models.Model):
+    class Meta:
+        db_table = 'peer_evaluation'
+
+    group = models.ForeignKey(
+        HomeworkGroup, to_field='group', on_delete=models.CASCADE)
+    peer_grader = models.ForeignKey(
+        UserModel,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='peer_grader')
+    peer_explanation = models.TextField()
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
+    grade = models.IntegerField(null=True)
+    appeal_grader = models.ForeignKey(
+        UserModel, related_name='appeal_grader', on_delete=models.CASCADE)
+    homework = models.ForeignKey(CourseHomeWorkModel)
