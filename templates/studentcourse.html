@@ -205,7 +205,7 @@
                                 <form method="POST" action="{% url 'student__appeal' c.group %}">
                                     {% csrf_token %}
                                     <label>Appeal Reason for group</label>
-                                    <textarea rows="10" cols="100" name="appeal_explanation" required></textarea>
+                                    <textarea rows="10" cols="100" name="appeal_reason" required></textarea>
                                     <br>
                                     <input type="submit" value="Appeal">
                                     <input type="button" value="Don't Appeal">
@@ -239,14 +239,14 @@
                                             {% if forloop.last %}
                                                 <hr>
                                                 <h5>Assignment Grade</h5>
-                                                <form method="POST" action="">
+                                                <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}">
                                                     {% csrf_token %} Assignment {{ c.homework_name }}
                                                     <br>
                                                     <label>Grade</label>
                                                     <input type="number" name="grade" required>
                                                     <br>
                                                     <label>Explanation</label>
-                                                    <input type="text" name="explanation" required>
+                                                    <input type="text" name="appeal_explanation" required>
                                                     <br>
                                                     <input type="submit">
                                                 </form>
@@ -254,12 +254,15 @@
                                         {% endfor %}
                                         <hr>
                                         <h5>Peer Evaluator</h5>
+                                            {% if not values.peer_grader %}
+                                                Grading Already Done
+                                            {% endif %}
                                             {% for c in values.peer_grader %}
                                                 {% if forloop.first %}
-                                                <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}">
+                                                <form method="POST" action="{% url 'student__submit_appeal_peer_grade' c.group %}">
                                                 {% csrf_token %}
                                                 {% endif %}
-                                                <label>Grade {{ forloop.counter }} </label>
+                                                <label>Grade {{ forloop.counter }} ({{c.grade}})</label>
                                                 <input type="number" name="grade__{{c.user.id}}" required>
                                                 <br>
                                                 <label>Explanation</label>

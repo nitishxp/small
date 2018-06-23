@@ -110,6 +110,7 @@ class AppealGraderModel(models.Model):
     appeal_grader = models.ForeignKey(
         UserModel, null=True, on_delete=models.CASCADE)
     appeal_explanation = models.TextField()
+    appeal_reason = models.TextField()
     course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
     grade = models.IntegerField(null=True)
     appeal_by_user = models.ForeignKey(

@@ -14,5 +14,10 @@ urlpatterns = [
         peervaluation,
         name="student__peervaluation"),
     url(r'^appeal/(?P<group>[0-9A-z]+)/$', appeal, name="student__appeal"),
-    url(r'^submit_appeal_grade/(?P<group>[0-9A-z]+)/$', submit_appeal_grade, name="student__submit_appeal_grade"),
+    url(r'^submit_appeal_peer_grade/(?P<group>[0-9A-z]+)/$',
+        submit_appeal_peer_grade,
+        name="student__submit_appeal_peer_grade"),
+    url(r'^submit_appeal_grade/(?P<group>[0-9A-z]+)/$',
+        submit_appeal_grade,
+        name="student__submit_appeal_grade"),
 ]
