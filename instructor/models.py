@@ -48,6 +48,7 @@ class HomeworkGroup(models.Model):
     group = models.TextField(unique=True)
     attachment = models.TextField(null=True)
     total_member = models.IntegerField(default=0)
+    grade = models.IntegerField()
     appeal_done_count = models.IntegerField(default=0)
     appeal_done_status = models.BooleanField(default=True)
     appeal_reject_status = models.BooleanField(default=False)

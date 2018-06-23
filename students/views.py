@@ -443,6 +443,9 @@ def submit_appeal_peer_grade(request, group):
 
 def submit_appeal_grade(request, group):
 
+
+    # i can make the homeworkgroup model calculate grade using the summation
+    # of all appeal grader
     if request.method == "POST":
         group_obj = HomeworkGroup.objects.get(group=group)
         appeal_obj = AppealGraderModel.objects.filter(
