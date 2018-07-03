@@ -58,7 +58,8 @@
                                     <label>
                                         Add grading rubric
                                     </label>
-                                    <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}" required>
+                                    <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}"
+                                           required>
                                     <br>
                                     <label>
                                         Explain the appeal role
@@ -72,18 +73,23 @@
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
                                                 <br>
-                                                <input type="datetime-local" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'Y-m-d h:i A' }}" {{c.homework_deadline }} required>
+                                                <input type="datetime-local"
+                                                       name="{{ c.homework_name }}___homework_deadline"
+                                                       value="{{ c.homework_deadline|date:'c' }}" required>
                                             </td>
                                             <td>
                                                 <label> Grading Deadline </label>
                                                 <br>
-                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'Y-m-d' }}" required>
+                                                <input type="datetime-local"
+                                                       name="{{ c.homework_name }}___grade_deadline"
+                                                       value="{{ c.grade_deadline|date:'c' }}" required>
+
                                             </td>
                                             <td>
                                                 <label> Grouping Constraints </label>
                                                 <br>
                                                 <select name="{{ c.homework_name }}___constraints" required>
-                                                    <option value="random" selected> Random Group </option>
+                                                    <option value="random" selected> Random Group</option>
                                                     <!--<option value="similar_schedule"> Group Similar Schedule </option>-->
                                                     <!--<option value="similar_commitment_level"> Group Similar Commitment Level </option>-->
                                                     <!--<option value="similar_skills"> Group Similar Skills </option>-->
@@ -93,12 +99,14 @@
                                             <td>
                                                 <label>No Of Groups</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}">
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group"
+                                                       value="{{c.no_of_group}}">
                                             </td>
                                             <td>
                                                 <label>No Of Grader</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}">
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader"
+                                                       value="{{c.no_of_grader}}">
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -121,7 +129,8 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data">
+                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST"
+                                      enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <input type="file" accept=".csv" required="True" name="student_upload">
                                     <input type="submit" value="Upload">
@@ -147,9 +156,10 @@
                                     </tr>
                                     {% for c in enrolled_student %}
                                     <tr>
-                                        <td>{{ c.user.name }} </td>
+                                        <td>{{ c.user.name }}</td>
                                         <td>
-                                            <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}> </td>
+                                            <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %}
+                                                   checked {% endif %}></td>
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -187,17 +197,17 @@
                             <div class="x_content">
                                 <table class="table">
                                     <tr>
-                                        <th> Name </th>
+                                        <th> Name</th>
                                         {% for c in homework %}
                                         <th>HW {{ c.homework_name }}</th>
                                         {% endfor %}
-                                        <th> Total </th>
+                                        <th> Total</th>
                                     </tr>
                                     {% for key,values in all_grades.items %}
                                     <tr>
                                         <td>{{ values.name }}</td>
                                         {% for grade in values.grade %}
-                                            <td> {{ grade }}</td>
+                                        <td> {{ grade }}</td>
                                         {% endfor %}
                                     </tr>
                                     {% endfor %}
