@@ -21,9 +21,10 @@ class CourseModel(models.Model):
 
 class CourseHomeWorkModel(models.Model):
     homework_name = models.TextField()
-    grade_deadline = models.DateField()
-    homework_deadline = models.DateField()
-
+    grade_deadline = models.DateTimeField()
+    homework_deadline = models.DateTimeField()
+    no_of_group = models.TextField(null=True)
+    no_of_grader = models.TextField(null=True)
     # will save constraints in array form
     constraints = models.TextField()
     course = models.ForeignKey(CourseModel)

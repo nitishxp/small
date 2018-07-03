@@ -4,7 +4,7 @@
         <ul class="list-unstyled wizard_steps anchor">
             <li>
                 <a href="#personal_info" class="selected">
-                    <span class="step_no">Personal Info</span>
+                    <span class="step_no">Your Progress</span>
                 </a>
             </li>
             <li>
@@ -45,11 +45,56 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2> Personal Info </h2>
+                                <h2> Course Enrolled</h2>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <h1>Personal Info</h1>
+                                <table class="table">
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>Course Id</th>
+                                    </tr>
+                                    {% for c in student_course_enroll %}
+                                    <tr>
+                                        <td>{{c.course.course_name}}</td>
+                                        <td>{{c.course.course_id}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                            <div class="x_title">
+                                <h2> Current Course Info ({{ selected_course_obj.course_id }}) </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table table-hover">
+                                    <tr>
+                                        <th> Assignment </th>
+                                        <th> Uploads </th>
+                                        <th> Appeal </th>
+                                        <th>Peer Grading </th>
+                                        <th>Appeal Peer Grading</th>
+                                    </tr>
+                                    {% for c in homework %}
+                                    <tr>
+                                        <td>{{ c.assignment_name }}</td>
+                                        <td>{% if c.uploads %} <input type="checkbox" checked disabled> {% else %} <input type="checkbox" disabled> {% endif %}</td>
+                                        <td> No </td>
+                                        <td>{% if  c.grade == ""  %} No {% else %} Yes {% endif %}</td>
+                                        <td> Not Selected </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                                {% for c in homework_appeal %}
+                                <div>
+                                    <form method="GET" action="{% url 'student__appeal' c.group.group %}">
+                                        {% csrf_token %}
+                                        <label>Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
+                                        <input type="submit" value="Yes">
+                                        <input type="button" value="No">
+                                    </form>
+                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -114,16 +159,6 @@
                                     </tr>
                                     {% endfor %}
                                 </table>
-                                {% for c in homework_appeal %}
-                                <div>
-                                    <form method="GET" action="{% url 'student__appeal' c.group.group %}">
-                                        {% csrf_token %}
-                                        <label>Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
-                                        <input type="submit" value="Yes">
-                                        <input type="button" value="No">
-                                    </form>
-                                </div>
-                                {% endfor %}
                             </div>
                         </div>
                     </div>

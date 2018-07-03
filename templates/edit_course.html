@@ -72,23 +72,33 @@
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
                                                 <br>
-                                                <input type="date" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'Y-m-d' }}" required>
+                                                <input type="datetime-local" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'Y-m-d h:i A' }}" {{c.homework_deadline }} required>
                                             </td>
                                             <td>
                                                 <label> Grading Deadline </label>
                                                 <br>
-                                                <input type="date" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'Y-m-d' }}" required>
+                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'Y-m-d' }}" required>
                                             </td>
                                             <td>
                                                 <label> Grouping Constraints </label>
                                                 <br>
                                                 <select name="{{ c.homework_name }}___constraints" required>
-                                                    <option value="random"> Random Group </option>
-                                                    <option value="similar_schedule"> Group Similar Schedule </option>
-                                                    <option value="similar_commitment_level"> Group Similar Commitment Level </option>
-                                                    <option value="similar_skills"> Group Similar Skills </option>
-                                                    <option value="different_skills"> Group different Skills </option>
+                                                    <option value="random" selected> Random Group </option>
+                                                    <!--<option value="similar_schedule"> Group Similar Schedule </option>-->
+                                                    <!--<option value="similar_commitment_level"> Group Similar Commitment Level </option>-->
+                                                    <!--<option value="similar_skills"> Group Similar Skills </option>-->
+                                                    <!--<option value="different_skills"> Group different Skills </option>-->
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <label>No Of Groups</label>
+                                                <br>
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}">
+                                            </td>
+                                            <td>
+                                                <label>No Of Grader</label>
+                                                <br>
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}">
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -224,21 +234,29 @@
         var template = "<tr>";
         template += "<td>";
         template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
-        template += '<input type="date" name="' + currentAssignmentLength + '___homework_deadline" required>'
+        template += '<input type="datetime-local" name="' + currentAssignmentLength + '___homework_deadline" required>'
         template += '</td>'
         template += '<td>'
         template += '<label>Grading Deadline</label><br>'
-        template += '<input type="date" name="' + currentAssignmentLength + '___grade_deadline" required>'
+        template += '<input type="datetime-local" name="' + currentAssignmentLength + '___grade_deadline" required>'
         template += '</td>'
         template += '<td>'
         template += '<label>Grouping Constraints</label><br>'
         template += '<select name="' + currentAssignmentLength + '___constraints">'
         template += '<option value="random"> Random Group </option>'
-        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
-        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
-        template += '<option value="similar_skills"> Group Similar Skills </option>'
-        template += '<option value="different_skills"> Group different Skills </option>'
+//        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
+//        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
+//        template += '<option value="similar_skills"> Group Similar Skills </option>'
+//        template += '<option value="different_skills"> Group different Skills </option>'
         template += '</select>'
+        template += '</td>'
+        template += '<td>'
+        template += '<label>Number of Group </label><br>'
+        template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_group" required>'
+        template += '</td>'
+        template += '<td>'
+        template += '<label>Number of Grader</label><br>'
+        template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_grader" required>'
         template += '</td>'
         template += '</tr>'
 

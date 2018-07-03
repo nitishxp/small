@@ -24,6 +24,7 @@ from instructor.models import (
 from grade.settings import BASE_DIR
 from django.db.models import Avg
 
+
 # Create your views here.
 
 
@@ -113,7 +114,6 @@ def return_grade_explanation(group_id):
 
 
 def get_grade_homework(group):
-
     grade = HomeworkGroupGrade.objects.filter(
         group=group).order_by("group__homework__homework_name")
 
@@ -151,6 +151,8 @@ def get_grade_homework(group):
 def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
 
+    student_course_enroll = StudentCourseModel.objects.filter(user=request.user)
+
     constraints = []
     users_group = []
     for c in constraints_db:
@@ -168,7 +170,7 @@ def student_course(request, course_id):
         constraints.append(t)
 
     course = CourseModel.objects.all()
-    course_obj = CourseModel.objects.filter(pk=course_id)
+    course_obj = CourseModel.objects.filter(pk=course_id).first()
     assignment = []
     # first fetch the group which user is part of
     homework_group_id = HomeworkGroupMember.objects.filter(
@@ -188,6 +190,7 @@ def student_course(request, course_id):
         t['grade'] = grade
         t['group_id'] = group_details.group
         t['group_obj'] = group_details
+        t['uploads'] = group_details.attachment
 
         assignment.append(t)
     #
@@ -197,20 +200,20 @@ def student_course(request, course_id):
         group__course=course_obj,
         peerevalutation=False,
         group__attachment__isnull=False).order_by(
-            "group__homework__homework_name")
+        "group__homework__homework_name")
 
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__attachment__isnull=True).order_by(
-            "group__homework__homework_name")
+        "group__homework__homework_name")
 
     homework_appeal = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__appeal_done_status=False,
         has_appealed=False).order_by(
-            "group__homework__homework_name").select_related('group')
+        "group__homework__homework_name").select_related('group')
 
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
@@ -283,12 +286,14 @@ def student_course(request, course_id):
             'constraints': constraints,
             'course': course,
             'selected_course': course_id,
+            'selected_course_obj': course_obj,
             'homework': assignment,
             'file_upload': homework_group_id.first(),
             'peerevalutation': peerevalutation,
             'grade': grade_dic,
             'homework_appeal': homework_appeal,
             'appeal_grader': appeal_grader,
+            'student_course_enroll': student_course_enroll
         })
 
 
@@ -351,7 +356,6 @@ def peervaluation(request, combination_id, group_id):
 
 
 def appeal(request, group):
-
     # here find out the person who can become grader
     # i.e first select the people who are part of the current group
     group_obj = HomeworkGroup.objects.get(group=group)
@@ -450,17 +454,15 @@ def submit_appeal_peer_grade(request, group):
 
 
 def submit_appeal_grade(request, group):
-
     # i can make the homeworkgroup model calculate grade using the summation
     # of all appeal grader
     if request.method == "POST":
-
         group_obj = HomeworkGroup.objects.get(group=group)
         appeal_obj = AppealGraderModel.objects.filter(
             group=group_obj, appeal_grader=request.user).update(
-                appeal_explanation=request.POST['appeal_explanation'],
-                grade=request.POST['grade'],
-                appeal_visible_status=False)
+            appeal_explanation=request.POST['appeal_explanation'],
+            grade=request.POST['grade'],
+            appeal_visible_status=False)
 
         total_grade = AppealGraderModel.objects.filter(
             group=group_obj).aggregate(Avg('grade'))
