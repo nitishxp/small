@@ -141,6 +141,7 @@ def edit_course(request, pk):
                 defaults=assignments[c])
 
     course = CourseModel.objects.filter(pk=pk).first()
+    
     homework = CourseHomeWorkModel.objects.filter(
         course=pk).order_by('homework_name')
     enrolled_student = StudentCourseModel.objects.filter(course=pk)
