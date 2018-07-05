@@ -25,6 +25,9 @@ import random
 from users.models import UserModel
 from itertools import permutations
 
+from students.views import (
+    return_member_name
+)
 
 def index(request):
     return render(request, 'instructor.html')
@@ -141,7 +144,7 @@ def edit_course(request, pk):
                 defaults=assignments[c])
 
     course = CourseModel.objects.filter(pk=pk).first()
-    
+
     homework = CourseHomeWorkModel.objects.filter(
         course=pk).order_by('homework_name')
     enrolled_student = StudentCourseModel.objects.filter(course=pk)
@@ -156,7 +159,7 @@ def edit_course(request, pk):
         for g in homework_group:
             grade = g.grade
             #
-            for members in HomeworkGroupMember.objects.filter(group=g):
+            for members in HomeworkGroupMember.objects.filter(group=g).select_related('user'):
                 user_id = members.user.id
                 users_obj = members.user
                 if user_id not in all_grades.keys():
@@ -167,11 +170,27 @@ def edit_course(request, pk):
                 else:
                     all_grades[user_id]['grade'].append(grade)
         #
+        # first fetch the assignment name array
+        group_grades[h.homework_name] = []
+
+        for group in homework_group:
+            temp = {}
+            temp['group'] = return_member_name(group.group)
+            temp['grader'] = ''
+            temp['grade'] = ''
+            temp['explanation'] = ''
+            temp['appeal_grader'] = ''
+            temp['appeal_grade'] = ''
+            temp['appeal_explanation'] = ''
+
+            group_grades[h.homework_name].append(temp)
 
     # now sum the all_grades
     for c in all_grades:
         sum_grade = sum(all_grades[c]['grade'])
         all_grades[c]['grade'].append(sum_grade)
+
+    print group_grades
 
     return render(
         request, 'edit_course.html', {
@@ -180,7 +199,7 @@ def edit_course(request, pk):
             'enrolled_student': enrolled_student,
             'course_pk': pk,
             'all_grades': all_grades,
-            'group_grades': 'group_grades'
+            'group_grades': group_grades
         })
 
 

@@ -43,18 +43,24 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <form method="POST">
+                                <form method="POST" class="form-horizontal form-label-left">
                                     {% csrf_token %}
-                                    <label>
-                                        Course Id:
-                                    </label>
-                                    <input type="text" name="course_id" value="{{ course.course_id }}" required>
-                                    <br>
-                                    <label>
-                                        Name:
-                                    </label>
-                                    <input type="text" name="course_name" value="{{ course.course_name }}" required>
-                                    <br>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Course Id:
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="text" name="course_id" value="{{ course.course_id }}" class="form-control col-md-7 col-xs-12" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Course Name:
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="text" name="course_name" value="{{ course.course_name }}" class="form-control col-md-7 col-xs-12" required>
+                                        </div>
+                                    </div>
                                     <label>
                                         Add grading rubric
                                     </label>
@@ -166,6 +172,46 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
+                                <h2>
+                                    Groups
+                                </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                    <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                                        {% for c in group_grades %}
+                                        <li role="presentation" class="">
+                                            <a href="#assignment{{c}}" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Assigment {{c}}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div id="myTabContent" class="tab-content">
+                                        {% for c in group_grades %}
+                                        <div role="tabpanel" class="tab-pane fade" id="assignment{{c}}" aria-labelledby="home-tab">
+                                            <table class="table table-border">
+                                                <tr>
+                                                    <th>Group</th>
+                                                    <th>Grader</th>
+                                                    <th>Grade</th>
+                                                    <th>Explanation</th>
+                                                    <th>Appeal Grader</th>
+                                                    <th>Appeal Grade</th>
+                                                    <th>Appeal Explanation</th>
+                                                </tr>
+                                                {% for value in group_grades.c %}
+                                                    <td>dafd {{ value.group }}</td>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+            
+                            </div>
+                        </div>
+                        <div class="x_panel">
+                            <div class="x_title">
                                 <h2> Student Grouping </h2>
                                 <div class="clearfix"></div>
                             </div>
@@ -184,11 +230,12 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h2> Grades </h2>
+                                <h2> All Grades </h2>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                {% comment %} <table class="table">
+                                {% comment %}
+                                <table class="table">
                                     <tr>
                                         <th> Name</th>
                                         {% for c in homework %}
@@ -275,31 +322,31 @@
 
         var columns = []
         {% for c in homework %}
-            {% if forloop.first %}
-                var t = {}
-                t['title'] = 'Name'
-                columns.push(t)
-            {% endif %}
-            
-            var t = {}
-            t['title'] = 'HW'+ '{{ c.homework_name}}'
-            columns.push(t)
-            
-            {% if forloop.last %}
-                var t = {}
-                t['title'] = 'Total'
-                columns.push(t)
-            {% endif %}
-        
+        {% if forloop.first %}
+        var t = {}
+        t['title'] = 'Name'
+        columns.push(t)
+        {% endif %}
+
+        var t = {}
+        t['title'] = 'HW' + '{{ c.homework_name}}'
+        columns.push(t)
+
+        {% if forloop.last %}
+        var t = {}
+        t['title'] = 'Total'
+        columns.push(t)
+        {% endif %}
+
         {% endfor %}
         var datasource = []
-        {% for key,values in all_grades.items %}
-            t = []
-            t.push('{{ values.name }}')
-            {% for grade in values.grade %}
-                t.push('{{ grade }}')
-            {% endfor %}
-            datasource.push(t)
+        {% for key, values in all_grades.items %}
+        t = []
+        t.push('{{ values.name }}')
+        {% for grade in values.grade %}
+        t.push('{{ grade }}')
+        {% endfor %}
+        datasource.push(t)
         {% endfor %}
 
         $('#group_all_grade').DataTable({
