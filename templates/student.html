@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="col-md-4 col-sm-3 col-xs-12">
 
                                         </div>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -63,23 +63,23 @@
                                 <form method="POST" class="form-horizontal form-label-left" action="{% url 'student__change_password' %}" onsubmit="return checkPassword()">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Name
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Password
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="password" name="password" class="form-control col-md-7 col-xs-12" value="{{ user.name }}" required>
+                                            <input type="password" name="password" class="form-control col-md-7 col-xs-12" value="" required>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Gender
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Confirm Password
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="password" name="confirm_password" class="form-control col-md-7 col-xs-12" value="{{user.name }}" required>
+                                            <input type="password" name="confirm_password" class="form-control col-md-7 col-xs-12" value="" required>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="col-md-4 col-sm-3 col-xs-12">
 
                                         </div>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
