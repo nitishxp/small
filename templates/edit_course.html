@@ -187,8 +187,8 @@
                                         {% endfor %}
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
-                                        {% for c in group_grades %}
-                                        <div role="tabpanel" class="tab-pane fade" id="assignment{{c}}" aria-labelledby="home-tab">
+                                        {% for key , values in group_grades.items %}
+                                        <div role="tabpanel" class="tab-pane fade" id="assignment{{key}}" aria-labelledby="home-tab">
                                             <table class="table table-border">
                                                 <tr>
                                                     <th>Group</th>
@@ -199,8 +199,16 @@
                                                     <th>Appeal Grade</th>
                                                     <th>Appeal Explanation</th>
                                                 </tr>
-                                                {% for value in group_grades.c %}
-                                                    <td>dafd {{ value.group }}</td>
+                                                {% for v in values %}
+                                                    <tr>
+                                                        <td>{{ v.group|linebreaks }}</td>
+                                                        <td>{{ v.grader|linebreaks }}</td>
+                                                        <td>{{ v.grade|linebreaks }}</td>
+                                                        <td>{{ v.explanation|linebreaks }}</td>
+                                                        <td>{{ v.appeal_grader|linebreaks }}</td>
+                                                        <td>{{ v.appeal_grade|linebreaks }}</td>
+                                                        <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                    </tr>
                                                 {% endfor %}
                                             </table>
                                         </div>

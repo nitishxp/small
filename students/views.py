@@ -24,7 +24,6 @@ from instructor.models import (
 from grade.settings import BASE_DIR
 from django.db.models import Avg
 
-
 # Create your views here.
 
 
@@ -151,7 +150,8 @@ def get_grade_homework(group):
 def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
 
-    student_course_enroll = StudentCourseModel.objects.filter(user=request.user)
+    student_course_enroll = StudentCourseModel.objects.filter(
+        user=request.user)
 
     constraints = []
     users_group = []
@@ -200,20 +200,20 @@ def student_course(request, course_id):
         group__course=course_obj,
         peerevalutation=False,
         group__attachment__isnull=False).order_by(
-        "group__homework__homework_name")
+            "group__homework__homework_name")
 
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__attachment__isnull=True).order_by(
-        "group__homework__homework_name")
+            "group__homework__homework_name")
 
     homework_appeal = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
         group__appeal_done_status=False,
         has_appealed=False).order_by(
-        "group__homework__homework_name").select_related('group')
+            "group__homework__homework_name").select_related('group')
 
     grade = HomeworkGroupGrade.objects.filter(
         group__in=users_group).order_by("group__homework__homework_name")
@@ -460,9 +460,9 @@ def submit_appeal_grade(request, group):
         group_obj = HomeworkGroup.objects.get(group=group)
         appeal_obj = AppealGraderModel.objects.filter(
             group=group_obj, appeal_grader=request.user).update(
-            appeal_explanation=request.POST['appeal_explanation'],
-            grade=request.POST['grade'],
-            appeal_visible_status=False)
+                appeal_explanation=request.POST['appeal_explanation'],
+                grade=request.POST['grade'],
+                appeal_visible_status=False)
 
         total_grade = AppealGraderModel.objects.filter(
             group=group_obj).aggregate(Avg('grade'))

@@ -308,3 +308,9 @@ i.glyphicon.glyphicon-calendar.fa.fa-calendar {
 .imgwidth img{
     width: 50px;
 }
+
+.btn-download {
+    color: #fff;
+    background-color: #dcdf27;
+    border-color: #dcdf27;
+}
