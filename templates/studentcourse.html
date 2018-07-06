@@ -231,7 +231,8 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-9 col-xs-12 col-md-offset-3">
                                           <button type="submit" class="btn btn-success">Submit</button>
                                         </div>
                                       </div>
@@ -253,21 +254,30 @@
                             <div class="x_content">
                                 {% for c in grade %} {% if c.type == "grade" %}
                                 <div>
-                                    <label> Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
-                                    <br> Explanation: {{c.explanation}}
+                                    <label> Assignment {{ c.homework_name }} Grade: </label> {{ c.grade }}
+                                    <br> 
+                                    <label>Explanation: </label> {{c.explanation}}
                                     <br>
                                 </div>
                                 {% endif %} {% if c.type == "appeal" and c.appeal_done_status %}
-                                <form method="POST" action="{% url 'student__appeal' c.group %}">
+                                <form method="POST" action="{% url 'student__appeal' c.group %}" class="form-horizontal form-label-left">
                                     {% csrf_token %}
-                                    <label>Appeal Reason for group</label>
-                                    <textarea rows="10" cols="100" name="appeal_reason" required></textarea>
-                                    <br>
-                                    <input type="submit" value="Appeal">
-                                    <input type="button" value="Don't Appeal">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_reason">Appeal Reason for group
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <textarea name="appeal_reason" class="form-control col-md-7 col-xs-12" required id="appeal_reason"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Appeal" class="btn btn-primary">
+                                            <input type="button" value="Don't Appeal" class="btn">
+                                        </div>
+                                    </div>
                                 </form>
                                 <br> {% endif %} {% endfor %}
-
                             </div>
                         </div>
                     </div>
@@ -295,16 +305,29 @@
                                             {% if forloop.last %}
                                                 <hr>
                                                 <h5>Assignment Grade</h5>
-                                                <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}">
-                                                    {% csrf_token %} Assignment {{ c.homework_name }}
-                                                    <br>
-                                                    <label>Grade</label>
-                                                    <input type="number" name="grade" required>
-                                                    <br>
-                                                    <label>Explanation</label>
-                                                    <input type="text" name="appeal_explanation" required>
-                                                    <br>
-                                                    <input type="submit">
+                                                <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}" class="form-horizontal form-label-left">
+                                                    {% csrf_token %}
+                                                    <label>Assignment {{ c.homework_name }} </label>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grade">Grade
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_explanation">Explanation
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <textarea name="appeal_explanation" class="form-control col-md-7 col-xs-12" required id="appeal_explanation"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <input type="submit" value="Submit" class="btn btn-primary">
+                                                        </div>
+                                                    </div>
                                                 </form>
                                             {% endif %}
                                         {% endfor %}
