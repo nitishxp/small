@@ -13,6 +13,8 @@ from models import (
     HomeworkGroup,
     HomeworkGroupMember,
     GroupCombinationModel,
+    HomeworkGroupGrade,
+    AppealGraderModel,
 )
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
@@ -25,14 +27,14 @@ import random
 from users.models import UserModel
 from itertools import permutations
 
-from students.views import (
-    return_member_name
-)
+from students.views import (return_member_name, return_grade_explanation)
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/')
 def index(request):
     return render(request, 'instructor.html')
 
-
+@login_required(login_url='/')
 def course(request):
     if request.method == "POST":
         course_obj = CourseModel()
@@ -64,7 +66,7 @@ def course(request):
 
     return render(request, 'course.html', {'course': course})
 
-
+@login_required(login_url='/')
 def homework(request, pk):
     constraints = Constraints.objects.all()
     if request.method == "POST":
@@ -91,7 +93,7 @@ def homework(request, pk):
         'homework': homework
     })
 
-
+@login_required(login_url='/')
 def process_attachments(request, course_id, homework_id):
     import os
     try:
@@ -116,6 +118,36 @@ def process_attachments(request, course_id, homework_id):
     return temp_dir + f.name
 
 
+def return_grade_explanation(group_id):
+    grade = []
+    explanation = []
+    grader = []
+    for c in HomeworkGroupGrade.objects.filter(
+            group=group_id).select_related('grader'):
+        grade.append(str(c.grade))
+        explanation.append(c.explanation)
+        grader.append(c.grader.name)
+
+    if len(grade) > 0:
+        return "\n".join(grade), "\n".join(explanation), "\n".join(grader)
+    return "", "", ""
+
+
+def return_appeal_grade_explanation(group_id):
+    grade = []
+    explanation = []
+    grader = []
+    for c in AppealGraderModel.objects.filter(
+            group=group_id).select_related('appeal_grader'):
+        grade.append(str(c.grade))
+        explanation.append(c.appeal_explanation)
+        grader.append(c.appeal_grader.name)
+
+    if len(grade) > 0:
+        return "\n".join(grade), "\n".join(explanation), "\n".join(grader)
+    return "", "", ""
+
+@login_required(login_url='/')
 def edit_course(request, pk):
     if request.method == "POST":
 
@@ -147,7 +179,9 @@ def edit_course(request, pk):
 
     homework = CourseHomeWorkModel.objects.filter(
         course=pk).order_by('homework_name')
-    enrolled_student = StudentCourseModel.objects.filter(course=pk)
+
+    enrolled_student = StudentCourseModel.objects.filter(
+        course=pk).select_related('user')
 
     all_grades = {}
     group_grades = {}
@@ -159,7 +193,8 @@ def edit_course(request, pk):
         for g in homework_group:
             grade = g.grade
             #
-            for members in HomeworkGroupMember.objects.filter(group=g).select_related('user'):
+            for members in HomeworkGroupMember.objects.filter(
+                    group=g).select_related('user'):
                 user_id = members.user.id
                 users_obj = members.user
                 if user_id not in all_grades.keys():
@@ -174,14 +209,17 @@ def edit_course(request, pk):
         group_grades[h.homework_name] = []
 
         for group in homework_group:
+            grade_explanation = return_grade_explanation(group.group)
+            appeal_grade_explanation = return_appeal_grade_explanation(
+                group.group)
             temp = {}
             temp['group'] = return_member_name(group.group)
-            temp['grader'] = ''
-            temp['grade'] = ''
-            temp['explanation'] = ''
-            temp['appeal_grader'] = ''
-            temp['appeal_grade'] = ''
-            temp['appeal_explanation'] = ''
+            temp['grader'] = grade_explanation[2]
+            temp['grade'] = grade_explanation[0]
+            temp['explanation'] = grade_explanation[1]
+            temp['appeal_grader'] = appeal_grade_explanation[2]
+            temp['appeal_grade'] = appeal_grade_explanation[0]
+            temp['appeal_explanation'] = appeal_grade_explanation[1]
 
             group_grades[h.homework_name].append(temp)
 
@@ -213,7 +251,7 @@ def chunkIt(seq, num):
         last += avg
     return out
 
-
+@login_required(login_url='/')
 def do_grouping(request, pk):
     # first fetch the homework related to the course
     homework = CourseHomeWorkModel.objects.filter(course=pk)
@@ -313,7 +351,7 @@ def do_grouping(request, pk):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@login_required(login_url='/')
 def student_upload(request, pk):
     import csv
     csv_file = request.FILES["student_upload"]

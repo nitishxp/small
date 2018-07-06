@@ -61,59 +61,77 @@
                                             <input type="text" name="course_name" value="{{ course.course_name }}" class="form-control col-md-7 col-xs-12" required>
                                         </div>
                                     </div>
-                                    <label>
-                                        Add grading rubric
-                                    </label>
-                                    <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}" required>
-                                    <br>
-                                    <label>
-                                        Explain the appeal role
-                                    </label>
-                                    <input type="textarea" name="appeal_role" value="{{ course.appeal_role }}" required>
-                                    <br>
-                                    <input type="button" value="Add Assignments" id="add_assignments">
-                                    <table class="homework_assignment">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grading_rubric">Add Grading Rubric
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <textarea name="grading_rubric" class="form-control col-md-7 col-xs-12" required id="grading_rubric">{{ course.grading_rubric }} </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_role">Explain the appeal role
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <textarea name="appeal_role" class="form-control col-md-7 col-xs-12" required id="appeal_role"> {{ course.appeal_role }} </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4 col-sm-3 col-xs-12" for="appeal_role">
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="button" value="Add Assignments" class="btn" id="add_assignments">
+                                        </div>
+                                    </div>
+                                    <table class="homework_assignment table table-border">
                                         {% for c in homework %}
                                         <tr>
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
                                                 <br>
                                                 <input type="datetime-local" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'c' }}"
-                                                    required>
+                                                    class="form-control" required>
                                             </td>
                                             <td>
                                                 <label> Grading Deadline </label>
                                                 <br>
-                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'c' }}" required>
+                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'c' }}" class="form-control"
+                                                    required>
 
                                             </td>
-                                            <td>
+                                            <!-- <td>
                                                 <label> Grouping Constraints </label>
                                                 <br>
                                                 <select name="{{ c.homework_name }}___constraints" required>
                                                     <option value="random" selected> Random Group</option>
-                                                    <!--<option value="similar_schedule"> Group Similar Schedule </option>-->
-                                                    <!--<option value="similar_commitment_level"> Group Similar Commitment Level </option>-->
-                                                    <!--<option value="similar_skills"> Group Similar Skills </option>-->
-                                                    <!--<option value="different_skills"> Group different Skills </option>-->
+                                                    <option value="similar_schedule"> Group Similar Schedule </option>
+                                                    <option value="similar_commitment_level"> Group Similar Commitment Level </option>
+                                                    <option value="similar_skills"> Group Similar Skills </option>
+                                                    <option value="different_skills"> Group different Skills </option>
                                                 </select>
+                                            </td> -->
+                                            <td>
+                                                <input type="hidden" name="{{ c.homework_name }}___constraints" value="random" required>
                                             </td>
                                             <td>
                                                 <label>No Of Groups</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}">
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}" class="form-control" required>
                                             </td>
                                             <td>
                                                 <label>No Of Grader</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}">
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control"
+                                                    required>
                                             </td>
                                         </tr>
                                         {% endfor %}
                                     </table>
-                                    <br>
-                                    <input type="submit" value="Submit">
-                                    <br>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Submit" class="btn btn-primary">
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -129,10 +147,21 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data">
+                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
                                     {% csrf_token %}
-                                    <input type="file" accept=".csv" required="True" name="student_upload">
-                                    <input type="submit" value="Upload">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_id">Upload Student Csv
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="file" accept=".csv" class="form-control col-md-7 col-xs-12" required="True" name="student_upload">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Upload" class="btn btn-primary">
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -187,8 +216,8 @@
                                         {% endfor %}
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
-                                        {% for c in group_grades %}
-                                        <div role="tabpanel" class="tab-pane fade" id="assignment{{c}}" aria-labelledby="home-tab">
+                                        {% for key , values in group_grades.items %}
+                                        <div role="tabpanel" class="tab-pane fade" id="assignment{{key}}" aria-labelledby="home-tab">
                                             <table class="table table-border">
                                                 <tr>
                                                     <th>Group</th>
@@ -199,18 +228,23 @@
                                                     <th>Appeal Grade</th>
                                                     <th>Appeal Explanation</th>
                                                 </tr>
-                                                {% for value in group_grades.c %}
-                                                    <td>dafd {{ value.group }}</td>
+                                                {% for v in values %}
+                                                <tr>
+                                                    <td>{{ v.group|linebreaks }}</td>
+                                                    <td>{{ v.grader|linebreaks }}</td>
+                                                    <td>{{ v.grade|linebreaks }}</td>
+                                                    <td>{{ v.explanation|linebreaks }}</td>
+                                                    <td>{{ v.appeal_grader|linebreaks }}</td>
+                                                    <td>{{ v.appeal_grade|linebreaks }}</td>
+                                                    <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                </tr>
                                                 {% endfor %}
                                             </table>
                                         </div>
                                         {% endfor %}
                                     </div>
                                 </div>
-            
                             </div>
-                        </div>
-                        <div class="x_panel">
                             <div class="x_title">
                                 <h2> Student Grouping </h2>
                                 <div class="clearfix"></div>
@@ -218,7 +252,12 @@
                             <div class="x_content">
                                 <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
                                     {% csrf_token %}
-                                    <input type="submit" value="Do Grouping">
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Do Grouping" class="btn btn-primary">
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -279,44 +318,6 @@
 
     </div>
 </div>
-
-<script>
-    $("#add_assignments").on('click', function () {
-        var currentAssignmentLength = $(".homework_assignment tr").length
-        currentAssignmentLength++;
-        var template = "<tr>";
-        template += "<td>";
-        template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
-        template += '<input type="datetime-local" name="' + currentAssignmentLength + '___homework_deadline" required>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Grading Deadline</label><br>'
-        template += '<input type="datetime-local" name="' + currentAssignmentLength + '___grade_deadline" required>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Grouping Constraints</label><br>'
-        template += '<select name="' + currentAssignmentLength + '___constraints">'
-        template += '<option value="random"> Random Group </option>'
-        //        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
-        //        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
-        //        template += '<option value="similar_skills"> Group Similar Skills </option>'
-        //        template += '<option value="different_skills"> Group different Skills </option>'
-        template += '</select>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Number of Group </label><br>'
-        template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_group" required>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Number of Grader</label><br>'
-        template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_grader" required>'
-        template += '</td>'
-        template += '</tr>'
-
-        $(".homework_assignment").append(template)
-    })
-
-</script>
 <script>
     $(document).on('ready', function () {
 

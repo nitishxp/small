@@ -6,9 +6,12 @@ from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 
 # Create your models here.
 
+
 class UserModel(AbstractUser):
 
-    role = models.TextField(null=True,default='student')
+    role = models.TextField(null=True, default='student')
     name = models.TextField(null=True)
+    gender = models.TextField(null=True)
+
     class Meta:
         db_table = 'users'
