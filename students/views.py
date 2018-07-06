@@ -94,7 +94,7 @@ def enroll(request):
 
 def return_member_name(group_id):
     name_obj = HomeworkGroupMember.objects.filter(
-        group=HomeworkGroup.objects.get(group=group_id))
+        group=HomeworkGroup.objects.get(group=group_id)).select_related('group')
     name = []
     for c in name_obj:
         name.append(c.user.name)
@@ -115,7 +115,7 @@ def return_grade_explanation(group_id):
 
 def get_grade_homework(group):
     grade = HomeworkGroupGrade.objects.filter(
-        group=group).order_by("group__homework__homework_name")
+        group=group).select_related('group').order_by("group__homework__homework_name")
 
     grade_dic = []
     peer_grader = []
@@ -216,7 +216,7 @@ def student_course(request, course_id):
         "group__homework__homework_name").select_related('group')
 
     grade = HomeworkGroupGrade.objects.filter(
-        group__in=users_group).order_by("group__homework__homework_name")
+        group__in=users_group).select_related('group').order_by("group__homework__homework_name")
 
     grade_dic = []
     current = None
@@ -270,7 +270,7 @@ def student_course(request, course_id):
     appeal_grader_obj = AppealGraderModel.objects.filter(
         course=course_obj,
         appeal_grader=request.user.id,
-        appeal_visible_status=True)
+        appeal_visible_status=True).select_related('group')
 
     appeal_grader = []
 
