@@ -122,7 +122,7 @@ USE_TZ = False
 
 AUTH_USER_MODEL = 'users.UserModel'
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
 

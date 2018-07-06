@@ -28,12 +28,13 @@ from users.models import UserModel
 from itertools import permutations
 
 from students.views import (return_member_name, return_grade_explanation)
+from django.contrib.auth.decorators import login_required
 
-
+@login_required(login_url='/')
 def index(request):
     return render(request, 'instructor.html')
 
-
+@login_required(login_url='/')
 def course(request):
     if request.method == "POST":
         course_obj = CourseModel()
@@ -65,7 +66,7 @@ def course(request):
 
     return render(request, 'course.html', {'course': course})
 
-
+@login_required(login_url='/')
 def homework(request, pk):
     constraints = Constraints.objects.all()
     if request.method == "POST":
@@ -92,7 +93,7 @@ def homework(request, pk):
         'homework': homework
     })
 
-
+@login_required(login_url='/')
 def process_attachments(request, course_id, homework_id):
     import os
     try:
@@ -146,7 +147,7 @@ def return_appeal_grade_explanation(group_id):
         return "\n".join(grade), "\n".join(explanation), "\n".join(grader)
     return "", "", ""
 
-
+@login_required(login_url='/')
 def edit_course(request, pk):
     if request.method == "POST":
 
@@ -250,7 +251,7 @@ def chunkIt(seq, num):
         last += avg
     return out
 
-
+@login_required(login_url='/')
 def do_grouping(request, pk):
     # first fetch the homework related to the course
     homework = CourseHomeWorkModel.objects.filter(course=pk)
@@ -350,7 +351,7 @@ def do_grouping(request, pk):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@login_required(login_url='/')
 def student_upload(request, pk):
     import csv
     csv_file = request.FILES["student_upload"]

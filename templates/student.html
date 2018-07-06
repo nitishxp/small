@@ -1,28 +1,143 @@
-<html>
+{% extends "website/_base.html" %} {% block main_content %}
+<div class="x_content">
+    <div class="form_wizard wizard_verticle">
+        <ul class="list-unstyled wizard_steps anchor">
+            <li>
+                <a href="#profile" class="selected">
+                    <span class="step_no">Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="#course_list" class="selected">
+                    <span class="step_no">List Course</span>
+                </a>
+            </li>
+        </ul>
+        <div class="stepContainer">
+            <div id="profile" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Profile </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="POST" class="form-horizontal form-label-left" action="{% url 'student__update_profile' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Name
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="text" name="name" class="form-control col-md-7 col-xs-12" value="{{user.name }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Gender
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <select name="gender" class="form-control col-md-7 col-xs-12" required>
+                                                <option value="">Select</option>
+                                                <option value="male" {% if user.gender == "male" %} selected {% endif %}>Male</option>
+                                                <option value="female" {% if user.gender == "female" %} selected {% endif %}>Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
 
-<head>
-</head>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Submit" class="btn btn-primary ">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="x_title">
+                                <h2> Change Password </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="POST" class="form-horizontal form-label-left" action="{% url 'student__change_password' %}" onsubmit="return checkPassword()">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Name
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="password" name="password" class="form-control col-md-7 col-xs-12" value="{{ user.name }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Gender
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="password" name="confirm_password" class="form-control col-md-7 col-xs-12" value="{{user.name }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-3 col-sm-3 col-xs-12">
 
-<body>
-    <a href="{% url 'student__enroll' %}"> Enroll For Course </a>
-    <table>
-        <tr>
-            <td>
-                Course Name
-            </td>
-            <td>
-                Course Id
-            </td>
-        </tr>
-        {% for c in student_course %}
-        <tr>
-            <td> {{ c.course.course_name }} </td>
-            <td>
-                <a href="{% url 'student__student_course' c.course.id %}"> {{ c.course.course_id }} </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Submit" class="btn btn-primary ">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="course_list" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> List Course</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <!-- <a href="{% url 'student__enroll' %}"> Enroll For Course </a> -->
+                                <table class="table table-border">
+                                    <tr>
+                                        <th>
+                                            Course Name
+                                        </th>
+                                        <th>
+                                            Course Id
+                                        </th>
+                                    </tr>
+                                    {% for c in student_course %}
+                                    <tr>
+                                        <td> {{ c.course.course_name }} </td>
+                                        <td>
+                                            <a href="{% url 'student__student_course' c.course.id %}" class="btn btn-download"> Goto Course </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-</html>
+<script>
+    function checkPassword(){
+        var password = $("[name='password']").val()
+        var confirm_password = $("[name='confirm_password']").val()
+        if (password != confirm_password){
+            alert('Password are not same')
+            return false
+        }
+        return true
+    }
+</script>
+{% endblock %}

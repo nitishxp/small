@@ -23,20 +23,36 @@ from instructor.models import (
 )
 from grade.settings import BASE_DIR
 from django.db.models import Avg
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-
+@login_required(login_url='/')
 def index(request):
-    # check if user has not filled the survey form yes/no
-    # constraints = StudentConstraintsModel.objects.filter(user=request.user)
-    # if not constraints.exists():
-    #     return HttpResponseRedirect('/students/constraints/')
     student_course = StudentCourseModel.objects.filter(user=request.user)
+    return render(request, 'student.html', {
+        'student_course': student_course,
+        'user': request.user
+    })
 
-    return render(request, 'student.html', {'student_course': student_course})
+@login_required(login_url='/')
+def update_profile(request):
+    if request.method == "POST":
+        user = UserModel.objects.get(pk=request.user.id)
+        user.name = request.POST['name']
+        user.gender = request.POST['gender']
+        user.save()
 
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+@login_required(login_url='/')
+def change_password(request):
+    if request.method == "POST":
+        request.user.set_password(request.POST['password'])
+        request.user.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+@login_required(login_url='/')
 def enroll(request):
     if request.method == "POST":
         # first save the course to StudentCourseModel
@@ -146,7 +162,7 @@ def get_grade_homework(group):
 
     return [grade_dic, peer_grader]
 
-
+@login_required(login_url='/')
 def student_course(request, course_id):
     constraints_db = Constraints.objects.all()
 
@@ -315,7 +331,7 @@ def process_attachments(f, group_id):
 
     return temp_dir + f.name
 
-
+@login_required(login_url='/')
 def upload_assignment(request):
     for c in request.FILES:
         filepath = process_attachments(request.FILES[c], c)
@@ -323,7 +339,7 @@ def upload_assignment(request):
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@login_required(login_url='/')
 def peervaluation(request, combination_id, group_id):
     # make combination_id peerevalutation value = false
     # and HomeworkGroupGrade table to be updated to corresponding
@@ -354,7 +370,7 @@ def peervaluation(request, combination_id, group_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@login_required(login_url='/')
 def appeal(request, group):
     # here find out the person who can become grader
     # i.e first select the people who are part of the current group
@@ -416,7 +432,7 @@ def appeal(request, group):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@login_required(login_url='/')
 def submit_appeal_peer_grade(request, group):
     group_obj = HomeworkGroup.objects.get(group=group)
 
@@ -452,7 +468,7 @@ def submit_appeal_peer_grade(request, group):
     # return HttpResponse('sad')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@login_required(login_url='/')
 def submit_appeal_grade(request, group):
     # i can make the homeworkgroup model calculate grade using the summation
     # of all appeal grader

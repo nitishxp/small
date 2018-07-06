@@ -20,4 +20,10 @@ urlpatterns = [
     url(r'^submit_appeal_grade/(?P<group>[0-9A-z]+)/$',
         submit_appeal_grade,
         name="student__submit_appeal_grade"),
+    url(r'^update_profile/$',
+        update_profile,
+        name="student__update_profile"),
+    url(r'^change_password/$',
+        change_password,
+        name="student__change_password"),
 ]

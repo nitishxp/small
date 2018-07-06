@@ -7,11 +7,11 @@
                     <span class="step_no">Your Progress</span>
                 </a>
             </li>
-            <li>
+            <!-- <li>
                 <a href="#course_info" class="selected">
                     <span class="step_no">Course Info</span>
                 </a>
-            </li>
+            </li> -->
             <li>
                 <a href="#group" class="selected">
                     <span class="step_no">Group</span>
@@ -57,7 +57,7 @@
                                     {% for c in student_course_enroll %}
                                     <tr>
                                         <td>{{c.course.course_name}}</td>
-                                        <td>{{c.course.course_id}}</td>
+                                        <td><a href="{% url 'student__student_course' c.course.id %}" class="btn btn-download"> Goto Course </a></td>
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            <div id="course_info" class="content" style="display: block;">
+            <!-- <div id="course_info" class="content" style="display: block;">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -130,7 +130,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div id="group" class="content">
                 <div class="row">
@@ -187,8 +187,8 @@
                                     </div>
                                         <div class="form-group">
                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="submit" value="Submit" class="btn btn-primary">
-                                        </div>
+                                                <input type="submit" value="Submit" class="btn btn-primary">
+                                            </div>
                                         </div>
                                     </form>
                             </div>
