@@ -43,3 +43,15 @@ $("#add_assignments").on('click', function () {
 
     $(".homework_assignment").append(template)
 })
+
+$(".appeal_cancel").on('click', function () {
+    var group = $(this).data('group_id')
+    var a = $(this).siblings('.appeal_submit')
+    $.ajax({
+        url: '/students/reject_appeal/' + group,
+        success: function (result) {
+            console.log(result)
+            window.location.reload()
+        }
+    })
+})

@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+
 @login_required(login_url='/')
 def index(request):
     student_course = StudentCourseModel.objects.filter(user=request.user)
@@ -34,6 +35,7 @@ def index(request):
         'student_course': student_course,
         'user': request.user
     })
+
 
 @login_required(login_url='/')
 def update_profile(request):
@@ -45,12 +47,14 @@ def update_profile(request):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
 @login_required(login_url='/')
 def change_password(request):
     if request.method == "POST":
         request.user.set_password(request.POST['password'])
         request.user.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 @login_required(login_url='/')
 def enroll(request):
@@ -109,7 +113,8 @@ def enroll(request):
 
 def return_member_name(group_id):
     name_obj = HomeworkGroupMember.objects.filter(
-        group=HomeworkGroup.objects.get(group=group_id)).select_related('group')
+        group=HomeworkGroup.objects.get(
+            group=group_id)).select_related('group')
     name = []
     for c in name_obj:
         name.append(c.user.name)
@@ -129,8 +134,8 @@ def return_grade_explanation(group_id):
 
 
 def get_grade_homework(group):
-    grade = HomeworkGroupGrade.objects.filter(
-        group=group).select_related('group').order_by("group__homework__homework_name")
+    grade = HomeworkGroupGrade.objects.filter(group=group).select_related(
+        'group').order_by("group__homework__homework_name")
 
     grade_dic = []
     peer_grader = []
@@ -161,6 +166,7 @@ def get_grade_homework(group):
             peer_grader.append(peer)
 
     return [grade_dic, peer_grader]
+
 
 @login_required(login_url='/')
 def student_course(request, course_id):
@@ -228,11 +234,13 @@ def student_course(request, course_id):
         user=request.user,
         group__course=course_obj,
         group__appeal_done_status=False,
+        group__appeal_reject_status=False,
         has_appealed=False).order_by(
             "group__homework__homework_name").select_related('group')
 
     grade = HomeworkGroupGrade.objects.filter(
-        group__in=users_group).select_related('group').order_by("group__homework__homework_name")
+        group__in=users_group).select_related('group').order_by(
+            "group__homework__homework_name")
 
     grade_dic = []
     current = None
@@ -331,6 +339,7 @@ def process_attachments(f, group_id):
 
     return temp_dir + f.name
 
+
 @login_required(login_url='/')
 def upload_assignment(request):
     for c in request.FILES:
@@ -338,6 +347,7 @@ def upload_assignment(request):
         HomeworkGroup.objects.filter(pk=c).update(attachment=filepath)
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 @login_required(login_url='/')
 def peervaluation(request, combination_id, group_id):
@@ -369,6 +379,7 @@ def peervaluation(request, combination_id, group_id):
         peerevalutation=True)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 @login_required(login_url='/')
 def appeal(request, group):
@@ -432,6 +443,7 @@ def appeal(request, group):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
 @login_required(login_url='/')
 def submit_appeal_peer_grade(request, group):
     group_obj = HomeworkGroup.objects.get(group=group)
@@ -468,6 +480,7 @@ def submit_appeal_peer_grade(request, group):
     # return HttpResponse('sad')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
 @login_required(login_url='/')
 def submit_appeal_grade(request, group):
     # i can make the homeworkgroup model calculate grade using the summation
@@ -488,3 +501,11 @@ def submit_appeal_grade(request, group):
         group_obj.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@login_required(login_url='/')
+def reject_appeal(request, group):
+    homework_obj = HomeworkGroup.objects.filter(group=group).update(
+        appeal_reject_status=True
+    )
+    return HttpResponse(group)

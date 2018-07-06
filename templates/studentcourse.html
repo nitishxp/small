@@ -90,8 +90,8 @@
                                     <form method="GET" action="{% url 'student__appeal' c.group.group %}">
                                         {% csrf_token %}
                                         <label>Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
-                                        <input type="submit" value="Yes">
-                                        <input type="button" value="No">
+                                        <input type="submit" class="btn appeal_submit" value="Yes">
+                                        <input type="button" class="btn appeal_cancel" data-group_id="{{c.group.group}}" value="No">
                                     </form>
                                 </div>
                                 {% endfor %}
