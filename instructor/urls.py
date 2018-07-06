@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from views import *
 urlpatterns = [
-    url(r'^$', index, name="instructor__index"),
+    url(r'^$', course, name="instructor__index"),
     url(r'course/$', course, name="instructor__course"),
     url(r'course/(?P<pk>[0-9]+)/homework/$',
         homework,

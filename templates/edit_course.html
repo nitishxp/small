@@ -61,59 +61,77 @@
                                             <input type="text" name="course_name" value="{{ course.course_name }}" class="form-control col-md-7 col-xs-12" required>
                                         </div>
                                     </div>
-                                    <label>
-                                        Add grading rubric
-                                    </label>
-                                    <input type="textarea" name="grading_rubric" value="{{ course.grading_rubric }}" required>
-                                    <br>
-                                    <label>
-                                        Explain the appeal role
-                                    </label>
-                                    <input type="textarea" name="appeal_role" value="{{ course.appeal_role }}" required>
-                                    <br>
-                                    <input type="button" value="Add Assignments" id="add_assignments">
-                                    <table class="homework_assignment">
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grading_rubric">Add Grading Rubric
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <textarea name="grading_rubric" class="form-control col-md-7 col-xs-12" required id="grading_rubric">{{ course.grading_rubric }} </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_role">Explain the appeal role
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <textarea name="appeal_role" class="form-control col-md-7 col-xs-12" required id="appeal_role"> {{ course.appeal_role }} </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-4 col-sm-3 col-xs-12" for="appeal_role">
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="button" value="Add Assignments" class="btn" id="add_assignments">
+                                        </div>
+                                    </div>
+                                    <table class="homework_assignment table table-border">
                                         {% for c in homework %}
                                         <tr>
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
                                                 <br>
                                                 <input type="datetime-local" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'c' }}"
-                                                    required>
+                                                    class="form-control" required>
                                             </td>
                                             <td>
                                                 <label> Grading Deadline </label>
                                                 <br>
-                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'c' }}" required>
+                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'c' }}" class="form-control"
+                                                    required>
 
                                             </td>
-                                            <td>
+                                            <!-- <td>
                                                 <label> Grouping Constraints </label>
                                                 <br>
                                                 <select name="{{ c.homework_name }}___constraints" required>
                                                     <option value="random" selected> Random Group</option>
-                                                    <!--<option value="similar_schedule"> Group Similar Schedule </option>-->
-                                                    <!--<option value="similar_commitment_level"> Group Similar Commitment Level </option>-->
-                                                    <!--<option value="similar_skills"> Group Similar Skills </option>-->
-                                                    <!--<option value="different_skills"> Group different Skills </option>-->
+                                                    <option value="similar_schedule"> Group Similar Schedule </option>
+                                                    <option value="similar_commitment_level"> Group Similar Commitment Level </option>
+                                                    <option value="similar_skills"> Group Similar Skills </option>
+                                                    <option value="different_skills"> Group different Skills </option>
                                                 </select>
+                                            </td> -->
+                                            <td>
+                                                <input type="hidden" name="{{ c.homework_name }}___constraints" value="random" required>
                                             </td>
                                             <td>
                                                 <label>No Of Groups</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}">
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}" class="form-control" required>
                                             </td>
                                             <td>
                                                 <label>No Of Grader</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}">
+                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control"
+                                                    required>
                                             </td>
                                         </tr>
                                         {% endfor %}
                                     </table>
-                                    <br>
-                                    <input type="submit" value="Submit">
-                                    <br>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Submit" class="btn btn-primary">
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -200,22 +218,22 @@
                                                     <th>Appeal Explanation</th>
                                                 </tr>
                                                 {% for v in values %}
-                                                    <tr>
-                                                        <td>{{ v.group|linebreaks }}</td>
-                                                        <td>{{ v.grader|linebreaks }}</td>
-                                                        <td>{{ v.grade|linebreaks }}</td>
-                                                        <td>{{ v.explanation|linebreaks }}</td>
-                                                        <td>{{ v.appeal_grader|linebreaks }}</td>
-                                                        <td>{{ v.appeal_grade|linebreaks }}</td>
-                                                        <td>{{ v.appeal_explanation|linebreaks }}</td>
-                                                    </tr>
+                                                <tr>
+                                                    <td>{{ v.group|linebreaks }}</td>
+                                                    <td>{{ v.grader|linebreaks }}</td>
+                                                    <td>{{ v.grade|linebreaks }}</td>
+                                                    <td>{{ v.explanation|linebreaks }}</td>
+                                                    <td>{{ v.appeal_grader|linebreaks }}</td>
+                                                    <td>{{ v.appeal_grade|linebreaks }}</td>
+                                                    <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                </tr>
                                                 {% endfor %}
                                             </table>
                                         </div>
                                         {% endfor %}
                                     </div>
                                 </div>
-            
+
                             </div>
                         </div>
                         <div class="x_panel">
@@ -287,44 +305,6 @@
 
     </div>
 </div>
-
-<script>
-    $("#add_assignments").on('click', function () {
-        var currentAssignmentLength = $(".homework_assignment tr").length
-        currentAssignmentLength++;
-        var template = "<tr>";
-        template += "<td>";
-        template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
-        template += '<input type="datetime-local" name="' + currentAssignmentLength + '___homework_deadline" required>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Grading Deadline</label><br>'
-        template += '<input type="datetime-local" name="' + currentAssignmentLength + '___grade_deadline" required>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Grouping Constraints</label><br>'
-        template += '<select name="' + currentAssignmentLength + '___constraints">'
-        template += '<option value="random"> Random Group </option>'
-        //        template += '<option value="similar_schedule"> Group Similar Schedule </option>'
-        //        template += '<option value="similar_commitment_level"> Group Similar Commitment Level </option>'
-        //        template += '<option value="similar_skills"> Group Similar Skills </option>'
-        //        template += '<option value="different_skills"> Group different Skills </option>'
-        template += '</select>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Number of Group </label><br>'
-        template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_group" required>'
-        template += '</td>'
-        template += '<td>'
-        template += '<label>Number of Grader</label><br>'
-        template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_grader" required>'
-        template += '</td>'
-        template += '</tr>'
-
-        $(".homework_assignment").append(template)
-    })
-
-</script>
 <script>
     $(document).on('ready', function () {
 
