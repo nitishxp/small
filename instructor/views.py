@@ -30,9 +30,11 @@ from itertools import permutations
 from students.views import (return_member_name, return_grade_explanation)
 from django.contrib.auth.decorators import login_required
 
+
 @login_required(login_url='/')
 def index(request):
     return render(request, 'instructor.html')
+
 
 @login_required(login_url='/')
 def course(request):
@@ -66,6 +68,7 @@ def course(request):
 
     return render(request, 'course.html', {'course': course})
 
+
 @login_required(login_url='/')
 def homework(request, pk):
     constraints = Constraints.objects.all()
@@ -92,6 +95,7 @@ def homework(request, pk):
         'constraints': constraints,
         'homework': homework
     })
+
 
 @login_required(login_url='/')
 def process_attachments(request, course_id, homework_id):
@@ -122,14 +126,25 @@ def return_grade_explanation(group_id):
     grade = []
     explanation = []
     grader = []
-    for c in HomeworkGroupGrade.objects.filter(
-            group=group_id).select_related('grader'):
-        grade.append(str(c.grade))
-        explanation.append(c.explanation)
-        grader.append(c.grader.name)
+    grader_user_id = []
+    for c in GroupCombinationModel.objects.filter(
+            group=group_id).select_related('grader_user'):
+        grader.append(c.grader_user.name)
+        grader_user_id.append(c.grader_user.id)
 
-    if len(grade) > 0:
+    grade = [''] * len(grader)
+    explanation = [''] * len(grader)
+
+    group_grade_obj = HomeworkGroupGrade.objects.filter(group=group_id)
+
+    for c in group_grade_obj:
+        index = grader_user_id.index(c.grader.id)
+        grade[index] = str(c.grade)
+        explanation[index] = c.explanation
+
+    if len(grader) > 0:
         return "\n".join(grade), "\n".join(explanation), "\n".join(grader)
+
     return "", "", ""
 
 
@@ -146,6 +161,7 @@ def return_appeal_grade_explanation(group_id):
     if len(grade) > 0:
         return "\n".join(grade), "\n".join(explanation), "\n".join(grader)
     return "", "", ""
+
 
 @login_required(login_url='/')
 def edit_course(request, pk):
@@ -251,6 +267,7 @@ def chunkIt(seq, num):
         last += avg
     return out
 
+
 @login_required(login_url='/')
 def do_grouping(request, pk):
     # first fetch the homework related to the course
@@ -280,7 +297,9 @@ def do_grouping(request, pk):
             # split the student in to random n groups
             # here i can ask emma to provide me the range of students
             # and how many group i want to have
-            partition = chunkIt(group, 5)
+
+            no_of_group = len(group) / c.no_of_group
+            partition = chunkIt(group, no_of_group)
 
             t = [x for x in partition if x != []]
 
@@ -305,7 +324,12 @@ def do_grouping(request, pk):
                     HomeworkGroupMember.objects.create(
                         user=UserModel.objects.get(pk=m), group=group_obj)
 
-                groups_with_random_grader[group_id] = random.sample(g, 3)
+                no_of_grader = c.no_of_grader
+                if no_of_grader > len(g):
+                    no_of_grader = len(g)
+
+                groups_with_random_grader[group_id] = random.sample(
+                    g, no_of_grader)
 
         # return JsonResponse(groups_with_random_grader, safe=False)
         # now its time to iterate the group with random grader
@@ -350,6 +374,7 @@ def do_grouping(request, pk):
         GroupCombinationModel.objects.filter(active=False).delete()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 @login_required(login_url='/')
 def student_upload(request, pk):
