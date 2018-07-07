@@ -360,5 +360,15 @@
             columns: columns,
             dom: "Bfrtip",
         });
+        
+        {% for key , values in group_grades.items %}
+            $('#table{{key}}').DataTable({
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                bRetrieve: true,
+                dom: "Bfrtip",
+            });
+        {% endfor %}
     })
 </script> {% endblock %}
