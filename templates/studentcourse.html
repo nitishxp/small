@@ -79,9 +79,9 @@
                                     <tr>
                                         <td>{{ c.assignment_name }}</td>
                                         <td>{% if c.uploads %} <input type="checkbox" checked disabled> {% else %} <input type="checkbox" disabled> {% endif %}</td>
-                                        <td> No </td>
+                                        <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
                                         <td>{% if  c.grade == ""  %} No {% else %} Yes {% endif %}</td>
-                                        <td> Not Selected </td>
+                                        <td>{% if  c.appeal_done_count == c.total_member  %} {{ c.grade }} {% endif %} </td>
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -278,6 +278,23 @@
                                     </div>
                                 </form>
                                 <br> {% endif %} {% endfor %}
+                                <hr>
+                                {% if appeal_grade_result %}
+                                <div class="x_title">
+                                    <h2> Appeal Grade </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    {% for c in appeal_grade_result %}
+                                    <div>
+                                        <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> {{ c.grade }}
+                                        <br> 
+                                        <label>Explanation: </label> {{c.appeal_explanation}}
+                                        <br>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

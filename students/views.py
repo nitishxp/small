@@ -213,6 +213,8 @@ def student_course(request, course_id):
         t['group_id'] = group_details.group
         t['group_obj'] = group_details
         t['uploads'] = group_details.attachment
+        t['appeal_done_count'] = group_details.appeal_done_count
+        t['total_member'] = group_details.total_member
 
         assignment.append(t)
     #
@@ -305,6 +307,10 @@ def student_course(request, course_id):
         temp['peer_grader'] = result[1]
         appeal_grader.append(temp)
 
+    appeal_grade_result = AppealGraderModel.objects.filter(
+        group__in=users_group).select_related('group').order_by(
+            "group__homework__homework_name")
+
     return render(
         request, 'studentcourse.html', {
             'constraints': constraints,
@@ -317,7 +323,8 @@ def student_course(request, course_id):
             'grade': grade_dic,
             'homework_appeal': homework_appeal,
             'appeal_grader': appeal_grader,
-            'student_course_enroll': student_course_enroll
+            'student_course_enroll': student_course_enroll,
+            'appeal_grade_result': appeal_grade_result
         })
 
 
@@ -506,6 +513,5 @@ def submit_appeal_grade(request, group):
 @login_required(login_url='/')
 def reject_appeal(request, group):
     homework_obj = HomeworkGroup.objects.filter(group=group).update(
-        appeal_reject_status=True
-    )
+        appeal_reject_status=True)
     return HttpResponse(group)
