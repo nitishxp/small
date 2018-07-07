@@ -177,19 +177,21 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <table class="table">
-                                    <tr>
+                                <table class="table" id="student_enrollment_list">
+                                    <thead>
                                         <th>Student Name</th>
                                         <th>Enrollment Status</th>
-                                    </tr>
-                                    {% for c in enrolled_student %}
-                                    <tr>
-                                        <td>{{ c.user.name }}</td>
-                                        <td>
-                                            <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
+                                    </thead>
+                                    <tbody>
+                                        {% for c in enrolled_student %}
+                                        <tr>
+                                            <td>{{ c.user.name }}</td>
+                                            <td>
+                                                <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -370,5 +372,13 @@
                 dom: "Bfrtip",
             });
         {% endfor %}
+        
+        $('#student_enrollment_list').DataTable({
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            bRetrieve: true,
+            dom: "Bfrtip",
+        });
     })
 </script> {% endblock %}
