@@ -211,7 +211,7 @@
                                 <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}" class="form-horizontal form-label-left">
                                     {% csrf_token %}
                                     <label>Assignment {{ c.homework.homework_name }}</label>
-                                    <a href="{{c.group.attachment}}" class="btn btn-download">Download File</a>
+                                    <a href="{{c.group.attachment}}" class="btn btn-download" download>Download File</a>
                                     <br> 
                                     <label>Grading Rubric:</label> <p>Hello this is dummy text {{c.group.id}} {{c.id}}</p>
                                     <div class="form-group">
@@ -295,7 +295,7 @@
                                     {% for values in appeal_grader %}                                    
                                         {% for c in values.grade %}
                                             {% if forloop.first  %}
-                                            <a href="{{c.group_obj.attachment}}">Download File</a>
+                                            <a href="{{c.group_obj.attachment}}" download>Download File</a>
                                             {% endif %}
                                             <div>
                                                 <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
