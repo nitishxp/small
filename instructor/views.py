@@ -244,7 +244,7 @@ def edit_course(request, pk):
         sum_grade = sum(all_grades[c]['grade'])
         all_grades[c]['grade'].append(sum_grade)
 
-    print group_grades
+    # print group_grades
 
     return render(
         request, 'edit_course.html', {
@@ -289,6 +289,14 @@ def do_grouping(request, pk):
     course = CourseModel.objects.get(pk=pk)
 
     for c in homework:
+
+        # check if this homework has already been started by the student
+        # if yes then skip the current grouping
+        homework_started = HomeworkGroup.objects.filter(
+            homework=c, attachment__isnull=False)
+        if homework_started.exists():
+            continue
+
         group = []
         if c.constraints == "random":
             for d in enrolled_student:
