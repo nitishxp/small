@@ -218,8 +218,8 @@
                                     <div id="myTabContent" class="tab-content">
                                         {% for key , values in group_grades.items %}
                                         <div role="tabpanel" class="tab-pane fade" id="assignment{{key}}" aria-labelledby="home-tab">
-                                            <table class="table table-border">
-                                                <tr>
+                                            <table class="table table-border" id="table{{key}}">
+                                                <thead>
                                                     <th>Group</th>
                                                     <th>Grader</th>
                                                     <th>Grade</th>
@@ -227,18 +227,20 @@
                                                     <th>Appeal Grader</th>
                                                     <th>Appeal Grade</th>
                                                     <th>Appeal Explanation</th>
-                                                </tr>
-                                                {% for v in values %}
-                                                <tr>
-                                                    <td>{{ v.group|linebreaks }}</td>
-                                                    <td>{{ v.grader|linebreaks }}</td>
-                                                    <td>{{ v.grade|linebreaks }}</td>
-                                                    <td>{{ v.explanation|linebreaks }}</td>
-                                                    <td>{{ v.appeal_grader|linebreaks }}</td>
-                                                    <td>{{ v.appeal_grade|linebreaks }}</td>
-                                                    <td>{{ v.appeal_explanation|linebreaks }}</td>
-                                                </tr>
-                                                {% endfor %}
+                                                </thead>
+                                                <tbody>
+                                                    {% for v in values %}
+                                                    <tr>
+                                                        <td>{{ v.group|linebreaks }}</td>
+                                                        <td>{{ v.grader|linebreaks }}</td>
+                                                        <td>{{ v.grade|linebreaks }}</td>
+                                                        <td>{{ v.explanation|linebreaks }}</td>
+                                                        <td>{{ v.appeal_grader|linebreaks }}</td>
+                                                        <td>{{ v.appeal_grade|linebreaks }}</td>
+                                                        <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
                                             </table>
                                         </div>
                                         {% endfor %}
