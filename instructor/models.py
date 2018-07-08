@@ -49,7 +49,7 @@ class HomeworkGroup(models.Model):
     group = models.TextField(unique=True)
     attachment = models.TextField(null=True)
     total_member = models.IntegerField(default=0)
-    grade = models.IntegerField(default=0)
+    grade = models.IntegerField(null=True)
     appeal_done_count = models.IntegerField(default=0)
     appeal_done_status = models.BooleanField(default=True)
     appeal_reject_status = models.BooleanField(default=False)
@@ -118,6 +118,8 @@ class AppealGraderModel(models.Model):
     appeal_by_user = models.ForeignKey(
         UserModel, related_name='appeal_by_user', on_delete=models.CASCADE)
     appeal_visible_status = models.BooleanField(default=False)
+    appeal_grading_status = models.BooleanField(default=False)
+    appeal_peer_grading_status = models.BooleanField(default=False)
 
 
 class PeerEvaluationModel(models.Model):

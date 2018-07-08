@@ -24,12 +24,13 @@ from students.models import (
     StudentConstraintsModel,
 )
 import random
+import collections
 from users.models import UserModel
 from itertools import permutations
 
 from students.views import (return_member_name, return_grade_explanation)
 from django.contrib.auth.decorators import login_required
-
+from students.templatetags.filter import grade_alphabet
 
 @login_required(login_url='/')
 def index(request):
@@ -139,7 +140,7 @@ def return_grade_explanation(group_id):
 
     for c in group_grade_obj:
         index = grader_user_id.index(c.grader.id)
-        grade[index] = str(c.grade)
+        grade[index] = grade_alphabet(c.grade)
         explanation[index] = c.explanation
 
     if len(grader) > 0:
@@ -239,10 +240,16 @@ def edit_course(request, pk):
 
             group_grades[h.homework_name].append(temp)
 
+    group_grades_sort = collections.OrderedDict(sorted(group_grades.items()))
     # now sum the all_grades
     for c in all_grades:
-        sum_grade = sum(all_grades[c]['grade'])
-        all_grades[c]['grade'].append(sum_grade)
+        t_all_grader = filter(None,all_grades[c]['grade'])
+        if t_all_grader:
+            sum_grade = sum(t_all_grader)
+            all_grades[c]['grade'].append(sum_grade)
+        else:
+            all_grades[c]['grade'].append(None)
+        
 
     # print group_grades
 
@@ -253,7 +260,7 @@ def edit_course(request, pk):
             'enrolled_student': enrolled_student,
             'course_pk': pk,
             'all_grades': all_grades,
-            'group_grades': group_grades
+            'group_grades': group_grades_sort
         })
 
 

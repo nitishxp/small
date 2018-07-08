@@ -24,6 +24,7 @@ from instructor.models import (
 from grade.settings import BASE_DIR
 from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # Create your views here.
 
@@ -294,9 +295,10 @@ def student_course(request, course_id):
                 grade_dic.append(appeal)
 
     appeal_grader_obj = AppealGraderModel.objects.filter(
+        Q(appeal_grading_status=False)
+        | Q(appeal_peer_grading_status=False),
         course=course_obj,
-        appeal_grader=request.user.id,
-        appeal_visible_status=True).select_related('group')
+        appeal_grader=request.user.id).select_related('group')
 
     appeal_grader = []
 
@@ -304,7 +306,10 @@ def student_course(request, course_id):
         result = get_grade_homework(c.group.group)
         temp = {}
         temp['grade'] = result[0]
+        temp['homework'] = c.group.homework.homework_name
         temp['peer_grader'] = result[1]
+        temp['is_grading_done'] = c.appeal_grading_status
+        temp['is_peer_grading_done'] = c.appeal_peer_grading_status
         appeal_grader.append(temp)
 
     appeal_grade_result = AppealGraderModel.objects.filter(
@@ -484,6 +489,10 @@ def submit_appeal_peer_grade(request, group):
                 peer_grader=peer_grading[c]['peer_grader'],
                 defaults=peer_grading[c])
 
+    AppealGraderModel.objects.filter(
+        group=group_obj,
+        appeal_grader=request.user).update(appeal_peer_grading_status=True)
+
     # return HttpResponse('sad')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
@@ -498,7 +507,7 @@ def submit_appeal_grade(request, group):
             group=group_obj, appeal_grader=request.user).update(
                 appeal_explanation=request.POST['appeal_explanation'],
                 grade=request.POST['grade'],
-                appeal_visible_status=False)
+                appeal_grading_status=True)
 
         total_grade = AppealGraderModel.objects.filter(
             group=group_obj).aggregate(Avg('grade'))

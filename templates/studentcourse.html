@@ -309,80 +309,84 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-                                    {% for values in appeal_grader %}                                    
-                                        {% for c in values.grade %}
-                                            {% if forloop.first  %}
-                                            <a href="{{c.group_obj.attachment}}" download>Download File</a>
-                                            {% endif %}
-                                            <div>
-                                                <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
-                                                <br> Explanation: {{c.explanation}}
-                                                <br>
-                                            </div>
-                                            {% if forloop.last %}
-                                                <hr>
-                                                <h5>Assignment Grade</h5>
-                                                <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}" class="form-horizontal form-label-left">
-                                                    {% csrf_token %}
-                                                    <label>Assignment {{ c.homework_name }} </label>
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grade">Grade
-                                                        </label>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_explanation">Explanation
-                                                        </label>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <textarea name="appeal_explanation" class="form-control col-md-7 col-xs-12" required id="appeal_explanation"></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <input type="submit" value="Submit" class="btn btn-primary">
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            {% endif %}
-                                        {% endfor %}
-                                        <hr>
-                                        <h5>Peer Evaluator</h5>
-                                            {% if not values.peer_grader %}
-                                                Grading Already Done
-                                            {% endif %}
-                                            {% for c in values.peer_grader %}
-                                                {% if forloop.first %}
-                                                <form method="POST" action="{% url 'student__submit_appeal_peer_grade' c.group %}" class="form-horizontal form-label-left">
-                                                {% csrf_token %}
+                                    {% for values in appeal_grader %}
+                                        {% if not values.is_grading_done or not values.is_peer_grading_done %}                            
+                                            {% for c in values.grade %}
+                                                {% if forloop.first  %}
+                                                    <a href="{{c.group_obj.attachment}}" download>Download File</a>
                                                 {% endif %}
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grade {{ forloop.counter }} ({{c.grade}})
-                                                        <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Explanation
-                                                        <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <textarea name="peer_explanation__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required></textarea>
-                                                    </div>
+                                                <div>
+                                                    <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
+                                                    <br> Explanation: {{c.explanation}}
+                                                    <br>
                                                 </div>
                                                 {% if forloop.last %}
-                                                <div class="form-group">
-                                                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                                                      <button type="submit" class="btn btn-success">Submit Grade</button>
-                                                    </div>
-                                                  </div>
-                                                </form>
+                                                    <hr>
+                                                    {%if not values.is_grading_done %}
+                                                        <h5>Assignment Grade</h5>
+                                                        <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}" class="form-horizontal form-label-left">
+                                                            {% csrf_token %}
+                                                            <label>Assignment {{ c.homework_name }} </label>
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grade">Grade
+                                                                </label>
+                                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                    <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_explanation">Explanation
+                                                                </label>
+                                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                    <textarea name="appeal_explanation" class="form-control col-md-7 col-xs-12" required id="appeal_explanation"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                    <input type="submit" value="Submit" class="btn btn-primary">
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endfor %}
+                                            
+                                            <!-- peer grader -->
+                                            {% if not values.is_peer_grading_done and values.peer_grader %}
+                                                <h5>Peer Evaluator for Assignment {{ values.homework }}</h5>
+                                                {% for c in values.peer_grader %}
+                                                    {% if forloop.first %}
+                                                        <form method="POST" action="{% url 'student__submit_appeal_peer_grade' c.group %}" class="form-horizontal form-label-left">
+                                                            {% csrf_token %}
+                                                    {% endif %}
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grader {{ forloop.counter }} ({{c.grade}})
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                           <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Explanation
+                                                            <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <textarea name="peer_explanation__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    {% if forloop.last %}
+                                                    <div class="form-group">
+                                                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                                                        <button type="submit" class="btn btn-success">Submit Grade</button>
+                                                        </div>
+                                                    </div>
+                                                    </form>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                             </div>
@@ -391,6 +395,5 @@
                 </div>
         </div>
     </div>
-
 </div>
 {% endblock %}

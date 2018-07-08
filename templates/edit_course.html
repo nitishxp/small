@@ -1,4 +1,5 @@
 {% extends "website/_base.html" %} {% block main_content %}
+{% load filter %}
 <div class="x_content">
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
@@ -113,12 +114,12 @@
                                                 <input type="hidden" name="{{ c.homework_name }}___constraints" value="random" required>
                                             </td>
                                             <td>
-                                                <label>No Of Groups</label>
+                                                <label>No. Of Groups</label>
                                                 <br>
                                                 <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}" class="form-control" required>
                                             </td>
                                             <td>
-                                                <label>No Of Grader</label>
+                                                <label>No. Of Grader</label>
                                                 <br>
                                                 <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control"
                                                     required>
@@ -277,26 +278,24 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                {% comment %}
-                                <table class="table">
-                                    <tr>
+                                <table id="group_all_grade" class="table">
+                                    <thead>
                                         <th> Name</th>
                                         {% for c in homework %}
                                         <th>HW {{ c.homework_name }}</th>
                                         {% endfor %}
                                         <th> Total</th>
-                                    </tr>
-                                    {% for key,values in all_grades.items %}
-                                    <tr>
-                                        <td>{{ values.name }}</td>
-                                        {% for grade in values.grade %}
-                                        <td> {{ grade }}</td>
+                                    </thead>
+                                    <tbody>
+                                        {% for key,values in all_grades.items %}
+                                        <tr>
+                                            <td>{{ values.name }}</td>
+                                            {% for grade in values.grade %}
+                                            <td> {{ grade|grade_alphabet }}</td>
+                                            {% endfor %}
+                                        </tr>
                                         {% endfor %}
-                                    </tr>
-                                    {% endfor %}
-                                </table> {% endcomment %}
-                                <table id="group_all_grade" class="table">
-
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -358,8 +357,7 @@
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
-            data: datasource,
-            columns: columns,
+            bRetrieve: true,
             dom: "Bfrtip",
         });
         
