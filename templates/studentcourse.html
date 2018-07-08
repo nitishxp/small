@@ -1,4 +1,5 @@
 {% extends "website/_base.html" %} {% block main_content %}
+{% load filter %}
 <div class="x_content">
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
@@ -154,7 +155,7 @@
                                         <td>{{ c.assignment_name }}</td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
-                                        <td>{{ c.grade }}</td>
+                                        <td>{{ c.grade|grade_alphabet }}</td>
                                         <td>{{ c.explanation|linebreaks  }}</td>
                                     </tr>
                                     {% endfor %}
