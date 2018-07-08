@@ -3,9 +3,8 @@ register = template.Library()
 
 @register.filter(name='grade_alphabet')
 def grade_alphabet(value):
-    if value is None:
+    if value is None or value == '':
         return ''
-        
     if value > 92:
         return 'A'
     elif value >= 90 and value <= 92:
