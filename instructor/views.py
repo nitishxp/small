@@ -32,6 +32,7 @@ from students.views import (return_member_name, return_grade_explanation)
 from django.contrib.auth.decorators import login_required
 from students.templatetags.filter import grade_alphabet
 
+
 @login_required(login_url='/')
 def index(request):
     return render(request, 'instructor.html')
@@ -243,13 +244,12 @@ def edit_course(request, pk):
     group_grades_sort = collections.OrderedDict(sorted(group_grades.items()))
     # now sum the all_grades
     for c in all_grades:
-        t_all_grader = filter(None,all_grades[c]['grade'])
+        t_all_grader = filter(None, all_grades[c]['grade'])
         if t_all_grader:
             sum_grade = sum(t_all_grader)
             all_grades[c]['grade'].append(sum_grade)
         else:
             all_grades[c]['grade'].append(None)
-        
 
     # print group_grades
 
@@ -335,9 +335,13 @@ def do_grouping(request, pk):
                     total_member=len(g))
 
                 # now insert group member to the group
+                temp_member_create = []
                 for m in g:
-                    HomeworkGroupMember.objects.create(
-                        user=UserModel.objects.get(pk=m), group=group_obj)
+                    temp_member_create.append(
+                        HomeworkGroupMember(
+                            user=UserModel.objects.get(pk=m), group=group_obj))
+
+                HomeworkGroupMember.objects.bulk_create(temp_member_create)
 
                 no_of_grader = c.no_of_grader
                 if no_of_grader > len(g):
@@ -354,16 +358,20 @@ def do_grouping(request, pk):
         for g in groups_with_random_grader:
             temp_group.append(g)
 
+        temp_group_combination = []
+
         for pg in permutations(temp_group, 2):
             print pg
             for peer_grader in groups_with_random_grader[pg[1]]:
-                GroupCombinationModel.objects.create(
-                    homework=c,
-                    course=course,
-                    group=HomeworkGroup.objects.get(group=pg[0]),
-                    grader_group=HomeworkGroup.objects.get(group=pg[1]),
-                    grader_user=UserModel.objects.get(pk=peer_grader))
+                temp_group_combination.append(
+                    GroupCombinationModel(
+                        homework=c,
+                        course=course,
+                        group=HomeworkGroup.objects.get(group=pg[0]),
+                        grader_group=HomeworkGroup.objects.get(group=pg[1]),
+                        grader_user=UserModel.objects.get(pk=peer_grader)))
 
+        GroupCombinationModel.objects.bulk_create(temp_group_combination)
         # select a default entry for each group
         # ie if select A-B then delete B-A
         for g in groups_with_random_grader:
