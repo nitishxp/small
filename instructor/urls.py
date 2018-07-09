@@ -15,4 +15,7 @@ urlpatterns = [
     url(r'student_upload/(?P<pk>[0-9]+)/$',
         student_upload,
         name="instructor__student_upload"),
+    url(r'check_homework_deadline/$',
+        check_homework_deadline,
+        name="instructor__check_homework_deadline"),
 ]

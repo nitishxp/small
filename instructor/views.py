@@ -31,6 +31,7 @@ from itertools import permutations
 from students.views import (return_member_name, return_grade_explanation)
 from django.contrib.auth.decorators import login_required
 from students.templatetags.filter import grade_alphabet
+from django.utils import timezone
 
 
 @login_required(login_url='/')
@@ -427,3 +428,25 @@ def student_upload(request, pk):
             })
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def check_homework_deadline(request):
+    from datetime import datetime, timedelta
+    current_date = timezone.now()
+    one_day_before_time = timezone.now() - timedelta(days=1)
+
+    missed_deadline = HomeworkGroup.objects.filter(
+        homework__homework_deadline__range=[one_day_before_time, current_date],
+        attachment__isnull=True)
+
+    # now iterate the data and update the corresponding things
+    # like update the Grade = 0 and make peer_evaluation_false
+
+    for c in missed_deadline:
+        c.grade = 0
+        c.deadline_miss = True
+        c.save()
+        GroupCombinationModel.objects.filter(group=c.group).update(
+            peerevalutation=True)
+
+    return HttpResponse('Hello')
