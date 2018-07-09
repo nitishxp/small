@@ -236,11 +236,21 @@
                                                     <tr>
                                                         <td>{{ v.group|linebreaks }}</td>
                                                         <td>{{ v.grader|linebreaks }}</td>
-                                                        <td>{{ v.grade|linebreaks }}</td>
-                                                        <td>{{ v.explanation|linebreaks }}</td>
+                                                        {% if v.deadline_miss %}
+                                                            <td>F</td>
+                                                            <td>Late Submission</td>
+                                                        {% else %}
+                                                            <td>{{ v.grade|linebreaks }}</td>
+                                                            <td>{{ v.explanation|linebreaks }}</td>
+                                                        {% endif %}
                                                         <td>{{ v.appeal_grader|linebreaks }}</td>
-                                                        <td>{{ v.appeal_grade|linebreaks }}</td>
-                                                        <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                        {% if v.deadline_miss %}
+                                                            <td>NA</td>
+                                                            <td>NA</td>
+                                                        {% else %}
+                                                            <td>{{ v.appeal_grade|linebreaks }}</td>
+                                                            <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                        {% endif %}
                                                     </tr>
                                                     {% endfor %}
                                                 </tbody>

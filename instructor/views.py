@@ -239,6 +239,7 @@ def edit_course(request, pk):
             temp['appeal_grader'] = appeal_grade_explanation[2]
             temp['appeal_grade'] = appeal_grade_explanation[0]
             temp['appeal_explanation'] = appeal_grade_explanation[1]
+            temp['deadline_miss'] = group.deadline_miss
 
             group_grades[h.homework_name].append(temp)
 
