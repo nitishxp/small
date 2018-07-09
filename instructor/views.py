@@ -155,7 +155,7 @@ def return_appeal_grade_explanation(group_id):
     grader = []
     for c in AppealGraderModel.objects.filter(
             group=group_id).select_related('appeal_grader'):
-        grade.append(str(c.grade))
+        grade.append(grade_alphabet(c.grade))
         explanation.append(c.appeal_explanation)
         grader.append(c.appeal_grader.name)
 
