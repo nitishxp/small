@@ -81,9 +81,9 @@
                                         <td>{{ c.assignment_name }}</td>
                                         {% if c.deadline_miss %}
                                             <td><input type="checkbox" disabled></td>
-                                            <td>No</td>
-                                            <td>No</td>
-                                            <td>-</td>
+                                            <td>NA</td>
+                                            <td>NA</td>
+                                            <td>NA</td>
                                         {% else %}
                                             <td>{% if c.uploads %} <input type="checkbox" checked disabled> {% else %} <input type="checkbox" disabled> {% endif %}</td>
                                             <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
