@@ -90,7 +90,7 @@ class GroupCombinationModel(models.Model):
         to_field='group',
         on_delete=models.CASCADE,
         related_name='group2')
-    grader_user = models.ForeignKey(UserModel, to_field='username')
+    grader_user = models.ForeignKey(UserModel)
     # appeal_grader = models.ForeignKey(UserModel, to_field='username')
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
