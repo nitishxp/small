@@ -216,6 +216,7 @@ def student_course(request, course_id):
         t['uploads'] = group_details.attachment
         t['appeal_done_count'] = group_details.appeal_done_count
         t['total_member'] = group_details.total_member
+        t['deadline_miss'] = group_details.deadline_miss
 
         assignment.append(t)
     #

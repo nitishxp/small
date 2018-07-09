@@ -79,10 +79,17 @@
                                     {% for c in homework %}
                                     <tr>
                                         <td>{{ c.assignment_name }}</td>
-                                        <td>{% if c.uploads %} <input type="checkbox" checked disabled> {% else %} <input type="checkbox" disabled> {% endif %}</td>
-                                        <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
-                                        <td>{% if  c.grade == ""  %} No {% else %} Yes {% endif %}</td>
-                                        <td>{% if  c.appeal_done_count == c.total_member  %} {{ c.grade }} {% endif %} </td>
+                                        {% if c.deadline_miss %}
+                                            <td><input type="checkbox" disabled></td>
+                                            <td>No</td>
+                                            <td>No</td>
+                                            <td>-</td>
+                                        {% else %}
+                                            <td>{% if c.uploads %} <input type="checkbox" checked disabled> {% else %} <input type="checkbox" disabled> {% endif %}</td>
+                                            <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
+                                            <td>{% if  c.grade == ""  %} No {% else %} Yes {% endif %}</td>
+                                            <td>{% if  c.appeal_done_count == c.total_member  %} {{ c.grade }} {% endif %} </td>
+                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -155,8 +162,13 @@
                                         <td>{{ c.assignment_name }}</td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
+                                        {% if c.deadline_miss %}
+                                        <td>F</td>
+                                        <td>Late</td>
+                                        {% else %}
                                         <td>{{ c.grade|grade_alphabet }}</td>
                                         <td>{{ c.explanation|linebreaks  }}</td>
+                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </table>
