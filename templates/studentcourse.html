@@ -314,7 +314,7 @@
                                 <div class="x_content">
                                     {% for c in appeal_grade_result %}
                                     <div>
-                                        <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> {{ c.grade }}
+                                        <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> {{ c.grade|grade_alphabet }}
                                         <br> 
                                         <label>Explanation: </label> {{c.appeal_explanation}}
                                         <br>
