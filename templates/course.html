@@ -94,7 +94,7 @@
                                         <td> {{ c.course_name }}</td>
                                         <td>{{ c.course_id }}</td>
                                         <td>
-                                            <a href="{% url 'instructor__edit_course' c.id %}"> Goto Course Page</a>
+                                            <a href="{% url 'instructor__edit_course' c.id %}" class="btn btn-download" style="color:black"> Goto Course Page</a>
                                         </td>
                                     </tr>
                                     {% endfor %}
