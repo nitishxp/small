@@ -49,7 +49,7 @@ class HomeworkGroup(models.Model):
     group = models.TextField(unique=True)
     attachment = models.TextField(null=True)
     total_member = models.IntegerField(default=0)
-    grade = models.IntegerField(null=True)
+    grade = models.DecimalField(null=True, decimal_places=2, max_digits=4)
     appeal_done_count = models.IntegerField(default=0)
     appeal_done_status = models.BooleanField(default=True)
     appeal_reject_status = models.BooleanField(default=False)
@@ -72,7 +72,8 @@ class HomeworkGroupMember(models.Model):
 class HomeworkGroupGrade(models.Model):
     group = models.ForeignKey(
         HomeworkGroup, to_field='group', on_delete=models.CASCADE)
-    grade = models.IntegerField(default=0)
+    grade = models.DecimalField(
+        null=True, decimal_places=2, max_digits=4, default=0.00)
     explanation = models.TextField(null=True)
     grader = models.ForeignKey(UserModel)
 
@@ -115,7 +116,7 @@ class AppealGraderModel(models.Model):
     appeal_explanation = models.TextField()
     appeal_reason = models.TextField()
     course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
-    grade = models.IntegerField(null=True)
+    grade = models.DecimalField(null=True, decimal_places=2, max_digits=4)
     appeal_by_user = models.ForeignKey(
         UserModel, related_name='appeal_by_user', on_delete=models.CASCADE)
     appeal_visible_status = models.BooleanField(default=False)
@@ -136,7 +137,7 @@ class PeerEvaluationModel(models.Model):
         related_name='peer_grader')
     peer_explanation = models.TextField()
     course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
-    grade = models.IntegerField(null=True)
+    grade = models.DecimalField(null=True, decimal_places=2, max_digits=4)
     appeal_grader = models.ForeignKey(
         UserModel, related_name='appeal_grader', on_delete=models.CASCADE)
     homework = models.ForeignKey(CourseHomeWorkModel)
