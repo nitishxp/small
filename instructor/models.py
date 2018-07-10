@@ -21,7 +21,7 @@ class CourseModel(models.Model):
 
 class CourseHomeWorkModel(models.Model):
     homework_name = models.TextField()
-    grade_deadline = models.DateTimeField()
+    grade_deadline = models.DateTimeField(null=True)
     homework_deadline = models.DateTimeField()
     no_of_group = models.IntegerField(null=True)
     no_of_grader = models.IntegerField(null=True)
