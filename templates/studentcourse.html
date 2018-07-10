@@ -85,7 +85,7 @@
                                             <td>NA</td>
                                             <td>NA</td>
                                         {% else %}
-                                            <td>{% if c.uploads %} <input type="checkbox" checked disabled> {% else %} <input type="checkbox" disabled> {% endif %}</td>
+                                            <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                             <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
                                             <td>{% if  c.grade == ""  %} No {% else %} Yes {% endif %}</td>
                                             <td>{% if  c.appeal_done_count == c.total_member  %} {{ c.grade }} {% endif %} </td>
