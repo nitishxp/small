@@ -232,7 +232,21 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required>
+                                            {% comment %} <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required> {% endcomment %}
+                                            <select name="grade" class="form-control col-md-7 col-xs-12" required>
+                                                <option value="4.00">A</option>
+                                                <option value="3.67">A-</option>
+                                                <option value="3.33">B+</option>
+                                                <option value="3.00">B</option>
+                                                <option value="2.67">B-</option>
+                                                <option value="2.33">C+</option>
+                                                <option value="2.00">C</option>
+                                                <option value="1.67">C-</option>
+                                                <option value="1.33">D+</option>
+                                                <option value="1.00">D</option>
+                                                <option value="0.67">D-</option>
+                                                <option value="0.00">F</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -344,7 +358,21 @@
                                                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grade">Grade
                                                                 </label>
                                                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                                                    <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
+                                                                    {% comment %} <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade"> {% endcomment %}
+                                                                    <select name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
+                                                                        <option value="4.00">A</option>
+                                                                        <option value="3.67">A-</option>
+                                                                        <option value="3.33">B+</option>
+                                                                        <option value="3.00">B</option>
+                                                                        <option value="2.67">B-</option>
+                                                                        <option value="2.33">C+</option>
+                                                                        <option value="2.00">C</option>
+                                                                        <option value="1.67">C-</option>
+                                                                        <option value="1.33">D+</option>
+                                                                        <option value="1.00">D</option>
+                                                                        <option value="0.67">D-</option>
+                                                                        <option value="0.00">F</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group">
@@ -378,7 +406,21 @@
                                                             <span class="required">*</span>
                                                         </label>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                                           <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>
+                                                           {% comment %} <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required> {% endcomment %}
+                                                           <select name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>
+                                                            <option value="4.00">A</option>
+                                                            <option value="3.67">A-</option>
+                                                            <option value="3.33">B+</option>
+                                                            <option value="3.00">B</option>
+                                                            <option value="2.67">B-</option>
+                                                            <option value="2.33">C+</option>
+                                                            <option value="2.00">C</option>
+                                                            <option value="1.67">C-</option>
+                                                            <option value="1.33">D+</option>
+                                                            <option value="1.00">D</option>
+                                                            <option value="0.67">D-</option>
+                                                            <option value="0.00">F</option>
+                                                        </select>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">

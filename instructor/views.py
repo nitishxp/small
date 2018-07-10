@@ -437,8 +437,7 @@ def check_homework_deadline(request):
     one_day_before_time = timezone.now() - timedelta(days=1)
 
     missed_deadline = HomeworkGroup.objects.filter(
-        homework__homework_deadline__range=[one_day_before_time, current_date],
-        attachment__isnull=True)
+        homework__homework_deadline__lt=current_date, attachment__isnull=True)
 
     # now iterate the data and update the corresponding things
     # like update the Grade = 0 and make peer_evaluation_false
@@ -446,6 +445,7 @@ def check_homework_deadline(request):
     for c in missed_deadline:
         c.grade = 0
         c.deadline_miss = True
+        c.attachment = 'None'
         c.save()
         GroupCombinationModel.objects.filter(group=c.group).update(
             peerevalutation=True)
