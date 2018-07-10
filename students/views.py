@@ -126,7 +126,7 @@ def return_grade_explanation(group_id):
     grade = []
     explanation = []
     for c in HomeworkGroupGrade.objects.filter(group=group_id):
-        grade.append(int(c.grade))
+        grade.append(c.grade)
         explanation.append(c.explanation)
 
     if len(grade) > 0:
@@ -387,7 +387,7 @@ def peervaluation(request, combination_id, group_id):
     # find the average of the grade and save it
     total_grade = HomeworkGroupGrade.objects.filter(group=group_obj).aggregate(
         Avg('grade'))
-    total_grade = int(round(total_grade['grade__avg']))
+    total_grade = round(total_grade['grade__avg'])
     group_obj.grade = total_grade
     group_obj.save()
     # update the current peerevaluation value = false so that grader can not reevaluate the same
@@ -517,7 +517,7 @@ def submit_appeal_grade(request, group):
         total_grade = AppealGraderModel.objects.filter(
             group=group_obj).aggregate(Avg('grade'))
 
-        total_grade = int(round(total_grade['grade__avg']))
+        total_grade = round(total_grade['grade__avg'])
         group_obj.grade = total_grade
         group_obj.save()
 

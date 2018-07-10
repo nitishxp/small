@@ -343,7 +343,7 @@
                                                     <a href="{{c.group_obj.attachment}}" download>Download File</a>
                                                 {% endif %}
                                                 <div>
-                                                    <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade }}
+                                                    <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade|grade_alphabet }}
                                                     <br> Explanation: {{c.explanation}}
                                                     <br>
                                                 </div>
