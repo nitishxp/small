@@ -70,11 +70,11 @@
                             <div class="x_content">
                                 <table class="table table-hover">
                                     <tr>
-                                        <th> Assignment </th>
-                                        <th> Uploads </th>
-                                        <th> Appeal </th>
-                                        <th>Peer Grading </th>
-                                        <th>Appeal Peer Grading</th>
+                                        <th>Assignment</th>
+                                        <th>Uploads</th>
+                                        <th>Appeal</th>
+                                        <th>Grade</th>
+                                        <th>Appeal Grade</th>
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
@@ -87,8 +87,8 @@
                                         {% else %}
                                             <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                             <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
-                                            <td>{% if  c.grade == ""  %} No {% else %} Yes {% endif %}</td>
-                                            <td>{% if  c.appeal_done_count == c.total_member  %} {{ c.grade }} {% endif %} </td>
+                                            <td>{{c.grade | grade_alphabet }}</td>
+                                            <td> {{ c.appeal_grade|grade_alphabet }}</td>
                                         {% endif %}
                                     </tr>
                                     {% endfor %}

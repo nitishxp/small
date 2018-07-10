@@ -217,6 +217,10 @@ def student_course(request, course_id):
         t['appeal_done_count'] = group_details.appeal_done_count
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
+        if group_details.appeal_done_count == group_details.total_member:
+            t['appeal_grade'] = group_details.grade
+        else:
+            t['appeal_grade'] = 0
 
         assignment.append(t)
     #
