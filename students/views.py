@@ -220,7 +220,7 @@ def student_course(request, course_id):
         if group_details.appeal_done_count == group_details.total_member:
             t['appeal_grade'] = group_details.grade
         else:
-            t['appeal_grade'] = 0
+            t['appeal_grade'] = ''
 
         assignment.append(t)
     #
