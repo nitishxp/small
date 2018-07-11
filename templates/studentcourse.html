@@ -72,8 +72,8 @@
                                     <tr>
                                         <th>Assignment</th>
                                         <th>Uploads</th>
-                                        <th>Appeal</th>
                                         <th>Grade</th>
+                                        <th>Appeal</th>
                                         <th>Appeal Grade</th>
                                     </tr>
                                     {% for c in homework %}
@@ -86,8 +86,8 @@
                                             <td>NA</td>
                                         {% else %}
                                             <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
-                                            <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
                                             <td>{{c.grade | grade_alphabet }}</td>
+                                            <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
                                             <td> {{ c.appeal_grade|grade_alphabet }}</td>
                                         {% endif %}
                                     </tr>
