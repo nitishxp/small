@@ -255,14 +255,14 @@ def edit_course(request, pk):
     group_grades_sort = collections.OrderedDict(sorted(group_grades.items()))
     # now sum the all_grades
     for c in all_grades:
-        t_all_grader = filter(None, all_grades[c]['grade'])
+        t_all_grader = [x for x in all_grades[c]['grade'] if x is not None]
         if t_all_grader:
-            sum_grade = sum(t_all_grader)
+            sum_grade = sum(t_all_grader) / len(t_all_grader)
             all_grades[c]['grade'].append(sum_grade)
         else:
             all_grades[c]['grade'].append(None)
-
-    # print group_grades
+        
+        # print group_grades
 
     return render(
         request, 'edit_course.html', {
