@@ -239,8 +239,28 @@ def student_course(request, course_id):
         else:
             t['appeal_grade'] = ''
 
+        # to find out the grading quality
+        grading_quality = PeerEvaluationModel.objects.filter(
+            course=course_obj,
+            group__homework__homework_name=t['assignment_name'],
+            peer_grader=request.user).aggregate(Avg('grade'))
+        if grading_quality['grade__avg'] is not None:
+            grading_quality = round(grading_quality['grade__avg'])
+        else:
+            # now check does this user have even done the grading
+            grading_done = HomeworkGroupGrade.objects.filter(
+                group__homework__course=course_obj,
+                group__homework__homework_name=t['assignment_name'],
+                grader=request.user)
+            if grading_done.exists():
+                grading_quality = 4.00
+            else:
+                grading_quality = None
+
+        t['grading_quality'] = grading_quality
+
         assignment.append(t)
-    #
+
     peerevalutation = GroupCombinationModel.objects.filter(
         grader_user=request.user,
         active=True,

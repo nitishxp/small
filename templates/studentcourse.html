@@ -75,6 +75,7 @@
                                         <th>Grade</th>
                                         <th>Appeal</th>
                                         <th>Appeal Grade</th>
+                                        <th>Grading Quality</th>
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
@@ -90,6 +91,7 @@
                                             <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
                                             <td> {{ c.appeal_grade|grade_alphabet }}</td>
                                         {% endif %}
+                                        <td>{{ c.grading_quality | grade_alphabet }}</td>
                                     </tr>
                                     {% endfor %}
                                 </table>
