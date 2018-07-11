@@ -141,6 +141,9 @@ def return_appeal_grade_explanation(group_id):
         grade.append(c.grade)
         explanation.append(c.appeal_explanation)
 
+    grade = filter(None, grade)
+    explanation = filter(None, explanation)
+
     if len(grade) > 0:
         return sum(grade) / len(grade), "\n".join(explanation)
     return "", ""
