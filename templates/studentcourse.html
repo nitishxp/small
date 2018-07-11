@@ -166,7 +166,11 @@
                                         <td>F</td>
                                         <td>Late Submission</td>
                                         {% else %}
-                                        <td>{{ c.grade|grade_alphabet }}</td>
+                                        {% if  c.appeal_done_count == c.total_member  %}
+                                            <td>{{ c.appeal_grade|grade_alphabet }}</td>
+                                        {% else %}
+                                            <td>{{ c.grade|grade_alphabet }}</td>
+                                        {% endif %}
                                         <td>{{ c.explanation|linebreaks  }}</td>
                                         {% endif %}
                                     </tr>
