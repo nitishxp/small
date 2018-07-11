@@ -215,7 +215,8 @@ def edit_course(request, pk):
         #
         for g in homework_group:
             if g.appeal_done_count == g.total_member:
-                appeal_grade, appeal_explanation = return_appeal_grade_explanation_1(g.group)
+                appeal_grade, appeal_explanation = return_appeal_grade_explanation_1(
+                    g.group)
                 grade = appeal_grade
             else:
                 grade = g.grade
@@ -370,8 +371,11 @@ def do_grouping(request, pk):
 
         temp_group_combination = []
 
-        for pg in permutations(temp_group, 2):
-            print pg
+        for i in range(len(temp_group)):
+            pg = []
+            pg[0] = (temp_group * 2)[i:i + 2][0]
+            pg[1] = (temp_group * 2)[i:i + 2][1]
+
             for peer_grader in groups_with_random_grader[pg[1]]:
                 temp_group_combination.append(
                     GroupCombinationModel(
