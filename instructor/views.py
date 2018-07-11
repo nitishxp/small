@@ -373,8 +373,8 @@ def do_grouping(request, pk):
 
         for i in range(len(temp_group)):
             pg = []
-            pg[0] = (temp_group * 2)[i:i + 2][0]
-            pg[1] = (temp_group * 2)[i:i + 2][1]
+            pga.append((temp_group * 2)[i:i + 2][0])
+            pg.append((temp_group * 2)[i:i + 2][1])
 
             for peer_grader in groups_with_random_grader[pg[1]]:
                 temp_group_combination.append(
