@@ -133,6 +133,7 @@ def return_grade_explanation(group_id):
         return sum(grade) / len(grade), "\n".join(explanation)
     return "", ""
 
+
 def return_appeal_grade_explanation(group_id):
     grade = []
     explanation = []
@@ -143,6 +144,7 @@ def return_appeal_grade_explanation(group_id):
     if len(grade) > 0:
         return sum(grade) / len(grade), "\n".join(explanation)
     return "", ""
+
 
 def get_grade_homework(group):
     grade = HomeworkGroupGrade.objects.filter(group=group).select_related(
@@ -228,7 +230,8 @@ def student_course(request, course_id):
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
         if group_details.appeal_done_count == group_details.total_member:
-            appeal_grade, appeal_explanation = return_appeal_grade_explanation(group)
+            appeal_grade, appeal_explanation = return_appeal_grade_explanation(
+                group)
             t['appeal_grade'] = appeal_grade
         else:
             t['appeal_grade'] = ''
@@ -319,14 +322,15 @@ def student_course(request, course_id):
     appeal_grader = []
 
     for c in appeal_grader_obj:
-        result = get_grade_homework(c.group.group)
-        temp = {}
-        temp['grade'] = result[0]
-        temp['homework'] = c.group.homework.homework_name
-        temp['peer_grader'] = result[1]
-        temp['is_grading_done'] = c.appeal_grading_status
-        temp['is_peer_grading_done'] = c.appeal_peer_grading_status
-        appeal_grader.append(temp)
+        if c.group.total_member == c.group.appeal_done_count:
+            result = get_grade_homework(c.group.group)
+            temp = {}
+            temp['grade'] = result[0]
+            temp['homework'] = c.group.homework.homework_name
+            temp['peer_grader'] = result[1]
+            temp['is_grading_done'] = c.appeal_grading_status
+            temp['is_peer_grading_done'] = c.appeal_peer_grading_status
+            appeal_grader.append(temp)
 
     appeal_grade_result = AppealGraderModel.objects.filter(
         group__in=users_group).select_related('group').order_by(
