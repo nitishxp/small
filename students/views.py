@@ -133,6 +133,16 @@ def return_grade_explanation(group_id):
         return sum(grade) / len(grade), "\n".join(explanation)
     return "", ""
 
+def return_appeal_grade_explanation(group_id):
+    grade = []
+    explanation = []
+    for c in AppealGraderModel.objects.filter(group=group_id):
+        grade.append(c.grade)
+        explanation.append(c.appeal_explanation)
+
+    if len(grade) > 0:
+        return sum(grade) / len(grade), "\n".join(explanation)
+    return "", ""
 
 def get_grade_homework(group):
     grade = HomeworkGroupGrade.objects.filter(group=group).select_related(
@@ -218,7 +228,8 @@ def student_course(request, course_id):
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
         if group_details.appeal_done_count == group_details.total_member:
-            t['appeal_grade'] = group_details.grade
+            appeal_grade, appeal_explanation = return_appeal_grade_explanation(group)
+            t['appeal_grade'] = appeal_grade
         else:
             t['appeal_grade'] = ''
 

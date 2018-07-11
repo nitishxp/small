@@ -88,7 +88,7 @@
                                             <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                             <td>{% if  c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
                                             <td>{{c.grade | grade_alphabet }}</td>
-                                            <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                            <td> {{ c.appeal_grade|grade_alphabet }} {{ c.appeal_grade }}</td>
                                         {% endif %}
                                     </tr>
                                     {% endfor %}
@@ -234,6 +234,7 @@
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             {% comment %} <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required> {% endcomment %}
                                             <select name="grade" class="form-control col-md-7 col-xs-12" required>
+                                                <option value="">Select</option>
                                                 <option value="4.00">A</option>
                                                 <option value="3.67">A-</option>
                                                 <option value="3.33">B+</option>
@@ -360,6 +361,7 @@
                                                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                                                     {% comment %} <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade"> {% endcomment %}
                                                                     <select name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
+                                                                        <option value="">Select</option>
                                                                         <option value="4.00">A</option>
                                                                         <option value="3.67">A-</option>
                                                                         <option value="3.33">B+</option>
@@ -408,6 +410,7 @@
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                                            {% comment %} <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required> {% endcomment %}
                                                            <select name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>
+                                                            <option value="">Select</option>
                                                             <option value="4.00">A</option>
                                                             <option value="3.67">A-</option>
                                                             <option value="3.33">B+</option>
