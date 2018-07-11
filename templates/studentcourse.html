@@ -97,7 +97,7 @@
                                 <div>
                                     <form method="GET" action="{% url 'student__appeal' c.group.group %}">
                                         {% csrf_token %}
-                                        <label>Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
+                                        <label style="color:red">Are you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
                                         <input type="submit" class="btn appeal_submit" value="Yes">
                                         <input type="button" class="btn appeal_cancel" data-group_id="{{c.group.group}}" value="No">
                                     </form>
@@ -341,7 +341,7 @@
                                         {% if not values.is_grading_done or not values.is_peer_grading_done %}                            
                                             {% for c in values.grade %}
                                                 {% if forloop.first  %}
-                                                    <a href="{{c.group_obj.attachment}}" download>Download File</a>
+                                                    <a href="{{c.group_obj.attachment}}" download class="btn btn-download">Download File</a>
                                                 {% endif %}
                                                 <div>
                                                     <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade|grade_alphabet }}
@@ -404,7 +404,7 @@
                                                             {% csrf_token %}
                                                     {% endif %}
                                                     <div class="form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grader {{ forloop.counter }} ({{c.grade}})
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grader {{ forloop.counter }}
                                                             <span class="required">*</span>
                                                         </label>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">

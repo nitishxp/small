@@ -28,7 +28,11 @@ import collections
 from users.models import UserModel
 from itertools import permutations
 
-from students.views import (return_member_name, return_grade_explanation)
+from students.views import (
+    return_member_name,
+    return_grade_explanation,
+    return_appeal_grade_explanation as return_appeal_grade_explanation_1,
+)
 from django.contrib.auth.decorators import login_required
 from students.templatetags.filter import grade_alphabet
 from django.utils import timezone
@@ -210,7 +214,11 @@ def edit_course(request, pk):
             course=course, homework=h)
         #
         for g in homework_group:
-            grade = g.grade
+            if g.appeal_done_count == g.total_member:
+                appeal_grade, appeal_explanation = return_appeal_grade_explanation_1(g.group)
+                grade = appeal_grade
+            else:
+                grade = g.grade
             #
             for members in HomeworkGroupMember.objects.filter(
                     group=g).select_related('user'):
