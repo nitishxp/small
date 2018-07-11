@@ -15,6 +15,7 @@ from models import (
     GroupCombinationModel,
     HomeworkGroupGrade,
     AppealGraderModel,
+    PeerEvaluationModel,
 )
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
@@ -36,6 +37,7 @@ from students.views import (
 from django.contrib.auth.decorators import login_required
 from students.templatetags.filter import grade_alphabet
 from django.utils import timezone
+from django.db.models import Avg
 
 
 @login_required(login_url='/')
@@ -208,6 +210,16 @@ def edit_course(request, pk):
 
     all_grades = {}
     group_grades = {}
+    first_grader_grading = {}
+
+    # first fill the dummy first_grader_grading with None value
+    for u in enrolled_student:
+        user_id_e = u.user.id
+        user_obj_e = u.user
+        if user_id_e not in first_grader_grading.keys():
+            first_grader_grading[user_id_e] = {}
+            first_grader_grading[user_id_e]['name'] = user_obj_e.name
+            first_grader_grading[user_id_e]['grade'] = [None] * len(homework)
 
     for h in homework:
         homework_group = HomeworkGroup.objects.filter(
@@ -220,7 +232,8 @@ def edit_course(request, pk):
                 grade = appeal_grade
             else:
                 grade = g.grade
-            #
+
+            # this is for the all_grades
             for members in HomeworkGroupMember.objects.filter(
                     group=g).select_related('user'):
                 user_id = members.user.id
@@ -232,10 +245,34 @@ def edit_course(request, pk):
                     all_grades[user_id]['grade'].append(grade)
                 else:
                     all_grades[user_id]['grade'].append(grade)
-        #
+
+            # this is for the first grader grading
+            for grader_user in GroupCombinationModel.objects.filter(
+                    group=g).select_related('grader_user'):
+                grader_user_id = grader_user.grader_user.id
+                grader_user_obj = grader_user.grader_user
+
+                # first find in the appeal_group
+                total_grade = PeerEvaluationModel.objects.filter(
+                    group=g, peer_grader=grader_user_obj).aggregate(
+                        Avg('grade'))
+
+                if total_grade['grade__avg'] is not None:
+                    total_grade = round(total_grade['grade__avg'])
+                else:
+                    # now check does this user have even done the grading
+                    grading_done = HomeworkGroupGrade.objects.filter(
+                        group=g, grader=grader_user_obj)
+                    if grading_done.exists():
+                        total_grade = 4.00
+                    else:
+                        total_grade = None
+
+                first_grader_grading[grader_user_id]['grade'][
+                    int(h.homework_name) - 1] = total_grade
+
         # first fetch the assignment name array
         group_grades[h.homework_name] = []
-
         for group in homework_group:
             grade_explanation = return_grade_explanation(group.group)
             appeal_grade_explanation = return_appeal_grade_explanation(
@@ -261,8 +298,19 @@ def edit_course(request, pk):
             all_grades[c]['grade'].append(sum_grade)
         else:
             all_grades[c]['grade'].append(None)
-        
-        # print group_grades
+
+    # now sum the all first grading grades
+    for c in first_grader_grading:
+        t_all_grader = [
+            x for x in first_grader_grading[c]['grade'] if x is not None
+        ]
+        if t_all_grader:
+            sum_grade = sum(t_all_grader) / len(t_all_grader)
+            first_grader_grading[c]['grade'].append(sum_grade)
+        else:
+            first_grader_grading[c]['grade'].append(None)
+
+    # print group_grades
 
     return render(
         request, 'edit_course.html', {
@@ -271,7 +319,8 @@ def edit_course(request, pk):
             'enrolled_student': enrolled_student,
             'course_pk': pk,
             'all_grades': all_grades,
-            'group_grades': group_grades_sort
+            'group_grades': group_grades_sort,
+            'first_grader_grading': first_grader_grading
         })
 
 

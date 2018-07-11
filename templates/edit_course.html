@@ -28,11 +28,11 @@
                     <span class="step_no">All Grades</span>
                 </a>
             </li>
-            {% comment %} <li>
+            <li>
                 <a href="#peer_grades" class="selected">
                     <span class="step_no">Peer Grades</span>
                 </a>
-            </li> {% endcomment %}
+            </li>
         </ul>
         <div class="stepContainer">
             <div id="course_info" class="content" style="display: block">
@@ -311,7 +311,7 @@
                     </div>
                 </div>
             </div>
-            {% comment %} <div id="peer_grades" class="content" style="display: block">
+            <div id="peer_grades" class="content" style="display: block">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -320,12 +320,30 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <h1>Personal Info</h1>
+                                <table id="first_grade_grading" class="table">
+                                    <thead>
+                                        <th> Name</th>
+                                        {% for c in homework %}
+                                        <th>HW {{ c.homework_name }}</th>
+                                        {% endfor %}
+                                        <th> Total</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for key,values in first_grader_grading.items %}
+                                        <tr>
+                                            <td>{{ values.name }}</td>
+                                            {% for grade in values.grade %}
+                                            <td> {{ grade|grade_alphabet }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> {% endcomment %}
+            </div>
         </div>
 
     </div>
@@ -387,5 +405,14 @@
             bRetrieve: true,
             dom: "Bfrtip",
         });
+
+        $('#first_grade_grading').DataTable({
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            bRetrieve: true,
+            dom: "Bfrtip",
+        });
+
     })
 </script> {% endblock %}
