@@ -146,7 +146,7 @@ def return_appeal_grade_explanation(group_id):
 
     if len(grade) > 0:
         return sum(grade) / len(grade), "\n".join(explanation)
-    return "", ""
+    return None, None
 
 
 def get_grade_homework(group):
