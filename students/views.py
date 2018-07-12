@@ -232,6 +232,7 @@ def student_course(request, course_id):
         t['appeal_done_count'] = group_details.appeal_done_count
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
+        t['appeal_reject_status'] = group_details.appeal_reject_status
         if group_details.appeal_done_count == group_details.total_member:
             appeal_grade, appeal_explanation = return_appeal_grade_explanation(
                 group)
@@ -294,6 +295,10 @@ def student_course(request, course_id):
         has_appeal_done = grade[c].group.appeal_done_count
         appeal_done_status = grade[c].group.appeal_done_status
         appeal_reject_status = grade[c].group.appeal_reject_status
+        no_of_first_grader = GroupCombinationModel.objects.filter(
+            group=grade[c].group).count()
+        no_of_grader_who_have_done_grading = HomeworkGroupGrade.objects.filter(
+            group=grade[c].group).count()
 
         if c == 0:
             current = homework_name
@@ -313,6 +318,12 @@ def student_course(request, course_id):
                     'appeal_done_status']
                 appeal['appeal_reject_status'] = grade_dic[c - 1][
                     'appeal_reject_status']
+
+                if no_of_first_grader == no_of_grader_who_have_done_grading:
+                    appeal['do_all_first_grader_have_graded'] = True
+                else:
+                    appeal['do_all_first_grader_have_graded'] = False
+
                 grade_dic.append(appeal)
 
         temp = {}
@@ -334,6 +345,11 @@ def student_course(request, course_id):
                     'appeal_done_status']
                 appeal['appeal_reject_status'] = grade_dic[len(grade_dic) - 1][
                     'appeal_reject_status']
+                if no_of_first_grader == no_of_grader_who_have_done_grading:
+                    appeal['do_all_first_grader_have_graded'] = True
+                else:
+                    appeal['do_all_first_grader_have_graded'] = False
+
                 grade_dic.append(appeal)
 
     appeal_grader_obj = AppealGraderModel.objects.filter(
