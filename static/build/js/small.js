@@ -47,6 +47,7 @@ $("#add_assignments").on('click', function () {
 $(".appeal_cancel").on('click', function () {
     var group = $(this).data('group_id')
     var a = $(this).siblings('.appeal_submit')
+    alert("Please wait for a moment...")
     $.ajax({
         url: '/students/reject_appeal/' + group,
         success: function (result) {
