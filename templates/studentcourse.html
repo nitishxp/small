@@ -159,15 +159,17 @@
                                     <tr>
                                         <th>Assignment</th>
                                         <th>Group</th>
-                                        <th>Deadline</th>
+                                        <th>HW Deadline</th>
+                                        <th>Grading Deadline</th>
                                         <th>Grade</th>
-                                        <th>Explanation</th>
+                                        <th>Feedback</th>
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
                                         <td>{{ c.assignment_name }}</td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
+                                        <td>{{ c.grade_deadline }}</td>
                                         {% if c.deadline_miss %}
                                         <td>F</td>
                                         <td>Late Submission</td>
@@ -261,7 +263,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Explanation
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Feedback
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -294,7 +296,7 @@
                                 <div>
                                     <label> Assignment {{ c.homework_name }} Grade: </label> {{ c.grade|grade_alphabet }} 
                                     <br> 
-                                    <label>Explanation: </label> {{c.explanation}}
+                                    <label>Feedback: </label> {{c.explanation}}
                                     <br>
                                 </div>
                                 {% endif %} {% if c.type == "appeal" and c.appeal_done_status and c.do_all_first_grader_have_graded %}
@@ -327,7 +329,7 @@
                                     <div>
                                         <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> {{ c.grade|grade_alphabet }}
                                         <br> 
-                                        <label>Explanation: </label> {{c.appeal_explanation}}
+                                        <label>Feedback: </label> {{c.appeal_explanation}}
                                         <br>
                                     </div>
                                     {% endfor %}
@@ -355,7 +357,7 @@
                                                 {% endif %}
                                                 <div>
                                                     <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade|grade_alphabet }}
-                                                    <br> Explanation: {{c.explanation}}
+                                                    <br> Feedback: {{c.explanation}}
                                                     <br>
                                                 </div>
                                                 {% if forloop.last %}
@@ -388,7 +390,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_explanation">Explanation
+                                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_explanation">Feedback
                                                                 </label>
                                                                 <div class="col-md-6 col-sm-6 col-xs-12">
                                                                     <textarea name="appeal_explanation" class="form-control col-md-7 col-xs-12" required id="appeal_explanation"></textarea>
@@ -437,7 +439,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Explanation
+                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Feedback
                                                             <span class="required">*</span>
                                                         </label>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">

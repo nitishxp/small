@@ -18,4 +18,7 @@ urlpatterns = [
     url(r'check_homework_deadline/$',
         check_homework_deadline,
         name="instructor__check_homework_deadline"),
+    url(r'check_grading_deadline/$',
+        check_grading_deadline,
+        name="instructor__check_grading_deadline"),
 ]

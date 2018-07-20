@@ -43,7 +43,7 @@ def update_profile(request):
     if request.method == "POST":
         user = UserModel.objects.get(pk=request.user.id)
         user.name = request.POST['name']
-        user.gender = request.POST['gender']
+        # user.gender = request.POST['gender']
         user.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -224,6 +224,7 @@ def student_course(request, course_id):
         t['assignment_name'] = group_details.homework.homework_name
         t['members'] = return_member_name(group)
         t['deadline'] = group_details.homework.homework_deadline
+        t['grade_deadline'] = group_details.homework.grade_deadline
         t['explanation'] = explanation
         t['grade'] = grade
         t['group_id'] = group_details.group
@@ -297,8 +298,8 @@ def student_course(request, course_id):
         appeal_reject_status = grade[c].group.appeal_reject_status
         no_of_first_grader = GroupCombinationModel.objects.filter(
             group=grade[c].group).count()
-        no_of_grader_who_have_done_grading = HomeworkGroupGrade.objects.filter(
-            group=grade[c].group).count()
+        no_of_grader_who_have_done_grading = GroupCombinationModel.objects.filter(
+            group=grade[c].group,peerevalutation=True).count()
 
         if c == 0:
             current = homework_name

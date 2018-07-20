@@ -512,3 +512,35 @@ def check_homework_deadline(request):
             peerevalutation=True)
 
     return HttpResponse('Hello')
+
+
+def check_grading_deadline(request):
+    from datetime import datetime, timedelta
+    current_date = timezone.now()
+    one_day_before_time = timezone.now() - timedelta(days=1)
+
+    missed_deadline = HomeworkGroup.objects.filter(
+        homework__grade_deadline__lt=current_date)
+
+    print missed_deadline.query
+    # now iterate the data and update the corresponding things
+    # like update the Grade = 0 and make peer_evaluation_false
+
+    for c in missed_deadline:
+        first_grader = GroupCombinationModel.objects.filter(
+            group=c.group, peerevalutation=False)
+
+        peer_evalutation = {}
+        for first in first_grader:
+            peer_evalutation['group'] = first.group
+            peer_evalutation['peer_grader'] = first.grader_user
+            peer_evalutation['peer_explanation'] = "LATE GRADING"
+            peer_evalutation['course'] = first.course
+            peer_evalutation['grade'] = 0
+            peer_evalutation['appeal_grader'] = first.course.instructor
+            peer_evalutation['homework'] = first.homework
+            PeerEvaluationModel.objects.create(**peer_evalutation)
+            first.peerevalutation = True
+            first.save()
+
+    return HttpResponse('Hello')
