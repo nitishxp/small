@@ -77,6 +77,16 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_grading_type">Grading Type
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <select name="course_grading_type" class="form-control col-md-7 col-xs-12" required id="course_grading_type">
+                                                <option value="N">Number</option>
+                                                <option value="A">Alphabet</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
                                         <label class="control-label col-md-4 col-sm-3 col-xs-12" for="appeal_role">
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -293,14 +303,18 @@
                                         {% for c in homework %}
                                         <th>HW {{ c.homework_name }}</th>
                                         {% endfor %}
-                                        <th> Total</th>
+                                        <!-- <th> Total</th> -->
                                     </thead>
                                     <tbody>
                                         {% for key,values in all_grades.items %}
                                         <tr>
                                             <td>{{ values.name }}</td>
                                             {% for grade in values.grade %}
-                                            <td> {{ grade|grade_alphabet }}</td>
+                                                {% if course.course_grading_type == "A" %}
+                                                    <td> {{ grade|grade_alphabet }}</td>
+                                                {% else %}
+                                                    <td> {{ grade|grade_number }}</td>
+                                                {% endif %}
                                             {% endfor %}
                                         </tr>
                                         {% endfor %}
@@ -326,14 +340,18 @@
                                         {% for c in homework %}
                                         <th>HW {{ c.homework_name }} Grading quality</th>
                                         {% endfor %}
-                                        <th> Total</th>
+                                        <!-- <th> Total</th> -->
                                     </thead>
                                     <tbody>
                                         {% for key,values in first_grader_grading.items %}
                                         <tr>
                                             <td>{{ values.name }}</td>
                                             {% for grade in values.grade %}
-                                            <td> {{ grade|grade_alphabet }}</td>
+                                                {% if course.course_grading_type == "A" %}
+                                                    <td> {{ grade|grade_alphabet }}</td>
+                                                {% else %}
+                                                    <td> {{ grade|grade_number }}</td>
+                                                {% endif %}
                                             {% endfor %}
                                         </tr>
                                         {% endfor %}

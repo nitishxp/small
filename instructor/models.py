@@ -14,6 +14,7 @@ class CourseModel(models.Model):
     appeal_role = models.TextField(null=True)
     instructor = models.ForeignKey(UserModel)
     status = models.BooleanField(default=True)
+    course_grading_type = models.TextField(null=True)
 
     class Meta:
         db_table = 'course'
