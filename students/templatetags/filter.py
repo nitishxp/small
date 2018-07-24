@@ -1,31 +1,60 @@
 from django import template
 register = template.Library()
 
+# @register.filter(name='grade_alphabet')
+# def grade_alphabet(value):
+#     if value is None or value == '':
+#         return ''
+#     if value >= 4.00:
+#         return 'A'
+#     elif value > 3.33 and value <= 3.67:
+#         return 'A-'
+#     elif value > 3.0 and value <= 3.33:
+#         return 'B+'
+#     elif value > 2.67 and value <= 3.0:
+#         return 'B'
+#     elif value > 2.33 and value <= 2.67:
+#         return 'B-'
+#     elif value > 2.0 and value <= 2.33:
+#         return 'C+'
+#     elif value > 1.67 and value <= 2.0:
+#         return 'C'
+#     elif value > 1.33 and value <= 1.67:
+#         return 'C-'
+#     elif value > 1.0 and value <= 1.33:
+#         return 'D+'
+#     elif value > 0.67 and value <= 1.0:
+#         return 'D'
+#     elif value > 0.0 and value <= 0.67:
+#         return 'D-'
+#     else:
+#         return 'F'
+
 @register.filter(name='grade_alphabet')
 def grade_alphabet(value):
     if value is None or value == '':
         return ''
-    if value >= 4.00:
+    if value > 92:
         return 'A'
-    elif value > 3.33 and value <= 3.67:
+    elif value >= 90 and value <= 92:
         return 'A-'
-    elif value > 3.0 and value <= 3.33:
+    elif value >= 87 and value <= 89:
         return 'B+'
-    elif value > 2.67 and value <= 3.0:
+    elif value >= 83 and value <= 86:
         return 'B'
-    elif value > 2.33 and value <= 2.67:
+    elif value >= 80 and value <= 82:
         return 'B-'
-    elif value > 2.0 and value <= 2.33:
+    elif value >= 77 and value <= 79:
         return 'C+'
-    elif value > 1.67 and value <= 2.0:
+    elif value >= 73 and value <= 76:
         return 'C'
-    elif value > 1.33 and value <= 1.67:
+    elif value >= 70 and value <= 72:
         return 'C-'
-    elif value > 1.0 and value <= 1.33:
+    elif value >= 67 and value <= 69:
         return 'D+'
-    elif value > 0.67 and value <= 1.0:
+    elif value >= 63 and value <= 66:
         return 'D'
-    elif value > 0.0 and value <= 0.67:
+    elif value >= 60 and value <= 62:
         return 'D-'
     else:
         return 'F'

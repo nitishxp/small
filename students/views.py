@@ -291,6 +291,9 @@ def student_course(request, course_id):
 
     grade_dic = []
     current = None
+    index_grader = 1
+
+
     for c in range(0, len(grade)):
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
@@ -308,6 +311,7 @@ def student_course(request, course_id):
             if current != homework_name:
                 current = homework_name
                 change = True
+                index_grader = 1
             else:
                 change = False
         if change:
@@ -331,11 +335,14 @@ def student_course(request, course_id):
         temp['type'] = 'grade'
         temp['homework_name'] = homework_name
         temp['grade'] = grade[c].grade
+        temp['index_grader'] = index_grader
         temp['explanation'] = grade[c].explanation
         temp['group'] = grade[c].group.group
         temp['appeal_done_status'] = appeal_done_status
         temp['appeal_reject_status'] = appeal_reject_status
         grade_dic.append(temp)
+
+        index_grader = index_grader + 1
 
         if c == len(grade) - 1:
             if has_appeal_done == 0:
