@@ -81,8 +81,8 @@
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <select name="course_grading_type" class="form-control col-md-7 col-xs-12" required id="course_grading_type">
-                                                <option value="N">Number</option>
-                                                <option value="A">Alphabet</option>
+                                                <option value="N" {% if course.course_grading_type == "N" %}  selected {% endif %} >Number</option>
+                                                <option value="A" {% if course.course_grading_type == "A" %}  selected {% endif %}>Alphabet</option>
                                             </select>
                                         </div>
                                     </div>
