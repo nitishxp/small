@@ -531,17 +531,19 @@ def check_grading_deadline(request):
         first_grader = GroupCombinationModel.objects.filter(
             group=c.group, peerevalutation=False)
 
-        peer_evalutation = {}
         for first in first_grader:
-            peer_evalutation['group'] = first.group
-            peer_evalutation['peer_grader'] = first.grader_user
-            peer_evalutation['peer_explanation'] = "LATE GRADING"
-            peer_evalutation['course'] = first.course
-            peer_evalutation['grade'] = 0
-            peer_evalutation['appeal_grader'] = first.course.instructor
-            peer_evalutation['homework'] = first.homework
-            PeerEvaluationModel.objects.create(**peer_evalutation)
-            first.peerevalutation = True
-            first.save()
+            if not HomeworkGroupGrade.objects.filter(
+                    group=first.group, grader=first.grader_user).exists():
+                peer_evalutation = {}
+                peer_evalutation['group'] = first.group
+                peer_evalutation['peer_grader'] = first.grader_user
+                peer_evalutation['peer_explanation'] = "LATE GRADING"
+                peer_evalutation['course'] = first.course
+                peer_evalutation['grade'] = 0
+                peer_evalutation['appeal_grader'] = first.course.instructor
+                peer_evalutation['homework'] = first.homework
+                PeerEvaluationModel.objects.create(**peer_evalutation)
+                first.peerevalutation = True
+                first.save()
 
     return HttpResponse('Hello')
