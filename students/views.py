@@ -230,11 +230,12 @@ def student_course(request, course_id):
         t['group_id'] = group_details.group
         t['group_obj'] = group_details
         t['uploads'] = group_details.attachment
-        t['appeal_done_count'] = group_details.appeal_done_count
+        t['appeal_done_count'] = GroupCombinationModel.objects.filter(
+            group=group_details, peerevalutation=True).count()
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
         t['appeal_reject_status'] = group_details.appeal_reject_status
-        if group_details.appeal_done_count == group_details.total_member:
+        if t['appeal_done_count'] == group_details.total_member:
             appeal_grade, appeal_explanation = return_appeal_grade_explanation(
                 group)
             t['appeal_grade'] = appeal_grade
@@ -295,7 +296,6 @@ def student_course(request, course_id):
     current = None
     index_grader = 1
 
-
     for c in range(0, len(grade)):
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
@@ -304,7 +304,7 @@ def student_course(request, course_id):
         no_of_first_grader = GroupCombinationModel.objects.filter(
             group=grade[c].group).count()
         no_of_grader_who_have_done_grading = GroupCombinationModel.objects.filter(
-            group=grade[c].group,peerevalutation=True).count()
+            group=grade[c].group, peerevalutation=True).count()
 
         if c == 0:
             current = homework_name
