@@ -139,5 +139,14 @@
         }
         return true
     }
+
+    $.ajax({
+        url : "{% url 'instructor__check_homework_deadline' %}"
+    })
+    
+    $.ajax({
+        url : "{% url 'instructor__check_grading_deadline' %}"
+    })
+    
 </script>
 {% endblock %}
