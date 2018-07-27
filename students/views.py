@@ -238,8 +238,10 @@ def student_course(request, course_id):
             appeal_grade, appeal_explanation = return_appeal_grade_explanation(
                 group)
             t['appeal_grade'] = appeal_grade
+            t['appeal_explanation'] = appeal_explanation
         else:
             t['appeal_grade'] = ''
+            t['appeal_explanation'] = ''
 
         # to find out the grading quality
         grading_quality = PeerEvaluationModel.objects.filter(
