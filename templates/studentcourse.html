@@ -271,7 +271,7 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <textarea  name="explanation" class="form-control col-md-7 col-xs-12" required> </textarea>
+                                            <textarea  name="explanation" class="form-control col-md-7 col-xs-12" required rows="15"> </textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -310,7 +310,7 @@
                                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_reason">Appeal Reason for group
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <textarea name="appeal_reason" class="form-control col-md-7 col-xs-12" required id="appeal_reason"></textarea>
+                                            <textarea name="appeal_reason" class="form-control col-md-7 col-xs-12" required id="appeal_reason" rows="15"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -360,7 +360,7 @@
                                                     <a href="{{c.group_obj.attachment}}" download class="btn btn-download">Download File</a>
                                                 {% endif %}
                                                 <div>
-                                                    <label> Original Assignment {{ c.homework_name }} Grade </label> {{ c.grade|grade_alphabet }}
+                                                    <label> Original Assignment {{ c.homework_name }} Grade {{ forloop.counter }}</label> {{ c.grade|grade_alphabet }}
                                                     <br> Feedback: {{c.explanation}}
                                                     <br>
                                                 </div>
@@ -397,7 +397,7 @@
                                                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_explanation">Feedback
                                                                 </label>
                                                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                                                    <textarea name="appeal_explanation" class="form-control col-md-7 col-xs-12" required id="appeal_explanation"></textarea>
+                                                                    <textarea name="appeal_explanation" class="form-control col-md-7 col-xs-12" required id="appeal_explanation" rows="15"></textarea>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group">
@@ -447,7 +447,7 @@
                                                             <span class="required">*</span>
                                                         </label>
                                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <textarea name="peer_explanation__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required></textarea>
+                                                            <textarea name="peer_explanation__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required rows="15"></textarea>
                                                         </div>
                                                     </div>
                                                     {% if forloop.last %}
