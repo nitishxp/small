@@ -499,7 +499,9 @@ def check_homework_deadline(request):
     one_day_before_time = timezone.now() - timedelta(days=1)
 
     missed_deadline = HomeworkGroup.objects.filter(
-        homework__homework_deadline__lt=current_date, attachment__isnull=True)
+        homework__homework_deadline__lt=current_date,
+        homework__homework_deadline__gt=one_day_before_time,
+        attachment__isnull=True)
 
     # now iterate the data and update the corresponding things
     # like update the Grade = 0 and make peer_evaluation_false
@@ -521,7 +523,8 @@ def check_grading_deadline(request):
     one_day_before_time = timezone.now() - timedelta(days=1)
 
     missed_deadline = HomeworkGroup.objects.filter(
-        homework__grade_deadline__lt=current_date)
+        homework__grade_deadline__lt=current_date,
+        homework__homework_deadline__gt=one_day_before_time)
 
     print missed_deadline.query
     # now iterate the data and update the corresponding things

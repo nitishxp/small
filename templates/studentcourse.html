@@ -360,9 +360,15 @@
                                                     <a href="{{c.group_obj.attachment}}" download class="btn btn-download">Download File</a>
                                                 {% endif %}
                                                 <div>
-                                                    <label> Original Assignment {{ c.homework_name }} Grade {{ forloop.counter }}</label> {{ c.grade|grade_alphabet }}
+                                                    <label> Original Assignment {{ c.homework_name }} Grader {{ forloop.counter }}</label> {{ c.grade|grade_alphabet }}
                                                     <br> Feedback: {{c.explanation}}
                                                     <br>
+                                                </div>
+                                                <div>
+                                                    <label>Grading Rubric</label>
+                                                    <p> {{selected_course_obj.grading_rubric }}</p>
+                                                    <label>Appeal Role</label>
+                                                    <p> {{ selected_course_obj.appeal_role }}</p>
                                                 </div>
                                                 {% if forloop.last %}
                                                     <hr>
