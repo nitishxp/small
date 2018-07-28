@@ -364,14 +364,12 @@
                                                     <br> Feedback: {{c.explanation}}
                                                     <br>
                                                 </div>
-                                                <div>
-                                                    <label>Grading Rubric</label>
-                                                    <p> {{selected_course_obj.grading_rubric }}</p>
-                                                    <label>Appeal Role</label>
-                                                    <p> {{ selected_course_obj.appeal_role }}</p>
-                                                </div>
                                                 {% if forloop.last %}
                                                     <hr>
+                                                    <div>
+                                                        <label>Grading Rubric</label>
+                                                        <p> {{selected_course_obj.grading_rubric }}</p>
+                                                    </div>
                                                     {%if not values.is_grading_done %}
                                                         <h5>Assignment Grade</h5>
                                                         <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}" class="form-horizontal form-label-left">
@@ -419,6 +417,10 @@
                                             
                                             <!-- peer grader -->
                                             {% if not values.is_peer_grading_done and values.peer_grader %}
+                                                <div>
+                                                    <label>Appeal Role</label>
+                                                    <p> {{ selected_course_obj.appeal_role }}</p>
+                                                </div>
                                                 <h5>Peer Evaluator for Assignment {{ values.homework }}</h5>
                                                 {% for c in values.peer_grader %}
                                                     {% if forloop.first %}
