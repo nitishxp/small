@@ -91,7 +91,16 @@
                                             {% if c.appeal_reject_status %} 
                                                 <td> Disagree </td>
                                             {% else %}
-                                                <td>{% if c.appeal_done_count == c.total_member  %} Yes {% else %} No {% endif %} </td>
+                                                <td>
+                                                    {% if c.appeal_done_count == c.total_member  %} 
+                                                        {% if not c.appeal_done_status %}
+                                                            Yes
+                                                        {% else %}
+                                                            No
+                                                        {% endif %}
+                                                    {% else %} 
+                                                        No 
+                                                    {% endif %}</td>
                                             {% endif %}
                                             <td> {{ c.appeal_grade|grade_alphabet }}</td>
                                         {% endif %}
@@ -174,13 +183,21 @@
                                             <td>F</td>
                                             <td>Late Submission</td>
                                         {% else %}
-                                            {% if  c.appeal_done_count == c.total_member  %}
-                                                <td>{{ c.appeal_grade|grade_alphabet }}</td>
+                                            {% if  c.appeal_done_count == c.total_member %}
+                                                {% if not c.appeal_done_status %}
+                                                    <td>{{ c.appeal_grade|grade_alphabet }}</td>
+                                                {% else %}
+                                                    <td>{{ c.grade|grade_alphabet }}</td>
+                                                {% endif %}
                                             {% else %}
                                                 <td>{{ c.grade|grade_alphabet }}</td>
                                             {% endif %}
                                             {% if  c.appeal_done_count == c.total_member  %}
-                                                <td>{{ c.appeal_explanation|linebreaks }}</td>
+                                                {% if not c.appeal_done_status %}
+                                                    <td>{{ c.appeal_explanation|linebreaks }}</td>
+                                                {% else %}
+                                                    <td>{{ c.explanation|linebreaks  }}</td>
+                                                {% endif %}
                                             {% else %}
                                                 <td>{{ c.explanation|linebreaks  }}</td>
                                             {% endif %}

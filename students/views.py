@@ -235,6 +235,7 @@ def student_course(request, course_id):
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
         t['appeal_reject_status'] = group_details.appeal_reject_status
+        t['appeal_done_status'] = group_details.appeal_done_status
         if t['appeal_done_count'] == group_details.total_member:
             appeal_grade, appeal_explanation = return_appeal_grade_explanation(
                 group)
