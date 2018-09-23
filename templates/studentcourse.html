@@ -114,7 +114,7 @@
                                             {% else %}
                                                 <td> </td>
                                             {% endif %}
-                                            
+
                                         {% endif %}
                                         <!-- <td>{{ c  }}</td> -->
                                     </tr>
@@ -192,31 +192,33 @@
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade_deadline }}</td>
                                         {% if c.deadline_miss %}
-                                            <td>F</td>
+                                            <td> F </td>
                                             <!-- <td>Late Submission</td> -->
                                         {% else %}
-                                            <!-- {% if  c.appeal_done_count == c.total_member %} -->
+                                            {% comment %}<!-- {% if  c.appeal_done_count == c.total_member %} -->  {% endcomment %}
                                             {% if not c.appeal_done_status %}
                                                 {% if c.appeal_grade is not None %}
-                                                    <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                                    <td> a{{ c.appeal_grade|grade_alphabet }}</td>
                                                 {% else %}
-                                                    <td><span class="blinking">Waiting for grade </span> </td>
+                                                    <td> a<span class="blinking">Waiting for grade </span> </td>
                                                 {% endif %}
                                             {% else %}
-                                                <td>{{ c.grade|grade_alphabet }}</td>
+                                                <td> {{ c.grade|grade_alphabet }} </td>
                                             {% endif %}
+                                            {% comment %} 
                                             <!-- {% else %} -->
                                                 <!-- <td>{{ c.grade|grade_alphabet }}</td> -->
                                             <!-- {% endif %} -->
                                             <!-- {% if  c.appeal_done_count == c.total_member  %} -->
-                                                {% if not c.appeal_done_status %}
+                                                <!-- {% if not c.appeal_done_status %} -->
                                                     <!-- <td>{{ c.appeal_explanation|linebreaks }}</td> -->
-                                                {% else %}
+                                                <!-- {% else %} -->
                                                     <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
-                                                {% endif %}
+                                                <!-- {% endif %} -->
                                             <!-- {% else %} -->
                                                 <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
                                             <!-- {% endif %} -->
+                                            {% endcomment %}
                                         {% endif %}
                                     </tr>
                                     {% endfor %}
