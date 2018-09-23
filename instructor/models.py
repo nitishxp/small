@@ -27,6 +27,8 @@ class CourseHomeWorkModel(models.Model):
     homework_deadline = models.DateTimeField()
     no_of_group = models.IntegerField(null=True)
     no_of_grader = models.IntegerField(null=True)
+    grade_rubric = models.TextField(null=True)
+    
     # will save constraints in array form
     constraints = models.TextField()
     course = models.ForeignKey(CourseModel)
