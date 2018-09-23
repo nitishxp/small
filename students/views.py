@@ -137,6 +137,7 @@ def return_grade_explanation(group_id):
 def return_appeal_grade_explanation(group_id):
     grade = []
     explanation = []
+    print AppealGraderModel.objects.filter(group=group_id).query
     for c in AppealGraderModel.objects.filter(group=group_id):
         grade.append(c.grade)
         explanation.append(c.appeal_explanation)
