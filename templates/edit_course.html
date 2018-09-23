@@ -248,7 +248,7 @@
                                     <div id="myTabContent" class="tab-content">
                                         {% for key , values in group_grades.items %}
                                         <div role="tabpanel" class="tab-pane fade" id="assignment{{key}}" aria-labelledby="home-tab">
-                                            <table class="table table-border" id="table{{key}}">
+                                            <table class="table table-border nowrap" id="table{{key}}" style="width:100%">
                                                 <thead>
                                                     <th>Group</th>
                                                     <th>Grader</th>
@@ -432,12 +432,14 @@
         });
         
         {% for key , values in group_grades.items %}
-            $('#table{{key}}').DataTable({
+            var datatable{{key}} = $('#table{{key}}').DataTable({
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
                 bRetrieve: true,
                 dom: "Bfrtip",
+                
+                bScrollCollapse : true,
                 // "columns": [
                 //     { "width": "20%" },
                 //     { "width": "20%" },
@@ -449,6 +451,7 @@
                 //     { "width": "10%" },
                 //   ]
             });
+        datatable{{key}}.scroller.measure().draw(false);
         {% endfor %}
         
         $('#student_enrollment_list').DataTable({
