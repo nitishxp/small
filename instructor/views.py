@@ -500,7 +500,7 @@ def student_upload(request, pk):
 def check_homework_deadline(request):
     from datetime import datetime, timedelta
     current_date = timezone.now()
-    one_day_before_time = timezone.now() - timedelta(days=1)
+    one_day_before_time = timezone.now() - timedelta(days=7)
 
     missed_deadline = HomeworkGroup.objects.filter(
         homework__homework_deadline__lt=current_date,
@@ -524,7 +524,7 @@ def check_homework_deadline(request):
 def check_grading_deadline(request):
     from datetime import datetime, timedelta
     current_date = timezone.now()
-    one_day_before_time = timezone.now() - timedelta(days=1)
+    one_day_before_time = timezone.now() - timedelta(days=7)
 
     missed_deadline = HomeworkGroup.objects.filter(
         homework__grade_deadline__lt=current_date,
