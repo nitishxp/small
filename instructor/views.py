@@ -177,6 +177,7 @@ def edit_course(request, pk):
     if request.method == "POST":
 
         course_obj = CourseModel.objects.filter(pk=pk).update(
+            course_function = request.POST['course_function'],
             course_name=request.POST['course_name'],
             grading_rubric=request.POST['grading_rubric'],
             appeal_role=request.POST['appeal_role'],

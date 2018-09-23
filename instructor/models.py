@@ -15,6 +15,7 @@ class CourseModel(models.Model):
     instructor = models.ForeignKey(UserModel)
     status = models.BooleanField(default=True)
     course_grading_type = models.TextField(null=True)
+    course_function = models.TextField(null=True)
 
     class Meta:
         db_table = 'course'
