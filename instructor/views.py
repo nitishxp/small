@@ -268,7 +268,8 @@ def edit_course(request, pk):
                     grading_done = HomeworkGroupGrade.objects.filter(
                         group=g, grader=grader_user_obj)
                     if grading_done.exists():
-                        total_grade = 4.00
+                        total_grade = grading_done.first()
+                        total_grade = total_grade.grade
                     else:
                         total_grade = None
 
@@ -315,7 +316,7 @@ def edit_course(request, pk):
         else:
             first_grader_grading[c]['grade'].append(None)
 
-    # print group_grades
+    print first_grader_grading
 
     return render(
         request, 'edit_course.html', {
