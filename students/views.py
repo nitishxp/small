@@ -218,7 +218,7 @@ def student_course(request, course_id):
         group__course=course_obj).order_by("group__homework__homework_name")
     #
     print homework_group_id.query
-    
+
     for c in homework_group_id:
         group = c.group.group
         group_details = HomeworkGroup.objects.get(group=group)
@@ -391,6 +391,7 @@ def student_course(request, course_id):
             temp['peer_grader'] = result[1]
             temp['is_grading_done'] = c.appeal_grading_status
             temp['is_peer_grading_done'] = c.appeal_peer_grading_status
+            temp['appeal_reason'] = c.appeal_reason
             appeal_grader.append(temp)
 
     appeal_grade_result = AppealGraderModel.objects.filter(
@@ -584,6 +585,9 @@ def submit_appeal_grade(request, group):
     # of all appeal grader
     if request.method == "POST":
         group_obj = HomeworkGroup.objects.get(group=group)
+        course = group_obj.course
+        homework = group_obj.homework
+
         appeal_obj = AppealGraderModel.objects.filter(
             group=group_obj, appeal_grader=request.user).update(
                 appeal_explanation=request.POST['appeal_explanation'],
@@ -596,6 +600,48 @@ def submit_appeal_grade(request, group):
         total_grade = round(total_grade['grade__avg'])
         group_obj.grade = total_grade
         group_obj.save()
+
+        # now its time to rate peer grader
+        grade_array = ["95.00","91.25","88.75","85.00","81.25","78.75","75.00","71.25","68.75","65.00","61.25","55.00"]
+
+        appeal_grader_index = grade_array.index(request.POST['grade'])
+        #  first find the peer graders who gave grade to the groups
+        first_grade = HomeworkGroupGrade.objects.filter(group=group_obj).values_list('grader','grade')
+
+        # create peer grader dict for inserting
+        peer_grading = {}
+
+        for c in first_grade:
+            peer_user = c[0]
+            peer_grade = str(c[1])
+            # first find this grade index in grade_array 
+            current_grade_index = grade_array.index(peer_grade)
+            grade_index = current_grade_index - appeal_grader_index
+            print grade_index
+            if grade_index == 0:
+                grade_index = grade_array[grade_index]
+            else:
+                grade_index = abs(grade_index)
+                grade_index = grade_array[grade_index]
+
+            print grade_index
+
+            peer_grading[peer_user] = {}
+            peer_grading[peer_user]['peer_grader'] = UserModel.objects.get(
+                pk=peer_user)
+            peer_grading[peer_user]['group'] = group_obj
+            peer_grading[peer_user]['course'] = course
+            peer_grading[peer_user]['appeal_grader'] = request.user
+            peer_grading[peer_user]['homework'] = homework
+            peer_grading[peer_user]['peer_explanation'] = "Auto Grade Provided"
+            peer_grading[peer_user]['grade'] = grade_index
+
+        #  now save the peer grader grade
+        for c in peer_grading:
+            PeerEvaluationModel.objects.update_or_create(
+                group=group_obj,
+                peer_grader=peer_grading[c]['peer_grader'],
+                defaults=peer_grading[c])
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

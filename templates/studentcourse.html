@@ -420,10 +420,15 @@
                                                         <p> {{selected_course_obj.grading_rubric }}</p>
                                                     </div>
                                                     {%if not values.is_grading_done %}
-                                                        <h5>Assignment Grade</h5>
+                                                        <hr>
+                                                        <h4>Assignment Grade</h4>
                                                         <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}" class="form-horizontal form-label-left">
                                                             {% csrf_token %}
-                                                            <label>Assignment {{ c.homework_name }} </label>
+                                                            <label>Assignment {{ c.homework_name }} </label> <br>
+                                                            <label>Appeal Reason</label>
+                                                            <p>
+                                                                {{ values.appeal_reason }}
+                                                            </p>
                                                             <div class="form-group">
                                                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grade">Grade
                                                                 </label>

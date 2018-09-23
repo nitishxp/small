@@ -385,6 +385,7 @@ def do_grouping(request, pk):
 
         groups_with_random_grader = {}
 
+        print t
         # delete the previous group model if exists
         HomeworkGroup.objects.filter(homework=c, course=course).delete()
 
@@ -415,6 +416,7 @@ def do_grouping(request, pk):
                 groups_with_random_grader[group_id] = random.sample(
                     g, no_of_grader)
 
+        print groups_with_random_grader
         # return JsonResponse(groups_with_random_grader, safe=False)
         # now its time to iterate the group with random grader
         # in order to make the group_id list so that
@@ -424,6 +426,8 @@ def do_grouping(request, pk):
             temp_group.append(g)
 
         temp_group_combination = []
+
+        print temp_group
 
         for i in range(len(temp_group)):
             pg = []
@@ -464,7 +468,7 @@ def do_grouping(request, pk):
 
         GroupCombinationModel.objects.filter(active=False).delete()
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 @login_required(login_url='/')
@@ -528,7 +532,7 @@ def check_grading_deadline(request):
 
     missed_deadline = HomeworkGroup.objects.filter(
         homework__grade_deadline__lt=current_date,
-        homework__homework_deadline__gt=one_day_before_time)
+        homework__homework_deadline__gt=one_day_before_time,attachment=True)
 
     print missed_deadline.query
     # now iterate the data and update the corresponding things
