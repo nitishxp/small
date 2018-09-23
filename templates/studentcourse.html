@@ -92,15 +92,18 @@
                                                 <td> Disagree </td>
                                             {% else %}
                                                 <td>
-                                                    <!-- {% if c.appeal_done_count == c.total_member  %} -->
+                                                    {% comment %} <!-- {% if c.appeal_done_count == c.total_member  %} --> {% endcomment %}
                                                         {% if not c.appeal_done_status %}
                                                             Yes
                                                         {% else %}
                                                             No
                                                         {% endif %}
+
+                                                        {% comment %}
                                                     <!-- {% else %} -->
                                                         <!-- No -->
                                                     <!-- {% endif %} -->
+                                                    {% endcomment %}
                                                 </td>
                                             {% endif %}
                                             
