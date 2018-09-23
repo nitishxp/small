@@ -295,25 +295,25 @@ def edit_course(request, pk):
             group_grades[h.homework_name].append(temp)
 
     group_grades_sort = collections.OrderedDict(sorted(group_grades.items()))
-    # # now sum the all_grades
-    # for c in all_grades:
-    #     t_all_grader = [x for x in all_grades[c]['grade'] if x is not None]
-    #     if t_all_grader:
-    #         sum_grade = sum(t_all_grader) / len(t_all_grader)
-    #         all_grades[c]['grade'].append(sum_grade)
-    #     else:
-    #         all_grades[c]['grade'].append(None)
+    # now sum the all_grades
+    for c in all_grades:
+        t_all_grader = [x for x in all_grades[c]['grade'] if x is not None]
+        if t_all_grader:
+            sum_grade = sum(t_all_grader) / len(t_all_grader)
+            all_grades[c]['grade'].append(sum_grade)
+        else:
+            all_grades[c]['grade'].append(None)
 
-    # # now sum the all first grading grades
-    # for c in first_grader_grading:
-    #     t_all_grader = [
-    #         x for x in first_grader_grading[c]['grade'] if x is not None
-    #     ]
-    #     if t_all_grader:
-    #         sum_grade = sum(t_all_grader) / len(t_all_grader)
-    #         first_grader_grading[c]['grade'].append(sum_grade)
-    #     else:
-    #         first_grader_grading[c]['grade'].append(None)
+    # now sum the all first grading grades
+    for c in first_grader_grading:
+        t_all_grader = [
+            x for x in first_grader_grading[c]['grade'] if x is not None
+        ]
+        if t_all_grader:
+            sum_grade = sum(t_all_grader) / len(t_all_grader)
+            first_grader_grading[c]['grade'].append(sum_grade)
+        else:
+            first_grader_grading[c]['grade'].append(None)
 
     # print group_grades
 
