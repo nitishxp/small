@@ -88,18 +88,18 @@
                                         {% else %}
                                             <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                             <td>{{c.grade | grade_alphabet }}</td>
-                                            {% if c.appeal_reject_status %} 
+                                            {% if c.appeal_reject_status %}
                                                 <td> Disagree </td>
                                             {% else %}
                                                 <td>
-                                                    {% if c.appeal_done_count == c.total_member  %} 
+                                                    {% if c.appeal_done_count == c.total_member  %}
                                                         {% if not c.appeal_done_status %}
                                                             Yes
                                                         {% else %}
                                                             No
                                                         {% endif %}
-                                                    {% else %} 
-                                                        No 
+                                                    {% else %}
+                                                        No
                                                     {% endif %}</td>
                                             {% endif %}
                                             <td> {{ c.appeal_grade|grade_alphabet }}</td>
@@ -258,8 +258,8 @@
                                     {% csrf_token %}
                                     <label>Assignment {{ c.homework.homework_name }}</label>
                                     <a href="{{c.group.attachment}}" class="btn btn-download" download>Download File</a>
-                                    <br> 
-                                    <label>Grading Rubric:</label> <p>{{ selected_course_obj.grading_rubric }}</p>
+                                    <br>
+                                    <label>Grading Rubric:</label> <p>{{ c.homework.grade_rubric }}</p>
                                     <div class="form-group">
                                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grade
                                             <span class="required">*</span>
@@ -315,8 +315,8 @@
                             <div class="x_content">
                                 {% for c in grade %} {% if c.type == "grade" %}
                                 <div>
-                                    <label> Assignment {{ c.homework_name }} Grader {{ c.index_grader }}: </label> {{ c.grade|grade_alphabet }} 
-                                    <br> 
+                                    <label> Assignment {{ c.homework_name }} Grader {{ c.index_grader }}: </label> {{ c.grade|grade_alphabet }}
+                                    <br>
                                     <label>Feedback: </label> {{c.explanation}}
                                     <br>
                                 </div>
@@ -349,7 +349,7 @@
                                     {% for c in appeal_grade_result %}
                                     <div>
                                         <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> {{ c.grade|grade_alphabet }}
-                                        <br> 
+                                        <br>
                                         <label>Feedback: </label> {{c.appeal_explanation}}
                                         <br>
                                     </div>
@@ -371,7 +371,7 @@
                                 </div>
                                 <div class="x_content">
                                     {% for values in appeal_grader %}
-                                        {% if not values.is_grading_done or not values.is_peer_grading_done %}                            
+                                        {% if not values.is_grading_done or not values.is_peer_grading_done %}
                                             {% for c in values.grade %}
                                                 {% if forloop.first  %}
                                                     <a href="{{c.group_obj.attachment}}" download class="btn btn-download">Download File</a>
@@ -431,60 +431,60 @@
                                                     {% endif %}
                                                 {% endif %}
                                             {% endfor %}
-                                            
+
                                             <!-- peer grader -->
-                                            {% if not values.is_peer_grading_done and values.peer_grader %}
-                                                <div>
-                                                    <label>Appeal Role</label>
-                                                    <p> {{ selected_course_obj.appeal_role }}</p>
-                                                </div>
-                                                <h5>Peer Evaluator for Assignment {{ values.homework }}</h5>
-                                                {% for c in values.peer_grader %}
-                                                    {% if forloop.first %}
-                                                        <form method="POST" action="{% url 'student__submit_appeal_peer_grade' c.group %}" class="form-horizontal form-label-left">
-                                                            {% csrf_token %}
-                                                    {% endif %}
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grader {{ forloop.counter }}
-                                                            <span class="required">*</span>
-                                                        </label>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                           {% comment %} <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required> {% endcomment %}
-                                                           <select name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>
-                                                            <option value="">Select</option>
-                                                            <option value="95.00">A</option>
-                                                            <option value="91.25">A-</option>
-                                                            <option value="88.75">B+</option>
-                                                            <option value="85.00">B</option>
-                                                            <option value="81.25">B-</option>
-                                                            <option value="78.75">C+</option>
-                                                            <option value="75.00">C</option>
-                                                            <option value="71.25">C-</option>
-                                                            <option value="68.75">D+</option>
-                                                            <option value="65.00">D</option>
-                                                            <option value="61.25">D-</option>
-                                                            <option value="55.00">F</option>
-                                                        </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Feedback
-                                                            <span class="required">*</span>
-                                                        </label>
-                                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                                            <textarea name="peer_explanation__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required rows="15"></textarea>
-                                                        </div>
-                                                    </div>
-                                                    {% if forloop.last %}
-                                                    <div class="form-group">
-                                                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                                                        <button type="submit" class="btn btn-success">Submit Grade</button>
-                                                        </div>
-                                                    </div>
-                                                    </form>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
+                                            <!--{% if not values.is_peer_grading_done and values.peer_grader %}-->
+                                                <!--<div>-->
+                                                    <!--<label>Appeal Role</label>-->
+                                                    <!--<p> {{ selected_course_obj.appeal_role }}</p>-->
+                                                <!--</div>-->
+                                                <!--<h5>Peer Evaluator for Assignment {{ values.homework }}</h5>-->
+                                                <!--{% for c in values.peer_grader %}-->
+                                                    <!--{% if forloop.first %}-->
+                                                        <!--<form method="POST" action="{% url 'student__submit_appeal_peer_grade' c.group %}" class="form-horizontal form-label-left">-->
+                                                            <!--{% csrf_token %}-->
+                                                    <!--{% endif %}-->
+                                                    <!--<div class="form-group">-->
+                                                        <!--<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Grader {{ forloop.counter }}-->
+                                                            <!--<span class="required">*</span>-->
+                                                        <!--</label>-->
+                                                        <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                                                           <!--{% comment %} <input type="number" name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required> {% endcomment %}-->
+                                                           <!--<select name="grade__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required>-->
+                                                            <!--<option value="">Select</option>-->
+                                                            <!--<option value="95.00">A</option>-->
+                                                            <!--<option value="91.25">A-</option>-->
+                                                            <!--<option value="88.75">B+</option>-->
+                                                            <!--<option value="85.00">B</option>-->
+                                                            <!--<option value="81.25">B-</option>-->
+                                                            <!--<option value="78.75">C+</option>-->
+                                                            <!--<option value="75.00">C</option>-->
+                                                            <!--<option value="71.25">C-</option>-->
+                                                            <!--<option value="68.75">D+</option>-->
+                                                            <!--<option value="65.00">D</option>-->
+                                                            <!--<option value="61.25">D-</option>-->
+                                                            <!--<option value="55.00">F</option>-->
+                                                        <!--</select>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                    <!--<div class="form-group">-->
+                                                        <!--<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Feedback-->
+                                                            <!--<span class="required">*</span>-->
+                                                        <!--</label>-->
+                                                        <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                                                            <!--<textarea name="peer_explanation__{{c.user.id}}" class="form-control col-md-7 col-xs-12" required rows="15"></textarea>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                    <!--{% if forloop.last %}-->
+                                                    <!--<div class="form-group">-->
+                                                        <!--<div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">-->
+                                                        <!--<button type="submit" class="btn btn-success">Submit Grade</button>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                    <!--</form>-->
+                                                    <!--{% endif %}-->
+                                                <!--{% endfor %}-->
+                                            <!--{% endif %}-->
                                         {% endif %}
                                     {% endfor %}
                                 </div>
