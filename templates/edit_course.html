@@ -63,13 +63,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grading_rubric">Add Grading Rubric
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grading_rubric">Add Grading Policy
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <textarea name="grading_rubric" class="form-control col-md-7 col-xs-12" required id="grading_rubric" rows="15">{{ course.grading_rubric }}</textarea>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="display: none;">
                                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_role">Explain the appeal role
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -86,6 +86,16 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="form-group" style="display: none;">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_function">Function
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <select name="course_function" class="form-control col-md-7 col-xs-12" required id="course_function">
+                                                <option value="g" {% if course.course_function == "g" %}  selected {% endif %} >Only Grouping</option>
+                                                <option value="p" {% if course.course_function == "p" %}  selected {% endif %}>Peer Evalutation</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label class="control-label col-md-4 col-sm-3 col-xs-12" for="appeal_role">
                                         </label>
@@ -95,7 +105,7 @@
                                     </div>
                                     <table class="homework_assignment table table-border">
                                         {% for c in homework %}
-                                        <tr>
+                                        <tr >
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
                                                 <br>
@@ -123,7 +133,7 @@
                                                 <input type="hidden" name="{{ c.homework_name }}___constraints" value="random" required>
                                             </td>
                                             <td>
-                                                <label>No. Of Groups</label>
+                                                <label>Student Per Group</label>
                                                 <br>
                                                 <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}" class="form-control" required>
                                             </td>
@@ -132,6 +142,12 @@
                                                 <br>
                                                 <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control"
                                                     required>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5">
+                                                <label>Grading Rubric</label><br>
+                                                <input type="text" name="{{ c.homework_name }}___grade_rubric"  value= "{{ c.grade_rubric}}" class="form-control" required>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -236,6 +252,7 @@
                                                     <th>Grader</th>
                                                     <th>Grade</th>
                                                     <th>Explanation</th>
+                                                    <th>HW Download</th>
                                                     <th>Appeal Grader</th>
                                                     <th>Appeal Grade</th>
                                                     <th>Appeal Explanation</th>
@@ -251,7 +268,13 @@
                                                         {% else %}
                                                             <td>{{ v.grade|linebreaks }}</td>
                                                             <td>{{ v.explanation|linebreaks }}</td>
+                                                        {% endif %} 
+                                                        {% if v.file is None or v.file == "None" %}
+                                                                <td></td>
+                                                            {% else %}
+                                                                <td><a href="{{v.file}}"> Download </a></td>
                                                         {% endif %}
+                                                        
                                                         <td>{{ v.appeal_grader|linebreaks }}</td>
                                                         {% if v.deadline_miss %}
                                                             <td>NA</td>

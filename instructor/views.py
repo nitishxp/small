@@ -177,6 +177,7 @@ def edit_course(request, pk):
     if request.method == "POST":
 
         course_obj = CourseModel.objects.filter(pk=pk).update(
+            course_function = request.POST['course_function'],
             course_name=request.POST['course_name'],
             grading_rubric=request.POST['grading_rubric'],
             appeal_role=request.POST['appeal_role'],
@@ -194,6 +195,8 @@ def edit_course(request, pk):
                     assignments[d[0]] = {}
                     assignments[d[0]]['homework_name'] = d[0]
                     assignments[d[0]][d[1]] = data
+
+        print assignments 
 
         for c in assignments:
             CourseHomeWorkModel.objects.update_or_create(
@@ -287,6 +290,7 @@ def edit_course(request, pk):
             temp['appeal_grade'] = appeal_grade_explanation[0]
             temp['appeal_explanation'] = appeal_grade_explanation[1]
             temp['deadline_miss'] = group.deadline_miss
+            temp['file'] = group.attachment
 
             group_grades[h.homework_name].append(temp)
 

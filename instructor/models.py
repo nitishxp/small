@@ -15,6 +15,7 @@ class CourseModel(models.Model):
     instructor = models.ForeignKey(UserModel)
     status = models.BooleanField(default=True)
     course_grading_type = models.TextField(null=True)
+    course_function = models.TextField(null=True)
 
     class Meta:
         db_table = 'course'
@@ -26,6 +27,8 @@ class CourseHomeWorkModel(models.Model):
     homework_deadline = models.DateTimeField()
     no_of_group = models.IntegerField(null=True)
     no_of_grader = models.IntegerField(null=True)
+    grade_rubric = models.TextField(null=True)
+    
     # will save constraints in array form
     constraints = models.TextField()
     course = models.ForeignKey(CourseModel)

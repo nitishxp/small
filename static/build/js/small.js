@@ -7,9 +7,9 @@ $(document).on('focus', ".datepicker_t", function () {
 });
 
 $("#add_assignments").on('click', function () {
-    var currentAssignmentLength = $(".homework_assignment tr").length
+    var currentAssignmentLength = $(".homework_assignment .assign_cl").length
     currentAssignmentLength++;
-    var template = "<tr>";
+    var template = "<tr class='assign_cl'>";
     template += "<td>";
     template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
     template += '<input type="datetime-local" name="' + currentAssignmentLength + '___homework_deadline" class="form-control" required>'
@@ -32,12 +32,19 @@ $("#add_assignments").on('click', function () {
     //template += '</select>'
     //template += '</td>'
     template += '<td>'
-    template += '<label>No. of Group </label><br>'
+    template += '<label>Student Per Group </label><br>'
     template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_group"  class="form-control" required>'
     template += '</td>'
     template += '<td>'
     template += '<label>No. of Grader</label><br>'
     template += '<input type="number" min="1" value="3" name="' + currentAssignmentLength + '___no_of_grader" class="form-control" required>'
+    template += '</td>'
+    template += '</tr>'
+    // grade_rubric
+    template += '<tr>'
+    template += '<td colspan="5">'
+    template += '<label>Grading Rubric</label><br>'
+    template += '<input type="text" name="' + currentAssignmentLength + '___grade_rubric"  class="form-control" required>'
     template += '</td>'
     template += '</tr>'
 
