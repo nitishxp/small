@@ -143,9 +143,10 @@ def return_appeal_grade_explanation(group_id):
 
     grade = filter(None, grade)
     explanation = filter(None, explanation)
-
+    print grade,explanation
     if len(grade) > 0:
         return sum(grade) / len(grade), "\n".join(explanation)
+
     return None, None
 
 
