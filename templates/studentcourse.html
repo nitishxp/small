@@ -105,11 +105,16 @@
                                             {% endif %}
                                             
                                             <!-- grading has been done -->
-                                            {% if not c.appeal_done_status and c.appeal_grade is not None %}
-                                                <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                            {% if not c.appeal_done_status %} 
+                                                {% if c.appeal_grade is not None %}
+                                                    <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                                {% else %}
+                                                    <td><span class="blinking">Waiting for grade </span> </td>
+                                                {% endif %}
                                             {% else %}
-                                                <td><span class="blinking">Waiting for grade </span> </td>
+                                                <td> </td>
                                             {% endif %}
+                                            
                                         {% endif %}
                                         <!-- <td>{{ c  }}</td> -->
                                     </tr>
