@@ -75,7 +75,7 @@
                                         <th>Grade</th>
                                         <th>Appeal</th>
                                         <th>Appeal Grade</th>
-                                        <th>Grading Quality</th>
+                                        <!-- <th>Grading Quality</th> -->
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
@@ -92,19 +92,26 @@
                                                 <td> Disagree </td>
                                             {% else %}
                                                 <td>
-                                                    {% if c.appeal_done_count == c.total_member  %}
+                                                    <!-- {% if c.appeal_done_count == c.total_member  %} -->
                                                         {% if not c.appeal_done_status %}
                                                             Yes
                                                         {% else %}
                                                             No
                                                         {% endif %}
-                                                    {% else %}
-                                                        No
-                                                    {% endif %}</td>
+                                                    <!-- {% else %} -->
+                                                        <!-- No -->
+                                                    <!-- {% endif %} -->
+                                                </td>
                                             {% endif %}
-                                            <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                            
+                                            <!-- grading has been done -->
+                                            {% if not c.appeal_done_status and c.appeal_grade is not None %}
+                                                <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                            {% else %}
+                                                <td><span class="blinking">Waiting for grade </span> </td>
+                                            {% endif %}
                                         {% endif %}
-                                        <td>{{ c  }}</td>
+                                        <!-- <td>{{ c  }}</td> -->
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -183,24 +190,28 @@
                                             <td>F</td>
                                             <!-- <td>Late Submission</td> -->
                                         {% else %}
-                                            {% if  c.appeal_done_count == c.total_member %}
-                                                {% if not c.appeal_done_status %}
-                                                    <td>{{ c.appeal_grade|grade_alphabet }}</td>
+                                            <!-- {% if  c.appeal_done_count == c.total_member %} -->
+                                            {% if not c.appeal_done_status %}
+                                                {% if c.appeal_grade is not None %}
+                                                    <td> {{ c.appeal_grade|grade_alphabet }}</td>
                                                 {% else %}
-                                                    <td>{{ c.grade|grade_alphabet }}</td>
+                                                    <td><span class="blinking">Waiting for grade </span> </td>
                                                 {% endif %}
                                             {% else %}
                                                 <td>{{ c.grade|grade_alphabet }}</td>
                                             {% endif %}
-                                            {% if  c.appeal_done_count == c.total_member  %}
+                                            <!-- {% else %} -->
+                                                <!-- <td>{{ c.grade|grade_alphabet }}</td> -->
+                                            <!-- {% endif %} -->
+                                            <!-- {% if  c.appeal_done_count == c.total_member  %} -->
                                                 {% if not c.appeal_done_status %}
                                                     <!-- <td>{{ c.appeal_explanation|linebreaks }}</td> -->
                                                 {% else %}
                                                     <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
                                                 {% endif %}
-                                            {% else %}
+                                            <!-- {% else %} -->
                                                 <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
-                                            {% endif %}
+                                            <!-- {% endif %} -->
                                         {% endif %}
                                     </tr>
                                     {% endfor %}
@@ -349,9 +360,19 @@
                                 <div class="x_content">
                                     {% for c in appeal_grade_result %}
                                     <div>
-                                        <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> {{ c.grade|grade_alphabet }}
+                                        <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> 
+                                        {% if c.grade is not None %}
+                                            {{ c.grade|grade_alphabet }}
+                                        {% else %}
+                                                <td><span class="blinking">Waiting for grade </span> </td>
+                                        {% endif %}
                                         <br>
-                                        <label>Feedback: </label> {{c.appeal_explanation}}
+                                        <label>Feedback: </label>
+                                        {% if c.appeal_explanation %}
+                                            {{c.appeal_explanation}}
+                                        {% else %}
+                                                <td><span class="blinking">Waiting for explanation </span> </td>
+                                        {% endif %}                                        
                                         <br>
                                     </div>
                                     {% endfor %}
@@ -397,7 +418,6 @@
                                                                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grade">Grade
                                                                 </label>
                                                                 <div class="col-md-6 col-sm-6 col-xs-12">
-                                                                    {% comment %} <input type="number" name="grade" class="form-control col-md-7 col-xs-12" required id="grade"> {% endcomment %}
                                                                     <select name="grade" class="form-control col-md-7 col-xs-12" required id="grade">
                                                                         <option value="">Select</option>
                                                                         <option value="95.00">A</option>

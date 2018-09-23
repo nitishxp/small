@@ -314,3 +314,14 @@ i.glyphicon.glyphicon-calendar.fa.fa-calendar {
     background-color: #dcdf27;
     border-color: #dcdf27;
 }
+
+.blinking{
+    animation:blinkingText 0.8s infinite;
+}
+@keyframes blinkingText{
+    0%{     color: #000;    }
+    49%{    color: transparent; }
+    50%{    color: transparent; }
+    99%{    color:transparent;  }
+    100%{   color: #000;    }
+}
