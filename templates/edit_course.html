@@ -205,8 +205,10 @@
                             <div class="x_content">
                                 <table class="table" id="student_enrollment_list">
                                     <thead>
-                                        <th>Student Name</th>
+                                        <tr>
+                                        <th> Student Name</th>
                                         <th>Enrollment Status</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                         {% for c in enrolled_student %}
@@ -326,7 +328,7 @@
                                         {% for c in homework %}
                                         <th>HW {{ c.homework_name }}</th>
                                         {% endfor %}
-                                        <!-- <th> Total</th> -->
+                                        <th> Total</th>
                                     </thead>
                                     <tbody>
                                         {% for key,values in all_grades.items %}
@@ -363,7 +365,7 @@
                                         {% for c in homework %}
                                         <th>HW {{ c.homework_name }} Grading quality</th>
                                         {% endfor %}
-                                        <!-- <th> Total</th> -->
+                                        <th> Total</th>
                                     </thead>
                                     <tbody>
                                         {% for key,values in first_grader_grading.items %}
