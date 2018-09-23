@@ -364,14 +364,20 @@ def student_course(request, course_id):
 
     print grade_dic
 
+    # now only to appeal grade
+    # comment the first grader grading code
+    # appeal_grader_obj = AppealGraderModel.objects.filter(
+    #     Q(appeal_grading_status=False)
+    #     | Q(appeal_peer_grading_status=False),
+    #     course=course_obj,
+    #     appeal_grader=request.user.id).select_related('group')
+
     appeal_grader_obj = AppealGraderModel.objects.filter(
-        Q(appeal_grading_status=False)
-        | Q(appeal_peer_grading_status=False),
+        appeal_grading_status=False,
         course=course_obj,
         appeal_grader=request.user.id).select_related('group')
 
     appeal_grader = []
-
     for c in appeal_grader_obj:
         if c.group.total_member == c.group.appeal_done_count:
             result = get_grade_homework(c.group.group)
