@@ -245,25 +245,25 @@ def student_course(request, course_id):
             t['appeal_grade'] = ''
             t['appeal_explanation'] = ''
 
-        # to find out the grading quality
-        grading_quality = PeerEvaluationModel.objects.filter(
-            course=course_obj,
-            group__homework__homework_name=t['assignment_name'],
-            peer_grader=request.user).aggregate(Avg('grade'))
-        if grading_quality['grade__avg'] is not None:
-            grading_quality = round(grading_quality['grade__avg'])
-        else:
-            # now check does this user have even done the grading
-            grading_done = HomeworkGroupGrade.objects.filter(
-                group__homework__course=course_obj,
-                group__homework__homework_name=t['assignment_name'],
-                grader=request.user)
-            if grading_done.exists():
-                grading_quality = 4.00
-            else:
-                grading_quality = None
+        # # to find out the grading quality
+        # grading_quality = PeerEvaluationModel.objects.filter(
+        #     course=course_obj,
+        #     group__homework__homework_name=t['assignment_name'],
+        #     peer_grader=request.user).aggregate(Avg('grade'))
+        # if grading_quality['grade__avg'] is not None:
+        #     grading_quality = round(grading_quality['grade__avg'])
+        # else:
+        #     # now check does this user have even done the grading
+        #     grading_done = HomeworkGroupGrade.objects.filter(
+        #         group__homework__course=course_obj,
+        #         group__homework__homework_name=t['assignment_name'],
+        #         grader=request.user)
+        #     if grading_done.exists():
+        #         grading_quality = 4.00
+        #     else:
+        #         grading_quality = None
 
-        t['grading_quality'] = grading_quality
+        # t['grading_quality'] = grading_quality
 
         assignment.append(t)
 
@@ -298,6 +298,7 @@ def student_course(request, course_id):
     index_grader = 1
 
     for c in range(0, len(grade)):
+
         homework_name = grade[c].group.homework.homework_name
         has_appeal_done = grade[c].group.appeal_done_count
         appeal_done_status = grade[c].group.appeal_done_status
@@ -306,7 +307,6 @@ def student_course(request, course_id):
             group=grade[c].group).count()
         no_of_grader_who_have_done_grading = GroupCombinationModel.objects.filter(
             group=grade[c].group, peerevalutation=True).count()
-
         if c == 0:
             current = homework_name
             change = False
@@ -331,7 +331,6 @@ def student_course(request, course_id):
                     appeal['do_all_first_grader_have_graded'] = True
                 else:
                     appeal['do_all_first_grader_have_graded'] = False
-
                 grade_dic.append(appeal)
 
         temp = {}
@@ -362,6 +361,8 @@ def student_course(request, course_id):
                     appeal['do_all_first_grader_have_graded'] = False
 
                 grade_dic.append(appeal)
+
+    print grade_dic
 
     appeal_grader_obj = AppealGraderModel.objects.filter(
         Q(appeal_grading_status=False)

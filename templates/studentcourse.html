@@ -75,7 +75,7 @@
                                         <th>Grade</th>
                                         <th>Appeal</th>
                                         <th>Appeal Grade</th>
-                                        <th>Grading Quality</th>
+                                        <!-- <th>Grading Quality</th> -->
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
@@ -104,7 +104,7 @@
                                             {% endif %}
                                             <td> {{ c.appeal_grade|grade_alphabet }}</td>
                                         {% endif %}
-                                        <td>{{ c.grading_quality | grade_alphabet }}</td>
+                                        <!-- <td>{{ c.grading_quality | grade_alphabet }}</td> -->
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -171,7 +171,7 @@
                                         <th>HW Deadline</th>
                                         <th>Grading Deadline</th>
                                         <th>Grade</th>
-                                        <th>Feedback</th>
+                                        <!-- <th>Feedback</th> -->
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
@@ -181,7 +181,7 @@
                                         <td>{{ c.grade_deadline }}</td>
                                         {% if c.deadline_miss %}
                                             <td>F</td>
-                                            <td>Late Submission</td>
+                                            <!-- <td>Late Submission</td> -->
                                         {% else %}
                                             {% if  c.appeal_done_count == c.total_member %}
                                                 {% if not c.appeal_done_status %}
@@ -194,12 +194,12 @@
                                             {% endif %}
                                             {% if  c.appeal_done_count == c.total_member  %}
                                                 {% if not c.appeal_done_status %}
-                                                    <td>{{ c.appeal_explanation|linebreaks }}</td>
+                                                    <!-- <td>{{ c.appeal_explanation|linebreaks }}</td> -->
                                                 {% else %}
-                                                    <td>{{ c.explanation|linebreaks  }}</td>
+                                                    <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
                                                 {% endif %}
                                             {% else %}
-                                                <td>{{ c.explanation|linebreaks  }}</td>
+                                                <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
                                             {% endif %}
                                         {% endif %}
                                     </tr>
@@ -340,6 +340,7 @@
                                 </form>
                                 <br> {% endif %} {% endfor %}
                                 <hr>
+                                <!-- Appeal Grades for All Homework -->
                                 {% if appeal_grade_result %}
                                 <div class="x_title">
                                     <h2> Appeal Grade </h2>
@@ -431,7 +432,6 @@
                                                     {% endif %}
                                                 {% endif %}
                                             {% endfor %}
-
                                             <!-- peer grader -->
                                             <!--{% if not values.is_peer_grading_done and values.peer_grader %}-->
                                                 <!--<div>-->
