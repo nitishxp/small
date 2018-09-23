@@ -217,7 +217,8 @@ def student_course(request, course_id):
         user=request.user,
         group__course=course_obj).order_by("group__homework__homework_name")
     #
-    print homework_group_id.name 
+    print homework_group_id.query
+    
     for c in homework_group_id:
         group = c.group.group
         group_details = HomeworkGroup.objects.get(group=group)
