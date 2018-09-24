@@ -469,7 +469,7 @@ def do_grouping(request, pk):
 
         GroupCombinationModel.objects.filter(active=False).delete()
 
-    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 @login_required(login_url='/')
@@ -480,16 +480,16 @@ def student_upload(request, pk):
     lines = csv.DictReader(file_data)
 
     for line in lines:
-        user = UserModel.objects.filter(username=line['SIS User ID'])
+        user = UserModel.objects.filter(username=line['SIS Login ID'])
 
         if not user.exists():
             user = UserModel.objects.create_user(
-                username=line['SIS User ID'], name=line['Student'])
-            user.set_password(line['SIS User ID'])
+                username=line['SIS Login ID'], name=line['Student'])
+            user.set_password(line['SIS Login ID'])
             user.save()
 
         course = CourseModel.objects.get(pk=pk)
-        student_user = UserModel.objects.get(username=line['SIS User ID'])
+        student_user = UserModel.objects.get(username=line['SIS Login ID'])
 
         StudentCourseModel.objects.update_or_create(
             user=student_user,
