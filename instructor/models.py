@@ -16,6 +16,7 @@ class CourseModel(models.Model):
     status = models.BooleanField(default=True)
     course_grading_type = models.TextField(null=True)
     course_function = models.TextField(null=True)
+    course_group_type = models.TextField(default='shuffle')
 
     class Meta:
         db_table = 'course'
