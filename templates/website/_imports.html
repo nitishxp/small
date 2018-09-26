@@ -41,9 +41,13 @@
     <!-- jQuery -->
     <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
 </head>
+<style>
+.js div#preloader { position: fixed; left: 0; top: 0; z-index: 999; width: 100%; height: 100%; overflow: visible; background: #333 url('http://files.mimoymima.com/images/loading.gif') no-repeat center center; }
+
+</style>
 
 <body class="nav-md">
-    
+<div id="preloader"></div>
 {% block content %} {% endblock %} {% block js %}
 <!-- Bootstrap -->
 <script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -119,6 +123,11 @@
 
 {% endblock %}
 
+<script>
+    $(window).load(function(){
+    $('#preloader').fadeOut('slow',function(){$(this).remove();});
+});
+</script>
 </body>
 
 </html>

@@ -555,35 +555,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function(){
-        var first = false
-        $(".list-unstyled li").each( function() {
-            a = $(this).children('a')
-            selected = $(a).hasClass('selected');
-            if( selected ){
-                if (!first) {
-                    // this is the first element 
-                    first = $(this)
-                    return true  
-                }
-                // hide this element
-                var linkid = $(a).attr("href")
-                console.log(linkid)
-                $(linkid).hide()
-            }
-            
-        })
-    })
-    $(".timeline").on('click',function(){
-        $(".timeline").each( function(){
-            var linkid = $(this).attr("href")
-                $(linkid).hide()
-        })        
-        var linkid = $(this).attr("href")
-        $(linkid).show()
-
-    })
-</script>
 {% endblock %}
