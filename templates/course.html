@@ -3,17 +3,17 @@
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
             <li>
-                <a href="#profile" class="selected">
+                <a href="#profile" class="selected timeline">
                     <span class="step_no">Password</span>
                 </a>
             </li>
             <li>
-                <a href="#create_course" class="selected">
+                <a href="#create_course" class="selected timeline">
                     <span class="step_no">Create Course</span>
                 </a>
             </li>
             <li>
-                <a href="#course" class="{% if course %} selected {% else %} disabled {% endif %}">
+                <a href="#course" class="{% if course %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">List Course</span>
                 </a>
             </li>
@@ -177,4 +177,33 @@
     function initializeHomeWork() {
         $("#add_assignments").trigger('click')
     }
+    $(document).ready(function(){
+        var first = false
+        $(".list-unstyled li").each( function() {
+            a = $(this).children('a')
+            selected = $(a).hasClass('selected');
+            if( selected ){
+                if (!first) {
+                    // this is the first element 
+                    first = $(this)
+                    return true  
+                }
+                // hide this element
+                var linkid = $(a).attr("href")
+                console.log(linkid)
+                $(linkid).hide()
+            }
+            
+        })
+    })
+    $(".timeline").on('click',function(){
+        $(".timeline").each( function(){
+            var linkid = $(this).attr("href")
+                $(linkid).hide()
+        })        
+        var linkid = $(this).attr("href")
+        $(linkid).show()
+
+    })
+
 </script> {% endblock %}
