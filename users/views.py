@@ -13,11 +13,11 @@ def signup(request):
         print request.POST
         user = UserModel(
             username=request.POST['username'],
-            last_name=request.POST.get('last_name'),
-            first_name=request.POST.get('first_name'))
+            name=request.POST.get('name'),
+            role='instructor')
         user.set_password(request.POST['password'])
         user.save()
-    return render(request, 'registration/signup.html')
+    return HttpResponseRedirect(reverse('instructor__course'))
 
 
 def index(request):
