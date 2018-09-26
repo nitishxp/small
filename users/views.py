@@ -17,7 +17,8 @@ def signup(request):
             role='instructor')
         user.set_password(request.POST['password'])
         user.save()
-    return HttpResponseRedirect(reverse('instructor__course'))
+        return HttpResponseRedirect(reverse('instructor__course'))
+    return render(request, 'registration/signup.html')
 
 
 def index(request):
