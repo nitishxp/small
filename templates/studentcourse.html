@@ -4,42 +4,42 @@
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
             <li>
-                <a href="#personal_info" class="selected">
+                <a href="#personal_info" class="selected timeline">
                     <span class="step_no">Your Progress</span>
                 </a>
             </li>
             <!-- <li>
-                <a href="#course_info" class="selected">
+                <a href="#course_info" class="selected timeline">
                     <span class="step_no">Course Info</span>
                 </a>
             </li> -->
             <li>
-                <a href="#group" class="selected">
+                <a href="#group" class="selected timeline">
                     <span class="step_no">Group</span>
                 </a>
             </li>
             <li>
-                <a href="#upload" class="{% if file_upload %} selected {% else %} disabled {% endif %}">
+                <a href="#upload" class="{% if file_upload %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Upload</span>
                 </a>
             </li>
             <li>
-                <a href="#peer_evaluation" class="{% if peerevalutation %} selected {% else %} disabled {% endif %}">
+                <a href="#peer_evaluation" class="{% if peerevalutation %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Peer Evaluation</span>
                 </a>
             </li>
             <li>
-                <a href="#grades" class="{% if grade %} selected {% else %} disabled {% endif %}">
+                <a href="#grades" class="{% if grade %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Grades</span>
                 </a>
             </li>
             <li>
-                <a href="#appeal_grader" class="{% if appeal_grader %} selected {% else %} disabled {% endif %}">
+                <a href="#appeal_grader" class="{% if appeal_grader %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Appeal Grader</span>
                 </a>
             </li>
             <li>
-                <a href="#review_history" class="{% if review_history %} selected {% else %} disabled {% endif %}">
+                <a href="#review_history" class="{% if review_history %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Review History</span>
                 </a>
             </li>
@@ -555,4 +555,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        var first = false
+        $(".list-unstyled li").each( function() {
+            a = $(this).children('a')
+            selected = $(a).hasClass('selected');
+            if( selected ){
+                if (!first) {
+                    // this is the first element 
+                    first = $(this)
+                    return true  
+                }
+                // hide this element
+                var linkid = $(a).attr("href")
+                console.log(linkid)
+                $(linkid).hide()
+            }
+            
+        })
+    })
+    $(".timeline").on('click',function(){
+        $(".timeline").each( function(){
+            var linkid = $(this).attr("href")
+                $(linkid).hide()
+        })        
+        var linkid = $(this).attr("href")
+        $(linkid).show()
+
+    })
+</script>
 {% endblock %}
