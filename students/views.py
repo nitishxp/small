@@ -195,19 +195,19 @@ def student_course(request, course_id):
 
     constraints = []
     users_group = []
-    for c in constraints_db:
-        t = {}
-        t['id'] = c.id
-        t['question'] = c.question
-        t['options'] = ast.literal_eval(c.options)
-        selected_db = StudentConstraintsModel.objects.filter(
-            user=request.user, constraint=c.id)
-        if selected_db.exists():
-            selected_db = selected_db.first()
-            t['selected'] = selected_db.response
-        else:
-            t['selected'] = ''
-        constraints.append(t)
+    # for c in constraints_db:
+    #     t = {}
+    #     t['id'] = c.id
+    #     t['question'] = c.question
+    #     t['options'] = ast.literal_eval(c.options)
+    #     selected_db = StudentConstraintsModel.objects.filter(
+    #         user=request.user, constraint=c.id)
+    #     if selected_db.exists():
+    #         selected_db = selected_db.first()
+    #         t['selected'] = selected_db.response
+    #     else:
+    #         t['selected'] = ''
+    #     constraints.append(t)
 
     course = CourseModel.objects.all()
     course_obj = CourseModel.objects.filter(pk=course_id).first()
@@ -215,7 +215,7 @@ def student_course(request, course_id):
     # first fetch the group which user is part of
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
-        group__course=course_obj).order_by("group__homework__homework_name")
+        group__course=course_obj).select_related('group','group__homework').order_by("group__homework__homework_name")
     #
     print homework_group_id.query
 
@@ -234,8 +234,8 @@ def student_course(request, course_id):
         t['group_id'] = group_details.group
         t['group_obj'] = group_details
         t['uploads'] = group_details.attachment
-        t['appeal_done_count'] = GroupCombinationModel.objects.filter(
-            group=group_details, peerevalutation=True).count()
+        # t['appeal_done_count'] = GroupCombinationModel.objects.filter(
+        #     group=group_details, peerevalutation=True).count()
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
         t['appeal_reject_status'] = group_details.appeal_reject_status
@@ -291,10 +291,10 @@ def student_course(request, course_id):
         group__appeal_done_status=False,
         group__appeal_reject_status=False,
         has_appealed=False).order_by(
-            "group__homework__homework_name").select_related('group')
+            "group__homework__homework_name").select_related('group','group__homework')
 
     grade = HomeworkGroupGrade.objects.filter(
-        group__in=users_group).select_related('group').order_by(
+        group__in=users_group).select_related('group','group__homework').order_by(
             "group__homework__homework_name")
 
     grade_dic = []
@@ -379,7 +379,7 @@ def student_course(request, course_id):
     appeal_grader_obj = AppealGraderModel.objects.filter(
         appeal_grading_status=False,
         course=course_obj,
-        appeal_grader=request.user.id).select_related('group')
+        appeal_grader=request.user.id).select_related('group','group__homework')
 
     appeal_grader = []
     for c in appeal_grader_obj:
@@ -398,9 +398,13 @@ def student_course(request, course_id):
         group__in=users_group).select_related('group').order_by(
             "group__homework__homework_name")
 
+    review_history = HomeworkGroupGrade.objects.filter(
+        grader=request.user).select_related('group','group__homework').order_by(
+            "group__homework__homework_name")
+
     return render(
         request, 'studentcourse.html', {
-            'constraints': constraints,
+            # 'constraints': constraints,
             'course': course,
             'selected_course': course_id,
             'selected_course_obj': course_obj,
@@ -411,7 +415,8 @@ def student_course(request, course_id):
             'homework_appeal': homework_appeal,
             'appeal_grader': appeal_grader,
             'student_course_enroll': student_course_enroll,
-            'appeal_grade_result': appeal_grade_result
+            'appeal_grade_result': appeal_grade_result,
+            'review_history': review_history
         })
 
 

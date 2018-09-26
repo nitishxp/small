@@ -46,6 +46,14 @@ def index(request):
 
 
 @login_required(login_url='/')
+def change_password(request):
+    if request.method == "POST":
+        request.user.set_password(request.POST['password'])
+        request.user.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@login_required(login_url='/')
 def course(request):
     if request.method == "POST":
         course_obj = CourseModel()

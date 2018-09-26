@@ -21,4 +21,7 @@ urlpatterns = [
     url(r'check_grading_deadline/$',
         check_grading_deadline,
         name="instructor__check_grading_deadline"),
+    url(r'^change_password/$',
+        change_password,
+        name="instructor_change_password"),
 ]

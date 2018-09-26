@@ -3,6 +3,11 @@
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
             <li>
+                <a href="#profile" class="selected">
+                    <span class="step_no">Password</span>
+                </a>
+            </li>
+            <li>
                 <a href="#create_course" class="selected">
                     <span class="step_no">Create Course</span>
                 </a>
@@ -14,6 +19,47 @@
             </li>
         </ul>
         <div class="stepContainer">
+            <div id="profile" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Change Password </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="POST" class="form-horizontal form-label-left" action="{% url 'instructor_change_password' %}" onsubmit="return checkPassword()">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Password
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="password" name="password" class="form-control col-md-7 col-xs-12" value="" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Confirm Password
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="password" name="confirm_password" class="form-control col-md-7 col-xs-12" value="" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12">
+
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Submit" class="btn btn-primary ">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="create_course" class="content" style="display: block">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -118,6 +164,15 @@
     </div>
 </div>
 <script>
+    function checkPassword(){
+        var password = $("[name='password']").val()
+        var confirm_password = $("[name='confirm_password']").val()
+        if (password != confirm_password){
+            alert('Password are not same')
+            return false
+        }
+        return true
+    }
     initializeHomeWork()
     function initializeHomeWork() {
         $("#add_assignments").trigger('click')

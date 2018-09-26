@@ -38,6 +38,11 @@
                     <span class="step_no">Appeal Grader</span>
                 </a>
             </li>
+            <li>
+                <a href="#review_history" class="{% if review_history %} selected {% else %} disabled {% endif %}">
+                    <span class="step_no">Review History</span>
+                </a>
+            </li>
         </ul>
 
         <div class="stepContainer">
@@ -526,7 +531,27 @@
                             </div>
                         </div>
                     </div>
+            </div>
+            <div id="review_history" class="content" style="display: {% if review_history %} block {% else %} none {% endif %}">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Review History </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                    {%  for c in review_history %}
+                                        <label> Assignment Name:  </label> {{ c.group.homework.homework_name }} <br>
+                                        <label> Review Given: </label> {{ c.explanation }} <br>
+                                        <label> Grade: </label> {{ c.grade| grade_alphabet }} <br>
+                                        <hr>
+                                    {% endfor %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>
