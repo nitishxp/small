@@ -372,6 +372,25 @@
                                 </form>
                                 <br> {% endif %} {% endfor %}
                                 <hr>
+
+                                <!-- Late Submission -->
+                                <div class="x_title">
+                                    <h2>Late Submission</h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    {% if late_homework %}
+                                        {% for c in late_homework %}
+                                            <label>Assignment  {{ c.assignment }} Grade : </label> F 
+                                            <br> 
+                                            <label>Feedback : </label> Late Submission
+                                        {% endfor %}
+                                    {% else %}
+                                        No Late Submissions :)
+                                    {% endif %}
+                                </div>
+                                <br>
+                                <hr>
                                 <!-- Appeal Grades for All Homework -->
                                 {% if appeal_grade_result %}
                                 <div class="x_title">

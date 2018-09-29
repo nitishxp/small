@@ -299,6 +299,7 @@ def student_course(request, course_id):
         group__in=users_group).select_related('group','group__homework').order_by(
             "group__homework__homework_name")
 
+
     grade_dic = []
     current = None
     index_grader = 1
@@ -417,8 +418,19 @@ def student_course(request, course_id):
         else:
             temp['appeal'] = None
             temp['peer_evaluation_grade'] = ''
-
         review_history.append(temp)
+    
+    late_homework = []
+
+    late_group_obj = HomeworkGroup.objects.filter(
+        group__in=users_group,deadline_miss=True).select_related('homework').order_by(
+            "homework__homework_name")
+
+    for c in late_group_obj:
+        t = {}
+        t['assignment'] = c.homework.homework_name
+        late_homework.append(t)
+
     return render(
         request, 'studentcourse.html', {
             # 'constraints': constraints,
@@ -433,7 +445,8 @@ def student_course(request, course_id):
             'appeal_grader': appeal_grader,
             'student_course_enroll': student_course_enroll,
             'appeal_grade_result': appeal_grade_result,
-            'review_history': review_history
+            'review_history': review_history,
+            'late_homework' : late_homework
         })
 
 
