@@ -29,7 +29,7 @@
                 </a>
             </li>
             <li>
-                <a href="#grades" class="{% if grade %} selected timeline {% else %} disabled {% endif %}">
+                <a href="#grades" class="{% if grade or late_homework %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Grades</span>
                 </a>
             </li>
@@ -336,7 +336,7 @@
                     </div>
                 </div>
             </div>
-            <div id="grades" class="content" style="display: {% if grade %} block {% else %} none {% endif %}">
+            <div id="grades" class="content" style="display: {% if grade  or late_homework %} block {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
