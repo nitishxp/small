@@ -181,6 +181,30 @@
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
                             <div class="x_title">
+                                <h2> Student Upload </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_id">Upload Student Csv
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="file" accept=".csv" class="form-control col-md-7 col-xs-12" required="True" name="student_upload">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Upload" class="btn btn-primary">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="x_panel">
+                            <div class="x_title">
                                 <h2> Course Student </h2>
                                 <div class="clearfix"></div>
                             </div>
@@ -203,30 +227,6 @@
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2> Student Upload </h2>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <form action="{% url 'instructor__student_upload' course_pk %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_id">Upload Student Csv
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="file" accept=".csv" class="form-control col-md-7 col-xs-12" required="True" name="student_upload">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="submit" value="Upload" class="btn btn-primary">
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
