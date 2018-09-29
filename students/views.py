@@ -624,10 +624,10 @@ def submit_appeal_grade(request, group):
             grade_index = current_grade_index - appeal_grader_index
             print grade_index
             if grade_index == 0:
-                grade_index = grade_array[grade_index]
+                grade_index = 100
             else:
                 grade_index = abs(grade_index)
-                grade_index = grade_array[grade_index]
+                grade_index = 100 - ( grade_index * 10)
 
             print grade_index
 
