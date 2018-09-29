@@ -9,11 +9,6 @@
                 </a>
             </li>
             <li>
-                <a href="#student_upload" class="selected timeline">
-                    <span class="step_no">Student Upload</span>
-                </a>
-            </li>
-            <li>
                 <a href="#student_enrollment" class="selected timeline">
                     <span class="step_no">Enrollment</span>
                 </a>
@@ -174,9 +169,42 @@
                     </div>
                 </div>
             </div>
-            <div id="student_upload" class="content" style="display: block">
+            <!-- <div id="student_upload" class="content" style="display: block">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
+                        
+                    </div>
+                </div>
+            </div>  -->
+            <div id="student_enrollment" class="content" style="display: block">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> Course Student </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table" id="student_enrollment_list">
+                                    <thead>
+                                        <tr>
+                                        <th> Student Name</th>
+                                        <th>Enrollment Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for c in enrolled_student %}
+                                        <tr>
+                                            <td>{{ c.user.name }}</td>
+                                            <td>
+                                                <input type="checkbox" value="{{ c.user.id }}" {% if c.enrollment_status %} checked {% endif %}>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         <div class="x_panel">
                             <div class="x_title">
                                 <h2> Student Upload </h2>
@@ -199,38 +227,6 @@
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="student_enrollment" class="content" style="display: block">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2> Course Student </h2>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <table class="table" id="student_enrollment_list">
-                                    <thead>
-                                        <tr>
-                                        <th> Student Name</th>
-                                        <th>Enrollment Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for c in enrolled_student %}
-                                        <tr>
-                                            <td>{{ c.user.name }}</td>
-                                            <td>
-                                                <input type="checkbox" value="{{ c.id }}" {% if c.enrollment_status %} checked {% endif %}>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>

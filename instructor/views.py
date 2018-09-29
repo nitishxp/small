@@ -56,7 +56,24 @@ def change_password(request):
 @csrf_exempt
 @login_required(login_url='/')
 def change_enroll(request,pk):
+    try:
+        user = request.POST['userId']
+        status = request.POST['status']
+    except Exception as e:
+        print str(e)
 
+    try:
+        user = UserModel.objects.get(pk=user)
+        course = CourseModel.objects.get(pk=pk)
+    except Exception as e:
+        print str(e)
+
+    print user,status
+    
+    if status == "true":
+        StudentCourseModel.objects.filter(course=course,user=user).update(enrollment_status=True)
+    if status == "false":
+        StudentCourseModel.objects.filter(course=course,user=user).update(enrollment_status=False)
     return HttpResponse('hurray');
 
 @login_required(login_url='/')
