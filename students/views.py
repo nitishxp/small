@@ -159,12 +159,14 @@ def get_grade_homework(group):
     peer_grader = []
     for c in range(0, len(grade)):
         homework_name = grade[c].group.homework.homework_name
+        grade_rubric = grade[c].group.homework.grade_rubric
         has_appeal_done = grade[c].group.appeal_done_count
         appeal_done_status = grade[c].group.appeal_done_status
         appeal_reject_status = grade[c].group.appeal_reject_status
         temp = {}
         temp['type'] = 'grade'
         temp['homework_name'] = homework_name
+        temp['grade_rubric'] = grade_rubric
         temp['grade'] = grade[c].grade
         temp['explanation'] = grade[c].explanation
         temp['group'] = grade[c].group.group

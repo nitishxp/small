@@ -73,6 +73,12 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
+                                <label>
+                                    Grading Policy: 
+                                </label>
+                                <p>
+                                    {{ selected_course_obj.grading_rubric }}
+                                </p>
                                 <table class="table table-hover">
                                     <tr>
                                         <th>Assignment</th>
@@ -422,7 +428,7 @@
                                                     <hr>
                                                     <div>
                                                         <label>Grading Rubric</label>
-                                                        <p> {{selected_course_obj.grading_rubric }}</p>
+                                                        <p> {{c.grade_rubric }}</p>
                                                     </div>
                                                     {%if not values.is_grading_done %}
                                                         <hr>
