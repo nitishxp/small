@@ -3967,7 +3967,7 @@ fieldset {
     height: 100%;
     background: #ccc;
     top: 20px;
-    width: 4px;
+    /*width: 4px;*/
     z-index: 4;
     left: 49%
 }

@@ -482,5 +482,14 @@
             dom: "Bfrtip",
         });
 
+
+        $("input[type='checkbox']").on('click', function(){
+	        a = $(this).is(":checked")
+            $.ajax({
+                    url : "enroll/",
+                    method : 'POST',
+                    data : {'userId':$(this).val(),'status':a},
+            })
+        })
     })
 </script> {% endblock %}

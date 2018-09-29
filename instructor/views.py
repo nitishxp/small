@@ -38,6 +38,7 @@ from django.contrib.auth.decorators import login_required
 from students.templatetags.filter import grade_alphabet
 from django.utils import timezone
 from django.db.models import Avg
+from django.views.decorators.csrf import csrf_exempt
 
 
 @login_required(login_url='/')
@@ -52,6 +53,11 @@ def change_password(request):
         request.user.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+@csrf_exempt
+@login_required(login_url='/')
+def change_enroll(request,pk):
+
+    return HttpResponse('hurray');
 
 @login_required(login_url='/')
 def course(request):

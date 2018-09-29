@@ -64,30 +64,34 @@ $(".appeal_cancel").on('click', function () {
     })
 })
 
-$(document).ready(function(){
-        var first = false
-        $(".list-unstyled li").each( function() {
-            a = $(this).children('a')
-            selected = $(a).hasClass('selected');
-            if( selected ){
-                if (!first) {
-                    // this is the first element 
-                    first = $(this)
-                    return true  
-                }
-                // hide this element
-                var linkid = $(a).attr("href")
-                console.log(linkid)
-                $(linkid).hide()
+$(document).ready(function () {
+    var first = false
+    $(".list-unstyled li").each(function () {
+        a = $(this).children('a')
+        selected = $(a).hasClass('selected');
+        if (selected) {
+            if (!first) {
+                // this is the first element
+                first = $(this)
+                return true
             }
-            
-        })
+            // hide this element
+            var linkid = $(a).attr("href")
+            console.log(linkid)
+            $(a).children('span').css('background', 'gray')
+            $(linkid).hide()
+        }
+
     })
-    $(".timeline").on('click',function(){
-        $(".timeline").each( function(){
-        var linkid = $(this).attr("href")
-        $(linkid).hide()
-    })        
-    var linkid = $(this).attr("href")
+})
+$(".timeline").on('click', function () {
+    $(".timeline").each(function () {
+        var linkid = $(this).attr("href");
+        $(this).children('span').css('background', 'gray');
+        $(linkid).hide();
+    })
+    $(this).children('span').css('background','#38c73a')
+    var linkid = $(this).attr("href");
     $(linkid).show()
+
 })
