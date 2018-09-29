@@ -137,14 +137,14 @@ def return_grade_explanation(group_id):
 def return_appeal_grade_explanation(group_id):
     grade = []
     explanation = []
-    print AppealGraderModel.objects.filter(group=group_id).query
+    # print AppealGraderModel.objects.filter(group=group_id).query
     for c in AppealGraderModel.objects.filter(group=group_id):
         grade.append(c.grade)
         explanation.append(c.appeal_explanation)
 
     grade = filter(None, grade)
     explanation = filter(None, explanation)
-    print grade,explanation
+    # print grade,explanation
     if len(grade) > 0:
         return sum(grade) / len(grade), "\n".join(explanation)
 
@@ -219,7 +219,7 @@ def student_course(request, course_id):
         user=request.user,
         group__course=course_obj).select_related('group','group__homework').order_by("group__homework__homework_name")
     #
-    print homework_group_id.query
+    # print homework_group_id.query
 
     for c in homework_group_id:
         group = c.group.group
@@ -368,7 +368,7 @@ def student_course(request, course_id):
 
                 grade_dic.append(appeal)
 
-    print grade_dic
+    # print grade_dic
 
     # now only to appeal grade
     # comment the first grader grading code
@@ -400,10 +400,25 @@ def student_course(request, course_id):
         group__in=users_group).select_related('group').order_by(
             "group__homework__homework_name")
 
-    review_history = HomeworkGroupGrade.objects.filter(
+    review_history = []
+    review_history_obj = HomeworkGroupGrade.objects.filter(
         grader=request.user).select_related('group','group__homework').order_by(
             "group__homework__homework_name")
 
+    for c in review_history_obj:
+        temp = {}
+        temp['assignment_name'] = c.group.homework.homework_name
+        temp['review_given'] = c.explanation
+        temp['grade'] = c.grade
+        appeal = AppealGraderModel.objects.filter(group=c.group,grade__isnull=False).first()
+        if appeal is not None:
+            temp['appeal'] = appeal
+            temp['peer_evaluation_grade'] = get_peer_grader_grade_by_appeal_grader(appeal.grade,c.grade)
+        else:
+            temp['appeal'] = None
+            temp['peer_evaluation_grade'] = ''
+
+        review_history.append(temp)
     return render(
         request, 'studentcourse.html', {
             # 'constraints': constraints,
@@ -421,6 +436,27 @@ def student_course(request, course_id):
             'review_history': review_history
         })
 
+
+def get_peer_grader_grade_by_appeal_grader(appeal_grader_grade,grade_by_peer):
+
+    try:
+        appeal_grader_grade = str(appeal_grader_grade)
+        grade_by_peer = str(grade_by_peer)
+        grade_array = ["95.00","91.25","88.75","85.00","81.25","78.75","75.00","71.25","68.75","65.00","61.25","55.00"]
+        appeal_grader_index = grade_array.index(appeal_grader_grade)
+        current_grade_index = grade_array.index(grade_by_peer)
+        grade_index = current_grade_index - appeal_grader_index
+        print grade_index
+        if grade_index == 0:
+            grade_index = 100
+        else:
+            grade_index = abs(grade_index)
+            grade_index = 100 - ( grade_index * 10)
+        
+        return grade_index
+    except Exception as e:
+        print str(e)
+        return None
 
 def process_attachments(f, group_id):
     import os

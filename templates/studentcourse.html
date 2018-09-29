@@ -548,9 +548,15 @@
                             </div>
                             <div class="x_content">
                                     {%  for c in review_history %}
-                                        <label> Assignment Name:  </label> {{ c.group.homework.homework_name }} <br>
-                                        <label> Review Given: </label> {{ c.explanation }} <br>
+                                        <label> Assignment Name:  </label> {{ c.assignment_name }} <br>
+                                        <label> Review Given: </label> {{ c.review_given }} <br>
                                         <label> Grade: </label> {{ c.grade| grade_alphabet }} <br>
+
+                                        {% if c.appeal is not None %}
+                                            <label> Appeal: </label> Yes <br>
+                                            <label> Appeal Feedback : </label> {{ c.appeal.appeal_reason }}<br>
+                                            <label> Your Peer Evaluation Grade is : </label> {{ c.peer_evaluation_grade }}<br>
+                                        {% endif %}
                                         <hr>
                                     {% endfor %}
                             </div>
