@@ -73,6 +73,8 @@ $(document).ready(function () {
             if (!first) {
                 // this is the first element
                 first = $(this)
+                let link = $(a).attr("href")
+                $(link).show()
                 return true
             }
             // hide this element

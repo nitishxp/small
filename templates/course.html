@@ -19,7 +19,7 @@
             </li>
         </ul>
         <div class="stepContainer">
-            <div id="profile" class="content" style="display: block">
+            <div id="profile" class="content" style="display: none">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -60,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div id="create_course" class="content" style="display: block">
+            <div id="create_course" class="content" style="display: none">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -130,7 +130,7 @@
                     </div>
                 </div>
             </div>
-            <div id="course" class="content" style="display: {% if course %} block {% else %} none {% endif %}">
+            <div id="course" class="content" style="display: {% if course %} none {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
