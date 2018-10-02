@@ -235,10 +235,10 @@ def edit_course(request, pk):
                 homework_name=c,
                 defaults=assignments[c])
 
-        if request.POST['course_group_type'] == "same":
-            do_same_grouping(pk)
-        else:
-            do_shuffle_grouping(pk)
+        # if request.POST['course_group_type'] == "same":
+        #     do_same_grouping(pk)
+        # else:
+        #     do_shuffle_grouping(pk)
 
     course = CourseModel.objects.filter(pk=pk).first()
     homework = CourseHomeWorkModel.objects.filter(
@@ -373,6 +373,15 @@ def chunkIt(seq, num):
     return out
 
 
+def do_grouping(request, pk):
+    course = CourseModel.objects.get(pk=pk)
+    if course.course_group_type == "same":
+        do_same_grouping(pk)
+    else:
+        do_shuffle_grouping(pk)
+
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 def do_shuffle_grouping(pk):
     # first fetch the homework related to the course
     homework = CourseHomeWorkModel.objects.filter(course=pk)
@@ -488,10 +497,12 @@ def do_same_grouping(pk):
     primary_group = None
     print "Group Exists Start Copying the group"
     for c in homework:
-        homework_started = HomeworkGroup.objects.filter(homework=c, attachment__isnull=False)
-        if homework_started.exists():
-            continue
+        # homework_started = HomeworkGroup.objects.filter(homework=c, attachment__isnull=False)
+        # if homework_started.exists():
+        #     print "esqh"
+        #     continue
         if HomeworkGroup.objects.filter(course=course,homework=c).exists():
+            print "this homework grouping has already been done skip it"
             primary_group = HomeworkGroupMember.objects.filter(group__course=course,group__homework=c)
             continue
         # check if there any group exists to replicate it or do reshuffling
