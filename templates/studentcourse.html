@@ -46,7 +46,7 @@
         </ul>
 
         <div class="stepContainer">
-            <div id="personal_info" class="content" style="display: block">
+            <div id="personal_info" class="content" style="display: none;">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -242,7 +242,7 @@
                     </div>
                 </div>
             </div>
-            <div id="upload" class="content" style="display: {% if file_upload %} block {% else %} none {% endif %}">
+            <div id="upload" class="content" style="display: {% if file_upload %} none {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -276,7 +276,7 @@
                 </div>
             </div>
 
-            <div id="peer_evaluation" class="content" style="display: {% if peerevalutation %} block {% else %} none {% endif %}">
+            <div id="peer_evaluation" class="content" style="display: {% if peerevalutation %} none {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -336,7 +336,7 @@
                     </div>
                 </div>
             </div>
-            <div id="grades" class="content" style="display: {% if grade  or late_homework %} block {% else %} none {% endif %}">
+            <div id="grades" class="content" style="display: {% if grade  or late_homework %} none {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
@@ -423,7 +423,7 @@
                     </div>
                 </div>
             </div>
-            <div id="appeal_grader" class="content" style="display: {% if appeal_grader %} block {% else %} none {% endif %}">
+            <div id="appeal_grader" class="content" style="display: {% if appeal_grader %} none {% else %} none {% endif %}">
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="x_panel">
@@ -557,7 +557,7 @@
                         </div>
                     </div>
             </div>
-            <div id="review_history" class="content" style="display: {% if review_history %} block {% else %} none {% endif %}">
+            <div id="review_history" class="content" style="display: {% if review_history %} none {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="x_panel">
