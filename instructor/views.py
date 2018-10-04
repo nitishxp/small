@@ -39,7 +39,7 @@ from students.templatetags.filter import grade_alphabet
 from django.utils import timezone
 from django.db.models import Avg
 from django.views.decorators.csrf import csrf_exempt
-
+from django.db.models.query import QuerySet
 
 @login_required(login_url='/')
 def index(request):
@@ -380,7 +380,7 @@ def do_grouping(request, pk):
     else:
         do_shuffle_grouping(pk)
 
-    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def do_shuffle_grouping(pk):
     # first fetch the homework related to the course
@@ -491,9 +491,13 @@ def do_same_grouping(pk):
     # enrolled_student = StudentCourseModel.objects.filter(
     #     course=pk, enrollment_status=True)
     course = CourseModel.objects.get(pk=pk)
+    group = [] # in case of no group exists for the first time
     if not HomeworkGroup.objects.filter(course=course).exists():
-        do_shuffle_grouping(pk)
-        return 
+        enrolled_student = StudentCourseModel.objects.filter(course=pk, enrollment_status=True)
+        for d in enrolled_student:
+            group.append(d.user.id)
+            random.shuffle(group)
+        
     primary_group = None
     print "Group Exists Start Copying the group"
     for c in homework:
@@ -505,21 +509,27 @@ def do_same_grouping(pk):
             print "this homework grouping has already been done skip it"
             primary_group = HomeworkGroupMember.objects.filter(group__course=course,group__homework=c)
             continue
+
         # check if there any group exists to replicate it or do reshuffling
-        if primary_group is None:
-            continue
-        x = {}
-        for pggg in primary_group:
-            user = pggg.user.id
-            group = pggg.group.group
-            if group in x.keys():
-                x[group].append(user)
-            else:
-                x[group] = []
-                x[group].append(user)
         t = []
-        for prv_group in x:
-            t.append(x[prv_group])
+        if primary_group is None:
+            no_of_group = len(group) / c.no_of_group
+            partition = chunkIt(group, no_of_group)
+            t = [x for x in partition if x != []]
+        else:
+            x = {}
+            for pggg in primary_group:
+                user = pggg.user.id
+                group = pggg.group.group
+                if group in x.keys():
+                    x[group].append(user)
+                else:
+                    x[group] = []
+                    x[group].append(user)            
+            for prv_group in x:
+                t.append(x[prv_group])
+
+        print "Partition Group",t
         groups_with_random_grader = {}
         # delete the previous group model if exists
         HomeworkGroup.objects.filter(homework=c, course=course).delete()
@@ -549,7 +559,6 @@ def do_same_grouping(pk):
         for g in groups_with_random_grader:
             temp_group.append(g)
         temp_group_combination = []
-        print temp_group
         for i in range(len(temp_group)):
             pg = []
             pg.append((temp_group * 2)[i:i + 2][0])
@@ -581,6 +590,10 @@ def do_same_grouping(pk):
                     group=group, grader_group=grader_group).update(
                         active=True, is_used=True)
         GroupCombinationModel.objects.filter(active=False).delete()
+
+        # since primary group was none we need to make this current homework objects as primary group
+        if primary_group is None:
+            primary_group = HomeworkGroupMember.objects.filter(group__course=course,group__homework=c)
 
 
 def same_group(pk):
