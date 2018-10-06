@@ -499,6 +499,7 @@ def do_same_grouping(pk):
             random.shuffle(group)
         
     primary_group = None
+    primary_homework  = None
     print "Group Exists Start Copying the group"
     for c in homework:
         # homework_started = HomeworkGroup.objects.filter(homework=c, attachment__isnull=False)
@@ -508,6 +509,7 @@ def do_same_grouping(pk):
         if HomeworkGroup.objects.filter(course=course,homework=c).exists():
             print "this homework grouping has already been done skip it"
             primary_group = HomeworkGroupMember.objects.filter(group__course=course,group__homework=c)
+            primary_homework = c
             continue
 
         # check if there any group exists to replicate it or do reshuffling
@@ -517,6 +519,10 @@ def do_same_grouping(pk):
             partition = chunkIt(group, no_of_group)
             t = [x for x in partition if x != []]
         else:
+            # update the number of grader as that of previous group
+            c.no_of_grader = primary_homework.no_of_grader
+            c.no_of_group=primary_homework.no_of_group
+            c.save()
             x = {}
             for pggg in primary_group:
                 user = pggg.user.id
