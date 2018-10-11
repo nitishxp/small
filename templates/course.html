@@ -3,8 +3,8 @@
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
             <li>
-                <a href="#profile" class="selected timeline">
-                    <span class="step_no">Password</span>
+                <a href="#course" class="{% if course %} selected timeline {% else %} disabled {% endif %}">
+                    <span class="step_no">List Course</span>
                 </a>
             </li>
             <li>
@@ -13,8 +13,8 @@
                 </a>
             </li>
             <li>
-                <a href="#course" class="{% if course %} selected timeline {% else %} disabled {% endif %}">
-                    <span class="step_no">List Course</span>
+                <a href="#profile" class="selected timeline">
+                    <span class="step_no">Password</span>
                 </a>
             </li>
         </ul>
