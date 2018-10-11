@@ -305,15 +305,30 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="submit" value="Do Grouping" class="btn btn-primary">
-                                        </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <input type="submit" value="Do Grouping" class="btn btn-primary">
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
+                                    <div class="col-md-6">
+                                        <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <input type="submit" value="Redo Grouping" class="btn btn-primary">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
