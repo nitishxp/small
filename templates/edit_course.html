@@ -306,7 +306,9 @@
                             </div>
                             <div class="x_content">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-3">
                                         <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
                                             {% csrf_token %}
                                             <div class="form-group">
@@ -317,8 +319,8 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="col-md-6">
-                                        <form action="{% url 'instructor__do_grouping' course_pk %}" method="POST">
+                                    <div class="col-md-3">
+                                        <form action="{% url 'instructor__re_grouping' course_pk %}" method="POST">
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 <div class="col-md-4 col-sm-3 col-xs-12"></div>
@@ -327,6 +329,8 @@
                                                 </div>
                                             </div>
                                         </form>
+                                    </div>
+                                    <div class="col-md-3">
                                     </div>
                                 </div>
                             </div>
