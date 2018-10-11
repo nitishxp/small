@@ -740,7 +740,7 @@ def check_homework_deadline(request):
         GroupCombinationModel.objects.filter(group=c.group).update(
             peerevalutation=True)
 
-    return HttpResponse('Hello')
+    return HttpResponse(missed_deadline.query)
 
 
 def check_grading_deadline(request):
@@ -775,4 +775,4 @@ def check_grading_deadline(request):
                 first.peerevalutation = True
                 first.save()
 
-    return HttpResponse('Hello')
+    return HttpResponse(missed_deadline.query)
