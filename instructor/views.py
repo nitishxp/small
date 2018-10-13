@@ -73,10 +73,12 @@ def change_enroll(request, pk):
     # print user,status
 
     if status == "true":
-        StudentCourseModel.objects.filter(course=course, user=user).update(enrollment_status=True)
+        StudentCourseModel.objects.filter(
+            course=course, user=user).update(enrollment_status=True)
     if status == "false":
-        StudentCourseModel.objects.filter(course=course, user=user).update(enrollment_status=False)
-    return HttpResponse('hurray');
+        StudentCourseModel.objects.filter(
+            course=course, user=user).update(enrollment_status=False)
+    return HttpResponse('hurray')
 
 
 @login_required(login_url='/')
@@ -240,8 +242,6 @@ def edit_course(request, pk):
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-
-
     course = CourseModel.objects.filter(pk=pk).first()
     homework = CourseHomeWorkModel.objects.filter(
         course=pk).order_by('homework_name')
@@ -293,7 +293,7 @@ def edit_course(request, pk):
                 # first find in the appeal_group
                 total_grade = PeerEvaluationModel.objects.filter(
                     group=g, peer_grader=grader_user_obj).aggregate(
-                    Avg('grade'))
+                        Avg('grade'))
 
                 if total_grade['grade__avg'] is not None:
                     total_grade = round(total_grade['grade__avg'])
@@ -394,10 +394,12 @@ def re_grouping(request, pk):
     else:
         course_group_type = 'shuffle'
 
-    homework = CourseHomeWorkModel.objects.filter(course=pk).order_by('homework_name')
+    homework = CourseHomeWorkModel.objects.filter(
+        course=pk).order_by('homework_name')
     course = CourseModel.objects.get(pk=pk)
     group = []  # in case of no group exists for the first time
-    enrolled_student = StudentCourseModel.objects.filter(course=pk, enrollment_status=True)
+    enrolled_student = StudentCourseModel.objects.filter(
+        course=pk, enrollment_status=True)
     for d in enrolled_student:
         group.append(d.user.id)
         random.shuffle(group)
@@ -442,10 +444,7 @@ def make_group(course, c, t):
             group_id = uuid.uuid1().hex
             # create group id
             group_obj = HomeworkGroup.objects.create(
-                homework=c,
-                course=course,
-                group=group_id,
-                total_member=len(g))
+                homework=c, course=course, group=group_id, total_member=len(g))
             # now insert group member to the group
             temp_member_create = []
             for m in g:
@@ -484,8 +483,7 @@ def make_group(course, c, t):
     # ie if select A-B then delete B-A
     for g in groups_with_random_grader:
         # select A-B
-        current_group = GroupCombinationModel.objects.filter(
-            group=g).first()
+        current_group = GroupCombinationModel.objects.filter(group=g).first()
         if current_group:
             # delete B-A
             current_group_grader_group = current_group.grader_group.group
@@ -496,7 +494,7 @@ def make_group(course, c, t):
             # now set all A-B active = True because of different grader
             GroupCombinationModel.objects.filter(
                 group=group, grader_group=grader_group).update(
-                active=True, is_used=True)
+                    active=True, is_used=True)
     GroupCombinationModel.objects.filter(active=False).delete()
 
 
@@ -588,20 +586,22 @@ def do_shuffle_grouping(pk):
                 # now set all A-B active = True because of different grader
                 GroupCombinationModel.objects.filter(
                     group=group, grader_group=grader_group).update(
-                    active=True, is_used=True)
+                        active=True, is_used=True)
         GroupCombinationModel.objects.filter(active=False).delete()
     return True
 
 
 def do_same_grouping(pk):
-    homework = CourseHomeWorkModel.objects.filter(course=pk).order_by('homework_name')
+    homework = CourseHomeWorkModel.objects.filter(
+        course=pk).order_by('homework_name')
     # # second fetch the student who are part of the course
     # enrolled_student = StudentCourseModel.objects.filter(
     #     course=pk, enrollment_status=True)
     course = CourseModel.objects.get(pk=pk)
     group = []  # in case of no group exists for the first time
     if not HomeworkGroup.objects.filter(course=course).exists():
-        enrolled_student = StudentCourseModel.objects.filter(course=pk, enrollment_status=True)
+        enrolled_student = StudentCourseModel.objects.filter(
+            course=pk, enrollment_status=True)
         for d in enrolled_student:
             group.append(d.user.id)
             random.shuffle(group)
@@ -616,7 +616,8 @@ def do_same_grouping(pk):
         #     continue
         if HomeworkGroup.objects.filter(course=course, homework=c).exists():
             print "this homework grouping has already been done skip it"
-            primary_group = HomeworkGroupMember.objects.filter(group__course=course, group__homework=c)
+            primary_group = HomeworkGroupMember.objects.filter(
+                group__course=course, group__homework=c)
             primary_homework = c
             continue
 
@@ -701,12 +702,13 @@ def do_same_grouping(pk):
                 # now set all A-B active = True because of different grader
                 GroupCombinationModel.objects.filter(
                     group=group, grader_group=grader_group).update(
-                    active=True, is_used=True)
+                        active=True, is_used=True)
         GroupCombinationModel.objects.filter(active=False).delete()
 
         # since primary group was none we need to make this current homework objects as primary group
         if primary_group is None:
-            primary_group = HomeworkGroupMember.objects.filter(group__course=course, group__homework=c)
+            primary_group = HomeworkGroupMember.objects.filter(
+                group__course=course, group__homework=c)
 
 
 @login_required(login_url='/')
@@ -772,7 +774,8 @@ def check_grading_deadline(request):
 
     missed_deadline = HomeworkGroup.objects.filter(
         homework__grade_deadline__lt=current_date,
-        homework__homework_deadline__gt=one_day_before_time, attachment=True)
+        homework__homework_deadline__gt=one_day_before_time,
+        attachment=True)
 
     # print missed_deadline.query
     # now iterate the data and update the corresponding things
@@ -798,3 +801,40 @@ def check_grading_deadline(request):
                 first.save()
 
     return HttpResponse(missed_deadline.query)
+
+
+def groupsame(request, pk):
+    enrolled_student = StudentCourseModel.objects.filter(
+        course=pk).select_related('user')
+
+    return render(request, 'samegroup.html', {'student': enrolled_student})
+
+
+def custom_grouping(request, pk):
+
+    course = CourseModel.objects.get(pk=pk)
+    homework = CourseHomeWorkModel.objects.filter(
+        course=pk).order_by('homework_name')
+    course = CourseModel.objects.get(pk=pk)
+
+    import ast    
+    t = request.GET['t']
+    t = ast.literal_eval(t)
+    primary_group = None
+    primary_homework = None
+    counter = 0
+
+    for c in homework:
+        if counter == 0:
+            no_of_student_per_group = c.no_of_group
+            no_of_grader = c.no_of_grader
+            counter = counter + 1
+        else:
+            # update the number of grader as that of previous group
+            c.no_of_grader = no_of_grader
+            c.no_of_group = no_of_student_per_group
+            c.save()
+        random.shuffle(t)
+        make_group(course, c, t)
+    
+    return HttpResponse('Updated Student List')

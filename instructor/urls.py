@@ -9,6 +9,9 @@ urlpatterns = [
     url(r'course/(?P<pk>[0-9]+)/$',
         edit_course,
         name="instructor__edit_course"),
+    url(r'groupsame/(?P<pk>[0-9]+)/$',
+        groupsame,
+        name="instructor__group_same"),
     url(r'course/(?P<pk>[0-9]+)/enroll/$',
         change_enroll,
         name="instructor__change_enroll"),
@@ -30,4 +33,7 @@ urlpatterns = [
     url(r'^change_password/$',
         change_password,
         name="instructor_change_password"),
+    url(r'custom_grouping/(?P<pk>[0-9]+)/$',
+        custom_grouping,
+        name="instructor__custom_grouping"),
 ]

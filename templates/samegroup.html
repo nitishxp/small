@@ -1,0 +1,71 @@
+{% extends "website/_base.html" %} {% block main_content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<div class="x_content">
+    <div class="row">
+        <div class="col-md-3">
+            <table class="table table-border">
+                <thead>
+                    <tr>
+                        <th>
+                            Student Name
+                        </th>
+                        <th>
+                            ID
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="connectedSortable">
+                    {% for c in student %}
+                    <tr>
+                        <td>{{ c.user.name }}</td>
+                        <td>{{ c.user.id }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- <div class="col-md-3">
+            <table class="table table-border" id="test1">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div> -->
+    </div>
+</div>
+
+<script>
+    var $tabs = $("#test1");
+    $(".connectedSortable")
+        .sortable({
+            connectWith: ".connectedSortable",
+            appendTo: $tabs,
+            helper: "clone",
+            cursor: "move",
+            zIndex: 999990,
+            start: function (event, ui) {
+                var start_pos = ui.item.index();
+                ui.item.data('start_pos', start_pos);
+            }
+
+        });
+    $($tabs).droppable({
+        accept: ".connectedSortable tr",
+        hoverClass: "ui-state-hover",
+        drop: function (event, ui) {
+            var start = ui.draggable.attr("id");
+            var desTable = $(this).attr("id");
+            if (start != desTable) {
+                alert("The ajax should be called");
+            }
+            return false;
+        }
+    });
+
+</script>
+{% endblock %}
