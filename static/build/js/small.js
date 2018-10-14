@@ -98,10 +98,10 @@ $(".timeline").on('click', function () {
 
 })
 
-$.ajax({
-    url : '/instructor/check_homework_deadline/'
-})
-
-$.ajax({
-    url : '/instructor/check_grading_deadline/'
-})
+// $.ajax({
+//     url : '/instructor/check_homework_deadline/'
+// })
+//
+// $.ajax({
+//     url : '/instructor/check_grading_deadline/'
+// })
