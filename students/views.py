@@ -481,7 +481,7 @@ def process_attachments(f, group_id):
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
-    file_path = dir_path + f.name
+    file_path = dir_path + f.name.replace(' ','')
     destination = open(file_path, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
