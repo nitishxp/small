@@ -473,7 +473,7 @@ def get_peer_grader_grade_by_appeal_grader(appeal_grader_grade,grade_by_peer):
 
 def process_attachments(f, group_id):
     import os
-
+    import uuid
     # creation of folder
     temp_dir = '/static/courses/' + str(group_id) + '/'
     dir_path = BASE_DIR + temp_dir
@@ -481,13 +481,14 @@ def process_attachments(f, group_id):
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
-    file_path = dir_path + f.name.replace(' ','')
+    filename = str(uuid.uuid4())+'.'+f.name.split('.')[-1]
+    file_path = dir_path + filename
     destination = open(file_path, 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
 
-    return temp_dir + f.name
+    return temp_dir + filename
 
 
 @login_required(login_url='/')
