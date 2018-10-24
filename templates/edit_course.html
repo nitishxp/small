@@ -14,7 +14,7 @@
                 </a>
             </li>
             <li>
-                <a href="#student_grouping" class="selected timeline">
+                <a href="#student_grouping" class="selected timeline student_grouping">
                     <span class="step_no">Grouping</span>
                 </a>
             </li>
@@ -320,7 +320,7 @@
                                         </form>
                                     </div>
                                     <div class="col-md-3">
-                                        <form action="{% url 'instructor__re_grouping' course_pk %}" method="POST">
+                                        <form action="{% url 'instructor__re_grouping' course_pk %}" method="POST" onsubmit="return validate(this)">
                                             {% csrf_token %}
                                             <div class="form-group">
                                                 <div class="col-md-4 col-sm-3 col-xs-12"></div>
@@ -504,5 +504,9 @@
                     data : {'userId':$(this).val(),'status':a},
             })
         })
-    })
+    });
+
+    function validate(form) {
+        return confirm('Are you sure you want to redo grouping?');
+    }
 </script> {% endblock %}

@@ -85,6 +85,11 @@ $(document).ready(function () {
         }
 
     })
+    var tab = getUrlParameter('tab');
+    if (tab){
+        console.log("CLick the div")
+        $("."+tab).click();
+    }
 })
 $(".timeline").on('click', function () {
     $(".timeline").each(function () {
@@ -97,6 +102,21 @@ $(".timeline").on('click', function () {
     $(linkid).show()
 
 })
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.hash.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
 
 // $.ajax({
 //     url : '/instructor/check_homework_deadline/'

@@ -497,8 +497,8 @@ def upload_assignment(request):
         filepath = process_attachments(request.FILES[c], c)
         HomeworkGroup.objects.filter(pk=c).update(attachment=filepath)
 
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
+        url = request.META.get('HTTP_REFERER', '/') + '#tab=upload'
+        return HttpResponseRedirect(url)
 
 @login_required(login_url='/')
 def peervaluation(request, combination_id, group_id):
@@ -529,7 +529,8 @@ def peervaluation(request, combination_id, group_id):
     GroupCombinationModel.objects.filter(pk=combination_id).update(
         peerevalutation=True)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=peer_evaluation'
+    return HttpResponseRedirect(url)
 
 
 @login_required(login_url='/')
@@ -592,7 +593,9 @@ def appeal(request, group):
     HomeworkGroupMember.objects.filter(
         group=group, user=request.user).update(has_appealed=True)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=grades'
+    return HttpResponseRedirect(url)
+
 
 
 @login_required(login_url='/')
@@ -633,7 +636,9 @@ def submit_appeal_peer_grade(request, group):
         appeal_grader=request.user).update(appeal_peer_grading_status=True)
 
     # return HttpResponse('sad')
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=appeal_grader'
+    return HttpResponseRedirect(url)
+
 
 
 @login_required(login_url='/')

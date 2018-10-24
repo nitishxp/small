@@ -381,8 +381,8 @@ def do_grouping(request, pk):
         do_same_grouping(pk)
     else:
         do_shuffle_grouping(pk)
-
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
+    return HttpResponseRedirect(url)
 
 
 def re_grouping(request, pk):
@@ -432,7 +432,8 @@ def re_grouping(request, pk):
             t = [x for x in partition if x != []]
             make_group(course, c, t)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
+    return HttpResponseRedirect(url)
 
 
 def make_group(course, c, t):
@@ -738,7 +739,8 @@ def student_upload(request, pk):
                 'course': course
             })
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
+    return HttpResponseRedirect(url)
 
 
 def check_homework_deadline(request):
