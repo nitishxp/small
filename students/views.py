@@ -705,7 +705,8 @@ def submit_appeal_grade(request, group):
                 peer_grader=peer_grading[c]['peer_grader'],
                 defaults=peer_grading[c])
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=appeal_grader'
+    return HttpResponseRedirect(url)
 
 
 @login_required(login_url='/')
