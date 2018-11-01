@@ -59,6 +59,7 @@ class HomeworkGroup(models.Model):
     appeal_done_status = models.BooleanField(default=True)
     appeal_reject_status = models.BooleanField(default=False)
     deadline_miss = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(null=True)
 
     class Meta:
         db_table = 'homework_group_master'
