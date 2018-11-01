@@ -763,7 +763,7 @@ def check_homework_deadline(request):
     for c in missed_deadline:
         c.grade = 0
         c.deadline_miss = True
-        c.attachment = 'None'
+        # c.attachment = 'None'
         c.save()
         GroupCombinationModel.objects.filter(group=c.group).update(
             peerevalutation=True)
