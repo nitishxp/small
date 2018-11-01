@@ -201,12 +201,12 @@
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td>{{ c.assignment_name }}</td>
+                                        <td>{{ c.assignment_name }} </td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade_deadline }}</td>
                                         {% if c.deadline_miss %}
-                                            <td> F </td>
+                                            <td> {{ c.grade | grade_alphabet }} </td>
                                             <!-- <td>Late Submission</td> -->
                                         {% else %}
                                             {% comment %}<!-- {% if  c.appeal_done_count == c.total_member %} -->  {% endcomment %}
@@ -381,7 +381,7 @@
                                 <div class="x_content">
                                     {% if late_homework %}
                                         {% for c in late_homework %}
-                                            <label>Assignment  {{ c.assignment }} Grade : </label> F 
+                                            <label>Assignment  {{ c.assignment }} Grade : </label> {{c.grade | grade_alphabet }}
                                             <br> 
                                             <label>Feedback : </label> Late Submission
                                             <br>

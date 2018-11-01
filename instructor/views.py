@@ -201,7 +201,8 @@ def return_appeal_grade_explanation(group_id):
             group=group_id).select_related('appeal_grader'):
         grade.append(grade_alphabet(c.grade))
         explanation.append(c.appeal_explanation)
-        grader.append(c.appeal_grader.name)
+        if c.appeal_grader is not None:
+            grader.append(c.appeal_grader.name)
 
     if len(grade) > 0:
         return "\n".join(grade), "\n".join(explanation), "\n".join(grader)
@@ -317,6 +318,7 @@ def edit_course(request, pk):
             appeal_grade_explanation = return_appeal_grade_explanation(
                 group.group)
             temp = {}
+            temp['id'] = group.group
             temp['group'] = return_member_name(group.group)
             temp['grader'] = grade_explanation[2]
             temp['grade'] = grade_explanation[0]
@@ -840,3 +842,23 @@ def custom_grouping(request, pk):
         make_group(course, c, t)
     
     return HttpResponse('Updated Student List')
+
+@csrf_exempt
+def override_grade(request,pk):
+    from students.templatetags.filter import grade_convert_alphabet_to_number
+    grade = request.POST['grade']
+    explanation = request.POST['explanation']
+    grade = grade_convert_alphabet_to_number(grade)
+    group = request.POST['id']
+    group = HomeworkGroup.objects.get(group=group)
+    AppealGraderModel.objects.update_or_create(group=group,
+                                               defaults = {
+        'appeal_explanation' :explanation, 'grade' : grade,
+        'appeal_by_user' : request.user,
+        'course' : CourseModel.objects.get(pk=pk),
+        'override' : True
+    })
+    group.grade = grade
+    group.appeal_reject_status = True
+    group.save()
+    return HttpResponse("Updated")

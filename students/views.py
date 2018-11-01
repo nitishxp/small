@@ -398,7 +398,7 @@ def student_course(request, course_id):
             appeal_grader.append(temp)
 
     appeal_grade_result = AppealGraderModel.objects.filter(
-        group__in=users_group).select_related('group').order_by(
+        group__in=users_group,group__appeal_reject_status=False).select_related('group').order_by(
             "group__homework__homework_name")
 
     review_history = []
@@ -429,6 +429,7 @@ def student_course(request, course_id):
     for c in late_group_obj:
         t = {}
         t['assignment'] = c.homework.homework_name
+        t['grade'] = c.grade
         late_homework.append(t)
 
     return render(

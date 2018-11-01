@@ -64,3 +64,30 @@ def grade_number(value):
     if value is None or value == '':
         return ''
     return value
+
+
+def grade_convert_alphabet_to_number(value):
+    if value == "A":
+        return 95.00
+    elif value == "A-":
+        return 91.25
+    elif value == "B+":
+        return 88.75
+    elif value == "B":
+        return 85.00
+    elif value == "B-":
+        return 81.25
+    elif value == "C+":
+        return 78.75
+    elif value == "C":
+        return 75.00
+    elif value == "C-":
+        return 71.25
+    elif value == "D+":
+        return 68.75
+    elif value == "D":
+        return 65.00
+    elif value == "D-":
+        return 61.25
+    elif value == "F":
+        return 55.00

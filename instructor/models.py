@@ -127,6 +127,7 @@ class AppealGraderModel(models.Model):
     appeal_visible_status = models.BooleanField(default=False)
     appeal_grading_status = models.BooleanField(default=False)
     appeal_peer_grading_status = models.BooleanField(default=False)
+    override = models.BooleanField(default=False)
 
 
 class PeerEvaluationModel(models.Model):

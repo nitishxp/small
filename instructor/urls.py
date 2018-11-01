@@ -36,4 +36,7 @@ urlpatterns = [
     url(r'custom_grouping/(?P<pk>[0-9]+)/$',
         custom_grouping,
         name="instructor__custom_grouping"),
+    url(r'course/(?P<pk>[0-9]+)/override/$',
+            override_grade,
+            name="instructor__override_grade"),
 ]
