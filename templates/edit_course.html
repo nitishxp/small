@@ -152,7 +152,7 @@
                                         <tr>
                                             <td colspan="5">
                                                 <label>Grading Rubric</label><br>
-                                                <input type="text" name="{{ c.homework_name }}___grade_rubric"  value= "{{ c.grade_rubric}}" class="form-control" required>
+                                                <textarea name="{{ c.homework_name }}___grade_rubric"  class="form-control" required> {{ c.grade_rubric}} </textarea>
                                             </td>
                                         </tr>
                                         {% endfor %}
