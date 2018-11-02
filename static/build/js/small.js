@@ -44,7 +44,7 @@ $("#add_assignments").on('click', function () {
     template += '<tr>'
     template += '<td colspan="5">'
     template += '<label>Grading Rubric</label><br>'
-    template += '<textarea name="' + currentAssignmentLength + '___grade_rubric"  class="form-control" required> </textarea>'
+    template += '<textarea name="' + currentAssignmentLength + '___grade_rubric"  rows="5" class="form-control" required> </textarea>'
     template += '</td>'
     template += '</tr>'
 
