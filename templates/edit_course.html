@@ -297,24 +297,23 @@
                                                             <td>{{ v.appeal_explanation|linebreaks }}</td>
                                                         {% endif %}
                                                         {% endcomment %}
-                                                            <td>
-                                                                {{ grade }}
-                                                                <select>
-                                                                    <option value=""> Select {{ grade|grade_alphabet }} </option>
-                                                                    <option value="95.00">A</option>
-                                                                    <option value="91.25">A-</option>
-                                                                    <option value="88.75">B+</option>
-                                                                    <option value="85.00">B</option>
-                                                                    <option value="81.25">B-</option>
-                                                                    <option value="78.75">C+</option>
-                                                                    <option value="75.00">C</option>
-                                                                    <option value="71.25">C-</option>
-                                                                    <option value="68.75">D+</option>
-                                                                    <option value="65.00">D</option>
-                                                                    <option value="61.25">D-</option>
-                                                                    <option value="55.00">F</option>
-                                                                </select>
-                                                            </td>
+                                                        <td>
+                                                            <select class="form-control instructor_override" data-group="{{ v.id }}" >
+                                                                <option value=""> Select </option>
+                                                                <option value="A"  {% if v.appeal_grade == "A" %}   selected {% endif %}> A</option>
+                                                                <option value="A-" {% if v.appeal_grade == "A-" %}  selected {% endif %}> A-</option>
+                                                                <option value="B+" {% if v.appeal_grade == "B+" %}  selected {% endif %}> B+</option>
+                                                                <option value="B"  {% if v.appeal_grade == "B" %}   selected {% endif %}> B</option>
+                                                                <option value="B-" {% if v.appeal_grade == "B-" %}  selected {% endif %}> B-</option>
+                                                                <option value="C+" {% if v.appeal_grade == "C+" %}  selected {% endif %}> C+</option>
+                                                                <option value="C"  {% if v.appeal_grade == "C" %}   selected {% endif %}> C</option>
+                                                                <option value="C-" {% if v.appeal_grade == "C-" %}  selected {% endif %}> C-</option>
+                                                                <option value="D+" {% if v.appeal_grade == "D+" %}  selected {% endif %}> D+</option>
+                                                                <option value="D"  {% if v.appeal_grade == "D" %}   selected {% endif %}> D</option>
+                                                                <option value="D-" {% if v.appeal_grade == "D-" %}  selected {% endif %}> D-</option>
+                                                                <option value="F"  {% if v.appeal_grade == "F" %}   selected {% endif %}> F</option>
+                                                            </select>
+                                                        </td>
                                                         <td>{{ v.appeal_explanation|linebreaks }}</td>
                                                     </tr>
                                                     {% endfor %}
@@ -547,13 +546,26 @@
                 $.ajax({
                     url : "override/",
                     method : 'POST',
-                    data : {'grade':data[7],'id':data[0],'explanation':data[8]},
+                    data : {'explanation':data[8],'id':data[0]},
                 })
             }
-            // console.log("The new value for the cell is: " + updatedCell.data());
-            // console.log("The old value for that cell was: " + oldValue);
-            // console.log("The values for each cell in that row are: " + updatedRow.data());
         }
+
+        $(".instructor_override").on('change',function () {
+            if (!confirm("Are u sure u want to edit")){
+                    return false;
+            }
+            let id = $(this).data('group');
+            let grade = $(this).val();
+            $.ajax({
+                url : "override/",
+                method : 'POST',
+                data : {'grade':grade,'id':id },
+                success : function (result) {
+                    alert('Updated');
+                }
+            })
+        });
 
         $('#student_enrollment_list').DataTable({
             buttons: [

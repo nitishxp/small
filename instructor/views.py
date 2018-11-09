@@ -874,19 +874,31 @@ def custom_grouping(request, pk):
 @csrf_exempt
 def override_grade(request,pk):
     from students.templatetags.filter import grade_convert_alphabet_to_number
-    grade = request.POST['grade']
-    explanation = request.POST['explanation']
-    grade = grade_convert_alphabet_to_number(grade)
-    group = request.POST['id']
+
+    group = request.POST.get('id')
     group = HomeworkGroup.objects.get(group=group)
+    course = CourseModel.objects.get(pk=pk)
+
+    # prepare data for update
+    update_data = {}
+
+    explanation = request.POST.get('explanation')
+    if explanation:
+        update_data['appeal_explanation'] = explanation
+
+    grade = request.POST.get('grade')
+    if grade:
+        grade = grade_convert_alphabet_to_number(grade)
+        update_data['grade'] = grade
+
+    update_data['appeal_by_user'] = request.user
+    update_data['course'] = course
+    update_data['override'] = True
     AppealGraderModel.objects.update_or_create(group=group,
-                                               defaults = {
-        'appeal_explanation' :explanation, 'grade' : grade,
-        'appeal_by_user' : request.user,
-        'course' : CourseModel.objects.get(pk=pk),
-        'override' : True
-    })
-    group.grade = grade
+                                               defaults=update_data)
+    if grade:
+        group.grade = grade
+        
     group.appeal_reject_status = True
     group.save()
     return HttpResponse("Updated")
