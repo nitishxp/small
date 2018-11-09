@@ -297,7 +297,24 @@
                                                             <td>{{ v.appeal_explanation|linebreaks }}</td>
                                                         {% endif %}
                                                         {% endcomment %}
-                                                        <td>{{ v.appeal_grade|linebreaks }}</td>
+                                                            <td>
+                                                                {{ grade }}
+                                                                <select>
+                                                                    <option value=""> Select {{ grade|grade_alphabet }} </option>
+                                                                    <option value="95.00">A</option>
+                                                                    <option value="91.25">A-</option>
+                                                                    <option value="88.75">B+</option>
+                                                                    <option value="85.00">B</option>
+                                                                    <option value="81.25">B-</option>
+                                                                    <option value="78.75">C+</option>
+                                                                    <option value="75.00">C</option>
+                                                                    <option value="71.25">C-</option>
+                                                                    <option value="68.75">D+</option>
+                                                                    <option value="65.00">D</option>
+                                                                    <option value="61.25">D-</option>
+                                                                    <option value="55.00">F</option>
+                                                                </select>
+                                                            </td>
                                                         <td>{{ v.appeal_explanation|linebreaks }}</td>
                                                     </tr>
                                                     {% endfor %}
@@ -479,9 +496,9 @@
          var table{{key}} = $('#table{{key}}').DataTable();
          table{{key}}.MakeCellsEditable({
             "onUpdate": myCallbackFunction,
-            "columns": [7,8],
+            "columns": [8],
             "allowNulls": {
-                "columns": [7,8],
+                "columns": [8],
                 "errorClass": 'error'
             },
             "inputTypes": [
