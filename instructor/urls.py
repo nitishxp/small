@@ -39,4 +39,7 @@ urlpatterns = [
     url(r'course/(?P<pk>[0-9]+)/override/$',
             override_grade,
             name="instructor__override_grade"),
+    url(r'course/(?P<pk>[0-9]+)/delete_student/$',
+        delete_student,
+        name="instructor__change_delete"),
 ]

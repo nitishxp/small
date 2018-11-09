@@ -81,6 +81,34 @@ def change_enroll(request, pk):
     return HttpResponse('hurray')
 
 
+@csrf_exempt
+@login_required(login_url='/')
+def delete_student(request, pk):
+    try:
+        user = request.POST['userId']
+    except Exception as e:
+        print str(e)
+
+    try:
+        user = UserModel.objects.get(pk=user)
+        course = CourseModel.objects.get(pk=pk)
+    except Exception as e:
+        print str(e)
+        return HttpResponse(str(e),status=400)
+
+    # remove student from course
+    StudentCourseModel.objects.filter(course=course, user=user).delete()
+
+    # remove student from groups
+    HomeworkGroupMember.objects.filter(user=user,group__course=course).delete()
+
+    # remove student from first grader if he has not graded anyone 
+    if not HomeworkGroupGrade.objects.filter(grader=user,group__course=course).exists():
+        GroupCombinationModel.objects.filter(grader_user=user,course=course).delete()
+
+    return HttpResponse('hurray')
+
+
 @login_required(login_url='/')
 def course(request):
     if request.method == "POST":

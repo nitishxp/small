@@ -214,6 +214,7 @@
                                         <tr>
                                         <th> Student Name</th>
                                         <th>Enrollment Status</th>
+                                        <th> Action </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -223,6 +224,7 @@
                                             <td>
                                                 <input type="checkbox" value="{{ c.user.id }}" {% if c.enrollment_status %} checked {% endif %}>
                                             </td>
+                                            <td> <input type="button" value="Delete" class="delete_btn" data-user="{{ c.user.id }}">  </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -559,6 +561,24 @@
                     url : "enroll/",
                     method : 'POST',
                     data : {'userId':$(this).val(),'status':a},
+                    success: function(result){
+                        alert('Status Changed');
+                    }
+            })
+        })
+
+
+        $(".delete_btn").on('click', function(){
+            var user = $(this).data("user")
+            var tr = this
+            $.ajax({
+                    url : "delete_student/",
+                    method : 'POST',
+                    data : {'userId': user },
+                    success: function(result){
+                       $(tr).closest('tr').hide();
+                       alert('Deleted');
+                    }
             })
         })
     });
