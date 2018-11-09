@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grading_rubric">Add Grading Policy
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="grading_rubric">Grading Policy
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <textarea name="grading_rubric" class="form-control col-md-7 col-xs-12" required id="grading_rubric" rows="15">{{ course.grading_rubric }}</textarea>
@@ -86,7 +86,7 @@
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <select name="course_group_type" class="form-control col-md-7 col-xs-12" required id="course_group_type">
-                                                <option value="same" {% if course.course_group_type == "same" %}  selected {% endif %}>Keep Same</option>
+                                                <option value="same" {% if course.course_group_type == "same" %}  selected {% endif %}>Keep the Same</option>
                                                 <option value="shuffle" {% if course.course_group_type == "shuffle" %}  selected {% endif %} >Shuffle</option>
                                             </select>
                                         </div>
@@ -138,12 +138,12 @@
                                                 <input type="hidden" name="{{ c.homework_name }}___constraints" value="random" required>
                                             </td>
                                             <td>
-                                                <label>Student Per Group</label>
+                                                <label>No. of Students Per Group</label>
                                                 <br>
                                                 <input type="number" min="1" name="{{ c.homework_name }}___no_of_group" value="{{c.no_of_group}}" class="form-control" required>
                                             </td>
                                             <td>
-                                                <label>No. Of Grader</label>
+                                                <label>No. Of Graders</label>
                                                 <br>
                                                 <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control"
                                                     required>
