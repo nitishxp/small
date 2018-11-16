@@ -93,7 +93,7 @@
                                         <td>{{ c.assignment_name }}</td>
                                         <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                         <td>{{c.grade | grade_alphabet }} </td>
-                                        {% if c.appeal_reject_status %}
+                                        {% if c.appeal_reject_status and not c.is_override %}
                                             <td> Disagree </td>
                                         {% else %}
                                             <td>

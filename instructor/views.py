@@ -784,7 +784,7 @@ def check_homework_deadline(request):
         homework__homework_deadline__gt=one_day_before_time,
         attachment__isnull=True)
 
-    # print missed_deadline.query
+    print missed_deadline.query
 
     # now iterate the data and update the corresponding things
     # like update the Grade = 0 and make peer_evaluation_false
