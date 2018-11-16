@@ -793,8 +793,8 @@ def check_homework_deadline(request):
         c.deadline_miss = True
         # c.attachment = 'None'
         c.save()
-        # GroupCombinationModel.objects.filter(group=c.group).update(
-        #     peerevalutation=True)
+        GroupCombinationModel.objects.filter(group=c.group).update(
+            peerevalutation=True)
 
     return HttpResponse(missed_deadline.query)
 
