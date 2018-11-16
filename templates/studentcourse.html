@@ -364,7 +364,12 @@
                                         {% for c in late_homework %}
                                             <label>Assignment  {{ c.assignment }} Grade : </label> {{c.grade | grade_alphabet }}
                                             <br> 
-                                            <label>Feedback : </label> Late Submission
+                                            <label>Feedback : </label>
+                                                {% if c.is_override %}
+                                                    {{c.explanation }}
+                                                {% else %}
+                                                    Late Submission
+                                                {% endif %}
                                             <br>
                                         {% endfor %}
                                     {% else %}

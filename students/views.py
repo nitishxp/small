@@ -431,6 +431,12 @@ def student_course(request, course_id):
         t = {}
         t['assignment'] = c.homework.homework_name
         t['grade'] = c.grade
+        t['is_override'] = c.is_override
+        if c.is_override:
+            e = []
+            for c in AppealGraderModel.objects.filter(group=c.group).values_list('appeal_explanation'):
+                e.append(c[0])
+            t['explanation'] = "".join(e)
         late_homework.append(t)
 
     return render(
