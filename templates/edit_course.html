@@ -275,12 +275,23 @@
                                                         <td>{{ v.group|linebreaks }}</td>
                                                         <td>{{ v.grader|linebreaks }}</td>
                                                         <td>
-                                                            {% if v.deadline_miss %}
-                                                            <span style="color: red">Late</span>
-                                                            {% endif %}
                                                             {{ v.grade|linebreaks }}
                                                         </td>
-                                                        <td>{{ v.explanation|linebreaks }}</td>
+                                                        {% if v.deadline_miss %}
+                                                            <td>
+                                                                <span style="color: red">Late Submission</span>
+                                                                <br>
+                                                                {% if v.updated_at %}
+                                                                    {{ v.updated_at }}
+                                                                {% else %}
+                                                                    No Time Available
+                                                                {% endif %}
+
+                                                            </td>
+                                                        {% else %}
+                                                            <td>{{ v.explanation|linebreaks }}</td>
+                                                        {% endif %}
+
                                                         {% if v.file is None or v.file == "None" %}
                                                                 <td> </td>
                                                             {% else %}
