@@ -790,7 +790,7 @@ def check_homework_deadline(request):
     # like update the Grade = 0 and make peer_evaluation_false
 
     for c in missed_deadline:
-        c.grade = 0
+        # c.grade = 0
         c.deadline_miss = True
         # c.attachment = 'None'
         c.save()
