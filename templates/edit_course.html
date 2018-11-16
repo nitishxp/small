@@ -611,8 +611,8 @@
         });
 
 
-        $("input[type='checkbox']").on('click', function(){
-	        a = $(this).is(":checked")
+        $(document).on('click',"input[type='checkbox']", function(){
+	        a = $(this).is(":checked");
             $.ajax({
                     url : "enroll/",
                     method : 'POST',
@@ -621,12 +621,12 @@
                         alert('Status Changed');
                     }
             })
-        })
+        });
 
 
         $(".delete_btn").on('click', function(){
-            var user = $(this).data("user")
-            var tr = this
+            var user = $(this).data("user");
+            var tr = this;
             $.ajax({
                     url : "delete_student/",
                     method : 'POST',
