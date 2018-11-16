@@ -793,8 +793,8 @@ def check_homework_deadline(request):
         c.deadline_miss = True
         # c.attachment = 'None'
         c.save()
-        GroupCombinationModel.objects.filter(group=c.group).update(
-            peerevalutation=True)
+        # GroupCombinationModel.objects.filter(group=c.group).update(
+        #     peerevalutation=True)
 
     return HttpResponse(missed_deadline.query)
 
@@ -884,7 +884,9 @@ def override_grade(request,pk):
 
     explanation = request.POST.get('explanation')
     if explanation:
-        update_data['appeal_explanation'] = explanation
+        update_data['appeal_explanation'] = explanation.strip()
+        if not group.is_override:
+            return HttpResponse("No Override")
 
     grade = request.POST.get('grade')
     if grade:
@@ -894,11 +896,13 @@ def override_grade(request,pk):
     update_data['appeal_by_user'] = request.user
     update_data['course'] = course
     update_data['override'] = True
-    AppealGraderModel.objects.update_or_create(group=group,
+    if grade or explanation:
+        AppealGraderModel.objects.update_or_create(group=group,
                                                defaults=update_data)
     if grade:
         group.grade = grade
         
     group.appeal_reject_status = True
+    group.is_override = True
     group.save()
     return HttpResponse("Updated")

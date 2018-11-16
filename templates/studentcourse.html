@@ -91,46 +91,38 @@
                                     {% for c in homework %}
                                     <tr>
                                         <td>{{ c.assignment_name }}</td>
-                                        {% if c.deadline_miss %}
-                                            <td> &#x2717;</td>
-                                            <td>F</td>
-                                            <td>No</td>
-                                            <td>NA</td>
+                                        <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
+                                        <td>{{c.grade | grade_alphabet }} </td>
+                                        {% if c.appeal_reject_status %}
+                                            <td> Disagree </td>
                                         {% else %}
-                                            <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
-                                            <td>{{c.grade | grade_alphabet }}</td>
-                                            {% if c.appeal_reject_status %}
-                                                <td> Disagree </td>
-                                            {% else %}
-                                                <td>
-                                                    {% comment %} <!-- {% if c.appeal_done_count == c.total_member  %} --> {% endcomment %}
-                                                        {% if not c.appeal_done_status %}
-                                                            Yes
-                                                        {% else %}
-                                                            No
-                                                        {% endif %}
+                                            <td>
+                                                {% comment %} <!-- {% if c.appeal_done_count == c.total_member  %} --> {% endcomment %}
+                                                    {% if not c.appeal_done_status %}
+                                                        Yes
+                                                    {% else %}
+                                                        No
+                                                    {% endif %}
 
-                                                        {% comment %}
-                                                    <!-- {% else %} -->
-                                                        <!-- No -->
-                                                    <!-- {% endif %} -->
-                                                    {% endcomment %}
-                                                </td>
-                                            {% endif %}
-                                            
-                                            <!-- grading has been done -->
-                                            {% if not c.appeal_done_status %} 
-                                                {% if c.appeal_grade is not None %}
-                                                    <td> {{ c.appeal_grade|grade_alphabet }}</td>
-                                                {% else %}
-                                                    <td><span class="blinking">Waiting for grade </span> </td>
-                                                {% endif %}
-                                            {% else %}
-                                                <td> </td>
-                                            {% endif %}
-
+                                                    {% comment %}
+                                                <!-- {% else %} -->
+                                                    <!-- No -->
+                                                <!-- {% endif %} -->
+                                                {% endcomment %}
+                                            </td>
                                         {% endif %}
-                                        <!-- <td>{{ c  }}</td> -->
+
+                                        <!-- grading has been done -->
+                                        {% if not c.appeal_done_status %}
+                                            {% if c.appeal_grade is not None %}
+                                                <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                            {% else %}
+                                                <td><span class="blinking">Waiting for grade </span> </td>
+                                            {% endif %}
+                                        {% else %}
+                                            <td> </td>
+                                        {% endif %}
+
                                     </tr>
                                     {% endfor %}
                                 </table>
@@ -206,10 +198,13 @@
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade_deadline }}</td>
                                         {% if c.deadline_miss %}
-                                            <td> {{ c.grade | grade_alphabet }} </td>
-                                            <!-- <td>Late Submission</td> -->
+                                            <!--  in case instructor has provided grade -->
+                                            {% if c.is_override %}
+                                                <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                            {% else %}
+                                                 <td> {{ c.grade | grade_alphabet }} </td>
+                                            {% endif %}
                                         {% else %}
-                                            {% comment %}<!-- {% if  c.appeal_done_count == c.total_member %} -->  {% endcomment %}
                                             {% if not c.appeal_done_status %}
                                                 {% if c.appeal_grade is not None %}
                                                     <td> {{ c.appeal_grade|grade_alphabet }}</td>
@@ -219,20 +214,6 @@
                                             {% else %}
                                                 <td> {{ c.grade|grade_alphabet }} </td>
                                             {% endif %}
-                                            {% comment %} 
-                                            <!-- {% else %} -->
-                                                <!-- <td>{{ c.grade|grade_alphabet }}</td> -->
-                                            <!-- {% endif %} -->
-                                            <!-- {% if  c.appeal_done_count == c.total_member  %} -->
-                                                <!-- {% if not c.appeal_done_status %} -->
-                                                    <!-- <td>{{ c.appeal_explanation|linebreaks }}</td> -->
-                                                <!-- {% else %} -->
-                                                    <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
-                                                <!-- {% endif %} -->
-                                            <!-- {% else %} -->
-                                                <!-- <td>{{ c.explanation|linebreaks  }}</td> -->
-                                            <!-- {% endif %} -->
-                                            {% endcomment %}
                                         {% endif %}
                                     </tr>
                                     {% endfor %}

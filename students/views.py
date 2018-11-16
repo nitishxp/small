@@ -25,7 +25,7 @@ from grade.settings import BASE_DIR
 from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-
+from django.utils import timezone
 # Create your views here.
 
 
@@ -236,6 +236,7 @@ def student_course(request, course_id):
         t['group_id'] = group_details.group
         t['group_obj'] = group_details
         t['uploads'] = group_details.attachment
+        t['is_override'] = group_details.is_override
         # t['appeal_done_count'] = GroupCombinationModel.objects.filter(
         #     group=group_details, peerevalutation=True).count()
         t['total_member'] = group_details.total_member
@@ -496,7 +497,7 @@ def process_attachments(f, group_id):
 def upload_assignment(request):
     for c in request.FILES:
         filepath = process_attachments(request.FILES[c], c)
-        HomeworkGroup.objects.filter(pk=c).update(attachment=filepath)
+        HomeworkGroup.objects.filter(pk=c).update(attachment=filepath,updated_at=timezone.now())
 
         url = request.META.get('HTTP_REFERER', '/') + '#tab=upload'
         return HttpResponseRedirect(url)

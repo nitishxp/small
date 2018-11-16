@@ -274,13 +274,13 @@
                                                         <td>{{ v.id }}</td>
                                                         <td>{{ v.group|linebreaks }}</td>
                                                         <td>{{ v.grader|linebreaks }}</td>
-                                                        {% if v.deadline_miss %}
-                                                            <td>F</td>
-                                                            <td>Late Submission</td>
-                                                        {% else %}
-                                                            <td>{{ v.grade|linebreaks }}</td>
-                                                            <td>{{ v.explanation|linebreaks }}</td>
-                                                        {% endif %} 
+                                                        <td>
+                                                            {% if v.deadline_miss %}
+                                                            <span style="color: red">Late</span>
+                                                            {% endif %}
+                                                            {{ v.grade|linebreaks }}
+                                                        </td>
+                                                        <td>{{ v.explanation|linebreaks }}</td>
                                                         {% if v.file is None or v.file == "None" %}
                                                                 <td> </td>
                                                             {% else %}
@@ -314,7 +314,9 @@
                                                                 <option value="F"  {% if v.appeal_grade == "F" %}   selected {% endif %}> F</option>
                                                             </select>
                                                         </td>
-                                                        <td>{{ v.appeal_explanation|linebreaks }}</td>
+                                                        <td>
+                                                            <textarea class="instructor_override_explanation" data-group="{{ v.id }}">{{ v.appeal_explanation.strip }}</textarea>
+                                                        </td>
                                                     </tr>
                                                     {% endfor %}
                                                 </tbody>
@@ -491,65 +493,79 @@
                 dom: "Bfrtip",
                 bScrollCollapse : true,
             });
-        datatable{{key}}.scroller.measure().draw(false);
-         var table{{key}} = $('#table{{key}}').DataTable();
-         table{{key}}.MakeCellsEditable({
-            "onUpdate": myCallbackFunction,
-            "columns": [8],
-            "allowNulls": {
-                "columns": [8],
-                "errorClass": 'error'
-            },
-            "inputTypes": [
-                {
-                    "column": 8,
-                    "type": "textarea",
-                },
-                {
-                "column":7,
-                "type": "list",
-                "options":[
-                    { "value":  "" , "display": "" },
-                    { "value":  "A" , "display": "A" },
-                    { "value": "A-" , "display": "A-" },
-                    { "value": "B+" , "display": "B+" },
-                    { "value":  "B" , "display": "B" },
-                    { "value": "B-" , "display": "B-" },
-                    { "value": "C+" , "display": "C+" },
-                    { "value":  "C" , "display": "C" },
-                    { "value": "C-" , "display": "C-" },
-                    { "value": "D+" , "display": "D+" },
-                    { "value":  "D" , "display": "D" },
-                    { "value": "D-" , "display": "D-" },
-                    { "value":  "F" , "display": "F" },
-                ]
-            }]
-        });
+
+        // datatable{{key}}.scroller.measure().draw(false);
+        //  var table{{key}} = $('#table{{key}}').DataTable();
+        //  table{{key}}.MakeCellsEditable({
+        //     "onUpdate": myCallbackFunction,
+        //     "columns": [8],
+        //     "allowNulls": {
+        //         "columns": [8],
+        //         "errorClass": 'error'
+        //     },
+        //     "inputTypes": [
+        //         {
+        //             "column": 8,
+        //             "type": "textarea",
+        //         },
+        //         {
+        //         "column":7,
+        //         "type": "list",
+        //         "options":[
+        //             { "value":  "" , "display": "" },
+        //             { "value":  "A" , "display": "A" },
+        //             { "value": "A-" , "display": "A-" },
+        //             { "value": "B+" , "display": "B+" },
+        //             { "value":  "B" , "display": "B" },
+        //             { "value": "B-" , "display": "B-" },
+        //             { "value": "C+" , "display": "C+" },
+        //             { "value":  "C" , "display": "C" },
+        //             { "value": "C-" , "display": "C-" },
+        //             { "value": "D+" , "display": "D+" },
+        //             { "value":  "D" , "display": "D" },
+        //             { "value": "D-" , "display": "D-" },
+        //             { "value":  "F" , "display": "F" },
+        //         ]
+        //     }]
+        // });
         {% endfor %}
 
-        function myCallbackFunction(updatedCell, updatedRow, oldValue) {
-            if (updatedCell.data() != "NA" || updatedCell.data()){
-                console.log("FIre ajax to db");
-                data = updatedRow.data();
-                console.log(data);
-                if (!confirm("Are u sure u want to edit")){
-                    return
+        // function myCallbackFunction(updatedCell, updatedRow, oldValue) {
+        //     if (updatedCell.data() != "NA" || updatedCell.data()){
+        //         console.log("FIre ajax to db");
+        //         data = updatedRow.data();
+        //         console.log(data);
+        //         if (!confirm("Are u sure u want to edit")){
+        //             return
+        //         }
+        //         if (data[7] === "")
+        //         {
+        //             return;
+        //         }
+        //         data[7] = data[7].replace("<p>","");
+        //         data[7] = data[7].replace("</p>","").trim();
+        //         data[8] = data[8].replace("<p>","");
+        //         data[8] = data[8].replace("</p>","").trim();
+        //         $.ajax({
+        //             url : "override/",
+        //             method : 'POST',
+        //             data : {'explanation':data[8],'id':data[0]},
+        //         })
+        //     }
+        // }
+
+        $('.instructor_override_explanation').on('focusout', function() {
+          let id = $(this).data('group');
+          let explanation = $(this).val();
+          console.log(explanation);
+          $.ajax({
+                url : "override/",
+                method : 'POST',
+                data : {'explanation':explanation,'id':id },
+                success : function (result) {
                 }
-                if (data[7] === "")
-                {
-                    return;
-                }
-                data[7] = data[7].replace("<p>","");
-                data[7] = data[7].replace("</p>","").trim();
-                data[8] = data[8].replace("<p>","");
-                data[8] = data[8].replace("</p>","").trim();
-                $.ajax({
-                    url : "override/",
-                    method : 'POST',
-                    data : {'explanation':data[8],'id':data[0]},
-                })
-            }
-        }
+            })
+        });
 
         $(".instructor_override").on('change',function () {
             if (!confirm("Are u sure u want to edit")){
