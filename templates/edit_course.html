@@ -395,7 +395,7 @@
                                     <tbody>
                                         {% for key,values in all_grades.items %}
                                         <tr>
-                                            <td>{{ values.name }}</td>
+                                            <td>{{ values.name }} {{key}} {{ values }}</td>
                                             {% for grade in values.grade %}
                                                 {% if course.course_grading_type == "A" %}
                                                     <td> {{ grade|grade_alphabet }}</td>
