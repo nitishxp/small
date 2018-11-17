@@ -285,7 +285,7 @@ def student_course(request, course_id):
     homework_group_id = HomeworkGroupMember.objects.filter(
         user=request.user,
         group__course=course_obj,
-        group__attachment__isnull=True).order_by(
+        group__grade__isnull=True).order_by(
             "group__homework__homework_name")
 
     homework_appeal = HomeworkGroupMember.objects.filter(
@@ -446,7 +446,7 @@ def student_course(request, course_id):
             'selected_course': course_id,
             'selected_course_obj': course_obj,
             'homework': assignment,
-            'file_upload': homework_group_id.first(),
+            'file_upload': homework_group_id,
             'peerevalutation': peerevalutation,
             'grade': grade_dic,
             'homework_appeal': homework_appeal,

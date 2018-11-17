@@ -231,17 +231,16 @@
                                 <h2> Upload </h2>
                                 <div class="clearfix"></div>
                             </div>
+                            {% for c in file_upload %}
                             <div class="x_content">
-
-                                <!-- {{file_upload.group.homework.homework_name}} {{file_upload.group.id}} {{file_upload.group.group}} {{request.user.id}} -->
                                     <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
                                         {% csrf_token %}
                                         <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Upload Assignment {{file_upload.group.homework.homework_name}}
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Upload Assignment {{c.group.homework.homework_name}}
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="file" name="{{ file_upload.group.id }}" class="form-control col-md-7 col-xs-12" required id="assignment_upload">
+                                            <input type="file" name="{{ c.group.id }}" class="form-control col-md-7 col-xs-12" required id="assignment_upload">
                                         </div>
                                     </div>
                                         <div class="form-group">
@@ -252,6 +251,7 @@
                                         </div>
                                     </form>
                             </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
