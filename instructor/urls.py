@@ -1,5 +1,6 @@
 from django.conf.urls import url, include
 from views import *
+
 urlpatterns = [
     url(r'^$', course, name="instructor__index"),
     url(r'course/$', course, name="instructor__course"),
@@ -37,9 +38,12 @@ urlpatterns = [
         custom_grouping,
         name="instructor__custom_grouping"),
     url(r'course/(?P<pk>[0-9]+)/override/$',
-            override_grade,
-            name="instructor__override_grade"),
+        override_grade,
+        name="instructor__override_grade"),
     url(r'course/(?P<pk>[0-9]+)/delete_student/$',
         delete_student,
         name="instructor__change_delete"),
+    url(r'course/(?P<pk>[0-9]+)/download_all_homework/(?P<name>[0-9]+)/$',
+        download_all_assignments_of_homework,
+        name="instructor__download_all_assignments_of_homework"),
 ]

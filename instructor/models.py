@@ -23,6 +23,7 @@ class CourseModel(models.Model):
 
 
 class CourseHomeWorkModel(models.Model):
+    assignment_title = models.TextField(null=True)
     homework_name = models.TextField()
     grade_deadline = models.DateTimeField(null=True)
     homework_deadline = models.DateTimeField()
@@ -49,6 +50,7 @@ class StudentCourseEnrolledModel(models.Model):
 
 
 class HomeworkGroup(models.Model):
+    group_name = models.TextField(null=True)
     homework = models.ForeignKey(CourseHomeWorkModel)
     course = models.ForeignKey(CourseModel)
     group = models.TextField(unique=True)

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import os
+import zipfile
+import StringIO
 
 from django.shortcuts import render
 from django.http import (
@@ -40,7 +43,6 @@ from django.utils import timezone
 from django.db.models import Avg
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models.query import QuerySet
-
 
 @login_required(login_url='/')
 def index(request):
@@ -94,17 +96,17 @@ def delete_student(request, pk):
         course = CourseModel.objects.get(pk=pk)
     except Exception as e:
         print str(e)
-        return HttpResponse(str(e),status=400)
+        return HttpResponse(str(e), status=400)
 
     # remove student from course
     StudentCourseModel.objects.filter(course=course, user=user).delete()
 
     # remove student from groups
-    HomeworkGroupMember.objects.filter(user=user,group__course=course).delete()
+    HomeworkGroupMember.objects.filter(user=user, group__course=course).delete()
 
     # remove student from first grader if he has not graded anyone 
-    if not HomeworkGroupGrade.objects.filter(grader=user,group__course=course).exists():
-        GroupCombinationModel.objects.filter(grader_user=user,course=course).delete()
+    if not HomeworkGroupGrade.objects.filter(grader=user, group__course=course).exists():
+        GroupCombinationModel.objects.filter(grader_user=user, course=course).delete()
 
     return HttpResponse('hurray')
 
@@ -253,7 +255,7 @@ def edit_course(request, pk):
 
         assignments = {}
         for d in request.POST:
-            data = request.POST[d]
+            data = request.POST[d].strip()
             d = d.split("___")
             if len(d) > 1:
                 if d[0] in assignments.keys():
@@ -290,7 +292,7 @@ def edit_course(request, pk):
 
     for h in homework:
         homework_group = HomeworkGroup.objects.filter(
-            course=course, homework=h)
+            course=course, homework=h).order_by('group')
         #
         for g in homework_group:
             if g.appeal_done_count == g.total_member:
@@ -322,7 +324,7 @@ def edit_course(request, pk):
                 # first find in the appeal_group
                 total_grade = PeerEvaluationModel.objects.filter(
                     group=g, peer_grader=grader_user_obj).aggregate(
-                        Avg('grade'))
+                    Avg('grade'))
 
                 if total_grade['grade__avg'] is not None:
                     total_grade = round(total_grade['grade__avg'])
@@ -360,6 +362,7 @@ def edit_course(request, pk):
 
             group_grades[h.homework_name].append(temp)
 
+    # print group_grades
     group_grades_sort = collections.OrderedDict(sorted(group_grades.items()))
     # now sum the all_grades
     for c in all_grades:
@@ -526,7 +529,7 @@ def make_group(course, c, t):
             # now set all A-B active = True because of different grader
             GroupCombinationModel.objects.filter(
                 group=group, grader_group=grader_group).update(
-                    active=True, is_used=True)
+                active=True, is_used=True)
     GroupCombinationModel.objects.filter(active=False).delete()
 
 
@@ -618,7 +621,7 @@ def do_shuffle_grouping(pk):
                 # now set all A-B active = True because of different grader
                 GroupCombinationModel.objects.filter(
                     group=group, grader_group=grader_group).update(
-                        active=True, is_used=True)
+                    active=True, is_used=True)
         GroupCombinationModel.objects.filter(active=False).delete()
     return True
 
@@ -734,7 +737,7 @@ def do_same_grouping(pk):
                 # now set all A-B active = True because of different grader
                 GroupCombinationModel.objects.filter(
                     group=group, grader_group=grader_group).update(
-                        active=True, is_used=True)
+                    active=True, is_used=True)
         GroupCombinationModel.objects.filter(active=False).delete()
 
         # since primary group was none we need to make this current homework objects as primary group
@@ -844,13 +847,12 @@ def groupsame(request, pk):
 
 
 def custom_grouping(request, pk):
-
     course = CourseModel.objects.get(pk=pk)
     homework = CourseHomeWorkModel.objects.filter(
         course=pk).order_by('homework_name')
     course = CourseModel.objects.get(pk=pk)
 
-    import ast    
+    import ast
     t = request.GET['t']
     t = ast.literal_eval(t)
     primary_group = None
@@ -869,11 +871,12 @@ def custom_grouping(request, pk):
             c.save()
         random.shuffle(t)
         make_group(course, c, t)
-    
+
     return HttpResponse('Updated Student List')
 
+
 @csrf_exempt
-def override_grade(request,pk):
+def override_grade(request, pk):
     from students.templatetags.filter import grade_convert_alphabet_to_number
 
     group = request.POST.get('id')
@@ -899,11 +902,48 @@ def override_grade(request,pk):
     update_data['override'] = True
     if grade or explanation:
         AppealGraderModel.objects.update_or_create(group=group,
-                                               defaults=update_data)
+                                                   defaults=update_data)
     if grade:
         group.grade = grade
-        
+
     group.appeal_reject_status = True
     group.is_override = True
     group.save()
     return HttpResponse("Updated")
+
+
+def download_all_assignments_of_homework(request, pk, name):
+    filenames = ["/home/ubuntu/small/instructor/urls.py"]
+    # Folder name in ZIP archive which contains the above files
+    # E.g [thearchive.zip]/somefiles/file2.txt
+    # FIXME: Set this to something better
+    attachments = HomeworkGroup.objects.filter(course_id=pk,homework_id=name,attachment__isnull=False).values_list('group_name','attachment')
+    print(attachments)
+
+    return HttpResponse('s')
+    zip_subdir = "assignments"
+    zip_filename = "%s.zip" % zip_subdir
+
+    # Open StringIO to grab in-memory ZIP contents
+    s = StringIO.StringIO()
+
+    # The zip compressor
+    zf = zipfile.ZipFile(s, "w")
+
+    for fpath in filenames:
+        # Calculate path for file in zip
+        fdir, fname = os.path.split(fpath)
+        zip_path = os.path.join(zip_subdir, fname)
+
+        # Add file, at correct path
+        zf.write(fpath, zip_path)
+
+    # Must close zip for all contents to be written
+    zf.close()
+
+    # Grab ZIP file from in-memory, make response with correct MIME-type
+    resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
+    # ..and correct content-disposition
+    resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+
+    return resp

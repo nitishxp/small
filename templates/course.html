@@ -31,19 +31,19 @@
                                 <form method="POST" class="form-horizontal form-label-left" action="{% url 'instructor_change_password' %}" onsubmit="return checkPassword()">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Password
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password">Password
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="password" name="password" class="form-control col-md-7 col-xs-12" value="" required>
+                                            <input type="password" id="password" name="password" class="form-control col-md-7 col-xs-12" value="" required>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Confirm Password
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirm_password">Confirm Password
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="password" name="confirm_password" class="form-control col-md-7 col-xs-12" value="" required>
+                                            <input type="password" id="confirm_password" name="confirm_password" class="form-control col-md-7 col-xs-12" value="" required>
                                         </div>
                                     </div>
                                     <div class="form-group">

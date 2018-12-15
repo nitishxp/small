@@ -42,19 +42,19 @@
                                 <form method="POST" class="form-horizontal form-label-left">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Course Id:
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_id">Course Id:
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="text" name="course_id" value="{{ course.course_id }}" class="form-control col-md-7 col-xs-12" required>
+                                            <input type="text" id="course_id" name="course_id" value="{{ course.course_id }}" class="form-control col-md-7 col-xs-12" required>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Course Name:
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_name">Course Name:
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="text" name="course_name" value="{{ course.course_name }}" class="form-control col-md-7 col-xs-12" required>
+                                            <input type="text" id="course_name" name="course_name" value="{{ course.course_name }}" class="form-control col-md-7 col-xs-12" required>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -110,6 +110,13 @@
                                     </div>
                                     <table class="homework_assignment table table-border">
                                         {% for c in homework %}
+                                        <tr>
+                                            <td colspan="5">
+                                                <label> Assignment {{ c.homework_name }} Title </label>
+                                                <input type="text" name="{{ c.homework_name }}___assignment_title" value="{{ c.assignment_title }}"
+                                                    class="form-control" required>
+                                            </td>
+                                        </tr>
                                         <tr class='assign_cl'>
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
@@ -456,35 +463,6 @@
 <script>
     $(document).on('ready', function () {
 
-        var columns = []
-        {% for c in homework %}
-        {% if forloop.first %}
-        var t = {}
-        t['title'] = 'Name'
-        columns.push(t)
-        {% endif %}
-
-        var t = {}
-        t['title'] = 'HW' + '{{ c.homework_name}}'
-        columns.push(t)
-
-        {% if forloop.last %}
-        var t = {}
-        t['title'] = 'Total'
-        columns.push(t)
-        {% endif %}
-
-        {% endfor %}
-        var datasource = []
-        {% for key, values in all_grades.items %}
-        t = []
-        t.push('{{ values.name }}')
-        {% for grade in values.grade %}
-        t.push('{{ grade }}')
-        {% endfor %}
-        datasource.push(t)
-        {% endfor %}
-
         $('#group_all_grade').DataTable({
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -498,7 +476,13 @@
              "aoColumnDefs": [{ "bVisible": false, "aTargets": [0] }],
 
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    'copy', 'csv', 'excel', 'pdf', 'print',{
+                        text: 'Download Homework',
+                        action: function ( e, dt, node, config ) {
+                            console.log(e,dt,node,config);
+                            window.location = 'download_all_homework/{{ key }}/'
+                        }
+                    }
                 ],
                 bRetrieve: true,
                 dom: "Bfrtip",
