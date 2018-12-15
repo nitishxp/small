@@ -90,7 +90,7 @@
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td>{{ c.assignment_name }}</td>
+                                        <td>{{ c.homework_title }}</td>
                                         <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                         <td>{{c.grade | grade_alphabet }} </td>
                                         {% if c.appeal_reject_status and not c.is_override %}
@@ -130,7 +130,7 @@
                                 <div>
                                     <form method="GET" action="{% url 'student__appeal' c.group.group %}">
                                         {% csrf_token %}
-                                        <label style="color:red">Do you want to appeal for Assignment No {{c.group.homework.homework_name }} </label>
+                                        <label style="color:red">Do you want to appeal for {{c.group.homework.assignment_title }} </label>
                                         <input type="submit" class="btn appeal_submit" value="Yes">
                                         <input type="button" class="btn appeal_cancel" data-group_id="{{c.group.group}}" value="No">
                                     </form>
@@ -193,7 +193,7 @@
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td>{{ c.assignment_name }} </td>
+                                        <td>{{ c.homework_title }} </td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade_deadline }}</td>
@@ -236,7 +236,7 @@
                                     <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
                                         {% csrf_token %}
                                         <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Upload Assignment {{c.group.homework.homework_name}}
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Upload {{c.group.homework.assignment_title}}
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -269,7 +269,7 @@
                                 {% for c in peerevalutation %}
                                 <form method="POST" action="{% url 'student__peervaluation' c.id c.group.id %}" class="form-horizontal form-label-left">
                                     {% csrf_token %}
-                                    <label>Assignment {{ c.homework.homework_name }}</label>
+                                    <label>Assignment: <p> {{ c.homework.assignment_title }} </p></label>
                                     <a href="{{c.group.attachment}}" class="btn btn-download" download>Download File</a>
                                     <br>
                                     <label>Grading Rubric:</label> <p>{{ c.homework.grade_rubric }}</p>
@@ -328,7 +328,7 @@
                             <div class="x_content">
                                 {% for c in grade %} {% if c.type == "grade" %}
                                 <div>
-                                    <label> Assignment {{ c.homework_name }} Grader {{ c.index_grader }}: </label> {{ c.grade|grade_alphabet }}
+                                    <label> Assignment: {{ c.homework_title }} Grader {{ c.index_grader }}: </label> {{ c.grade|grade_alphabet }}
                                     <br>
                                     <label>Feedback: </label> {{c.explanation}}
                                     <br>
@@ -362,7 +362,7 @@
                                 <div class="x_content">
                                     {% if late_homework %}
                                         {% for c in late_homework %}
-                                            <label>Assignment  {{ c.assignment }} Grade : </label> {{c.grade | grade_alphabet }}
+                                            <label>Assignment  {{ c.homework_title }} Grade : </label> {{c.grade | grade_alphabet }}
                                             <br> 
                                             <label>Feedback : </label>
                                                 {% if c.is_override %}
@@ -386,7 +386,7 @@
                                 <div class="x_content">
                                     {% for c in appeal_grade_result %}
                                     <div>
-                                        <label> Assignment {{ c.group.homework.homework_name }} Grade: </label> 
+                                        <label> Assignment {{ c.group.homework.homework_title }} Grade: </label>
                                         {% if c.grade is not None %}
                                             {{ c.grade|grade_alphabet }}
                                         {% else %}
@@ -425,7 +425,7 @@
                                                     <a href="{{c.group_obj.attachment}}" download class="btn btn-download">Download File</a>
                                                 {% endif %}
                                                 <div>
-                                                    <label> Original Assignment {{ c.homework_name }} Grader {{ forloop.counter }}</label> {{ c.grade|grade_alphabet }}
+                                                    <label> Original Assignment {{ c.homework_title }} Grader {{ forloop.counter }}</label> {{ c.grade|grade_alphabet }}
                                                     <br> Feedback: {{c.explanation}}
                                                     <br>
                                                 </div>
@@ -440,7 +440,7 @@
                                                         <h4>Assignment Grade</h4>
                                                         <form method="POST" action="{% url 'student__submit_appeal_grade' c.group %}" class="form-horizontal form-label-left">
                                                             {% csrf_token %}
-                                                            <label>Assignment {{ c.homework_name }} </label> <br>
+                                                            <label>Assignment: {{ c.homework_title }} </label> <br>
                                                             <label>Appeal Reason</label>
                                                             <p>
                                                                 {{ values.appeal_reason }}
@@ -553,7 +553,7 @@
                             </div>
                             <div class="x_content">
                                     {%  for c in review_history %}
-                                        <label> Assignment Name:  </label> {{ c.assignment_name }} <br>
+                                        <label> Assignment Name:  </label> {{ c.homework_title }} <br>
                                         <label> Review Given: </label> {{ c.review_given }} <br>
                                         <label> Grade: </label> {{ c.grade| grade_alphabet }} <br>
 
@@ -561,7 +561,7 @@
                                             <hr width="25%">
                                             <label> Appeal: </label> Yes <br>
                                             <label> Appeal Feedback : </label> {{ c.appeal.appeal_reason }}<br>
-                                            <label> Your Peer Evaluation Grade for assignment {{ c.assignment_name }} is : </label> {{ c.peer_evaluation_grade }}<br>
+                                            <label> Your Peer Evaluation Grade for assignment {{ c.homework_title }} is : </label> {{ c.peer_evaluation_grade }}<br>
                                         {% endif %}
                                         <br>
                                         <br>

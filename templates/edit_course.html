@@ -562,7 +562,7 @@
             })
         });
 
-        $(".instructor_override").on('change',function () {
+        $(document).on("change",".instructor_override",function () {
             if (!confirm("Are u sure u want to edit")){
                     return false;
             }

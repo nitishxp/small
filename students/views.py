@@ -158,6 +158,7 @@ def get_grade_homework(group):
     grade_dic = []
     peer_grader = []
     for c in range(0, len(grade)):
+        homework_title = grade[c].group.homework.assignment_title
         homework_name = grade[c].group.homework.homework_name
         grade_rubric = grade[c].group.homework.grade_rubric
         has_appeal_done = grade[c].group.appeal_done_count
@@ -166,6 +167,7 @@ def get_grade_homework(group):
         temp = {}
         temp['type'] = 'grade'
         temp['homework_name'] = homework_name
+        temp['homework_title'] = homework_title
         temp['grade_rubric'] = grade_rubric
         temp['grade'] = grade[c].grade
         temp['explanation'] = grade[c].explanation
@@ -228,6 +230,7 @@ def student_course(request, course_id):
         grade, explanation = return_grade_explanation(group)
         t = {}
         t['assignment_name'] = group_details.homework.homework_name
+        t['homework_title'] = group_details.homework.assignment_title
         t['members'] = return_member_name(group)
         t['deadline'] = group_details.homework.homework_deadline
         t['grade_deadline'] = group_details.homework.grade_deadline
@@ -308,6 +311,7 @@ def student_course(request, course_id):
     for c in range(0, len(grade)):
 
         homework_name = grade[c].group.homework.homework_name
+        homework_title = grade[c].group.homework.assignment_title
         has_appeal_done = grade[c].group.appeal_done_count
         appeal_done_status = grade[c].group.appeal_done_status
         appeal_reject_status = grade[c].group.appeal_reject_status
@@ -344,6 +348,7 @@ def student_course(request, course_id):
         temp = {}
         temp['type'] = 'grade'
         temp['homework_name'] = homework_name
+        temp['homework_title'] = homework_title
         temp['grade'] = grade[c].grade
         temp['index_grader'] = index_grader
         temp['explanation'] = grade[c].explanation
@@ -392,6 +397,7 @@ def student_course(request, course_id):
             temp = {}
             temp['grade'] = result[0]
             temp['homework'] = c.group.homework.homework_name
+            temp['homework_title'] = c.group.homework.assignment_title
             temp['peer_grader'] = result[1]
             temp['is_grading_done'] = c.appeal_grading_status
             temp['is_peer_grading_done'] = c.appeal_peer_grading_status
@@ -410,6 +416,7 @@ def student_course(request, course_id):
     for c in review_history_obj:
         temp = {}
         temp['assignment_name'] = c.group.homework.homework_name
+        temp['homework_title'] = c.group.homework.assignment_title
         temp['review_given'] = c.explanation
         temp['grade'] = c.grade
         appeal = AppealGraderModel.objects.filter(group=c.group,grade__isnull=False).first()
@@ -430,6 +437,7 @@ def student_course(request, course_id):
     for c in late_group_obj:
         t = {}
         t['assignment'] = c.homework.homework_name
+        t['homework_title'] = c.homework.assignment_title
         t['grade'] = c.grade
         t['is_override'] = c.is_override
         if c.is_override:
