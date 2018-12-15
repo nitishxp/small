@@ -9,13 +9,13 @@ $(document).on('focus', ".datepicker_t", function () {
 $("#add_assignments").on('click', function () {
     var currentAssignmentLength = $(".homework_assignment .assign_cl").length
     currentAssignmentLength++;
-    var template = '<tr>'
-    template += '<td colspan="5">'
-    template += '<label>Assignment " + currentAssignmentLength + " Title</label><br>'
-    template += '<input type="text" name="' + currentAssignmentLength + '___assignment_title" class="form-control" required> </input>'
-    template += '</td>'
-    template += '</tr>'
-    template = "<tr class='assign_cl'>";
+    var template = "<tr>";
+    template += '<td colspan="5">';
+    template += '<label>Assignment ' + currentAssignmentLength + ' Title</label><br>';
+    template += '<input type="text" name="' + currentAssignmentLength + '___assignment_title" class="form-control" required> </input>';
+    template += '</td>';
+    template += '</tr>';
+    template += "<tr class='assign_cl'>";
     template += "<td>";
     template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
     template += '<input type="datetime-local" name="' + currentAssignmentLength + '___homework_deadline" class="form-control" required>'

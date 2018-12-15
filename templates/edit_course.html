@@ -253,10 +253,10 @@
                             </div>
                             <div class="x_content">
                                 <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                                    <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                                        {% for c in group_grades %}
-                                        <li role="presentation" class="">
-                                            <a href="#assignment{{c}}" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Assigment {{c}}</a>
+                                    <ul id="myTab" class="nav nav-tabs bar_tabs">
+                                        {% for k,v in group_grades.items %}
+                                        <li>
+                                            <a href="#assignment{{k}}" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">{{v.title}}</a>
                                         </li>
                                         {% endfor %}
                                     </ul>
@@ -276,9 +276,9 @@
                                                     <th>Appeal Explanation</th>
                                                 </thead>
                                                 <tbody>
-                                                    {% for v in values %}
+                                                    {% for v in values.value %}
                                                     <tr>
-                                                        <td>{{ v.id }}</td>
+                                                        <td>{{ v.group_id }}</td>
                                                         <td>{{ v.group|linebreaks }}</td>
                                                         <td>{{ v.grader|linebreaks }}</td>
                                                         <td>
@@ -473,10 +473,10 @@
         
         {% for key , values in group_grades.items %}
             var datatable{{key}} = $('#table{{key}}').DataTable({
-             "aoColumnDefs": [{ "bVisible": false, "aTargets": [0] }],
+             "aoColumnDefs": [{ "bVisible": false, "aTargets": [] }],
 
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print',{
+                     'csv', 'pdf', 'print',{
                         text: 'Download Homework',
                         action: function ( e, dt, node, config ) {
                             console.log(e,dt,node,config);

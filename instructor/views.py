@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import os
 import zipfile
 import StringIO
+from shutil import copyfile
 
 from django.shortcuts import render
 from django.http import (
@@ -43,6 +44,8 @@ from django.utils import timezone
 from django.db.models import Avg
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models.query import QuerySet
+from grade.settings import BASE_DIR
+
 
 @login_required(login_url='/')
 def index(request):
@@ -292,7 +295,7 @@ def edit_course(request, pk):
 
     for h in homework:
         homework_group = HomeworkGroup.objects.filter(
-            course=course, homework=h).order_by('group')
+            course=course, homework=h).order_by('group_name')
         #
         for g in homework_group:
             if g.appeal_done_count == g.total_member:
@@ -342,7 +345,10 @@ def edit_course(request, pk):
                     int(h.homework_name) - 1] = total_grade
 
         # first fetch the assignment name array
-        group_grades[h.homework_name] = []
+        group_grades[h.homework_name] = {}
+        group_grades[h.homework_name]['title'] = h.assignment_title
+        group_grades[h.homework_name]['value'] = []
+
         for group in homework_group:
             grade_explanation = return_grade_explanation(group.group)
             appeal_grade_explanation = return_appeal_grade_explanation(
@@ -359,8 +365,8 @@ def edit_course(request, pk):
             temp['deadline_miss'] = group.deadline_miss
             temp['file'] = group.attachment
             temp['updated_at'] = group.updated_at
-
-            group_grades[h.homework_name].append(temp)
+            temp['group_id'] = group.group_name
+            group_grades[h.homework_name]['value'].append(temp)
 
     # print group_grades
     group_grades_sort = collections.OrderedDict(sorted(group_grades.items()))
@@ -473,14 +479,16 @@ def re_grouping(request, pk):
 def make_group(course, c, t):
     groups_with_random_grader = {}
     HomeworkGroup.objects.filter(homework=c, course=course).delete()
+    group_name = 1
     for g in t:
         if len(g) > 0:
             import uuid
             group_id = uuid.uuid1().hex
             # create group id
             group_obj = HomeworkGroup.objects.create(
-                homework=c, course=course, group=group_id, total_member=len(g))
+                homework=c, course=course, group=group_id, total_member=len(g), group_name=group_name)
             # now insert group member to the group
+            group_name = group_name + 1
             temp_member_create = []
             for m in g:
                 temp_member_create.append(
@@ -557,72 +565,7 @@ def do_shuffle_grouping(pk):
             no_of_group = len(group) / c.no_of_group
             partition = chunkIt(group, no_of_group)
             t = [x for x in partition if x != []]
-        groups_with_random_grader = {}
-        print t
-        # delete the previous group model if exists
-        HomeworkGroup.objects.filter(homework=c, course=course).delete()
-        for g in t:
-            if len(g) > 0:
-                import uuid
-                group_id = uuid.uuid1().hex
-                # create group id
-                group_obj = HomeworkGroup.objects.create(
-                    homework=c,
-                    course=course,
-                    group=group_id,
-                    total_member=len(g))
-                # now insert group member to the group
-                temp_member_create = []
-                for m in g:
-                    temp_member_create.append(
-                        HomeworkGroupMember(
-                            user=UserModel.objects.get(pk=m), group=group_obj))
-                HomeworkGroupMember.objects.bulk_create(temp_member_create)
-                no_of_grader = c.no_of_grader
-                if no_of_grader > len(g):
-                    no_of_grader = len(g)
-                groups_with_random_grader[group_id] = random.sample(
-                    g, no_of_grader)
-        print groups_with_random_grader
-        # return JsonResponse(groups_with_random_grader, safe=False)
-        # now its time to iterate the group with random grader
-        # in order to make the group_id list so that
-        # we can make a permutations to the group id
-        temp_group = []
-        for g in groups_with_random_grader:
-            temp_group.append(g)
-        temp_group_combination = []
-        for i in range(len(temp_group)):
-            pg = []
-            pg.append((temp_group * 2)[i:i + 2][0])
-            pg.append((temp_group * 2)[i:i + 2][1])
-            for peer_grader in groups_with_random_grader[pg[1]]:
-                temp_group_combination.append(
-                    GroupCombinationModel(
-                        homework=c,
-                        course=course,
-                        group=HomeworkGroup.objects.get(group=pg[0]),
-                        grader_group=HomeworkGroup.objects.get(group=pg[1]),
-                        grader_user=UserModel.objects.get(pk=peer_grader)))
-        GroupCombinationModel.objects.bulk_create(temp_group_combination)
-        # select a default entry for each group
-        # ie if select A-B then delete B-A
-        for g in groups_with_random_grader:
-            # select A-B
-            current_group = GroupCombinationModel.objects.filter(
-                group=g).first()
-            if current_group:
-                # delete B-A
-                current_group_grader_group = current_group.grader_group.group
-                GroupCombinationModel.objects.filter(
-                    group=current_group_grader_group, grader_group=g).delete()
-                group = current_group.group.group
-                grader_group = current_group.grader_group.group
-                # now set all A-B active = True because of different grader
-                GroupCombinationModel.objects.filter(
-                    group=group, grader_group=grader_group).update(
-                    active=True, is_used=True)
-        GroupCombinationModel.objects.filter(active=False).delete()
+        make_group(course, c, t)
     return True
 
 
@@ -678,68 +621,7 @@ def do_same_grouping(pk):
                     x[group].append(user)
             for prv_group in x:
                 t.append(x[prv_group])
-
-        groups_with_random_grader = {}
-        # delete the previous group model if exists
-        HomeworkGroup.objects.filter(homework=c, course=course).delete()
-        for g in t:
-            if len(g) > 0:
-                import uuid
-                group_id = uuid.uuid1().hex
-                # create group id
-                group_obj = HomeworkGroup.objects.create(
-                    homework=c,
-                    course=course,
-                    group=group_id,
-                    total_member=len(g))
-                # now insert group member to the group
-                temp_member_create = []
-                for m in g:
-                    temp_member_create.append(
-                        HomeworkGroupMember(
-                            user=UserModel.objects.get(pk=m), group=group_obj))
-                HomeworkGroupMember.objects.bulk_create(temp_member_create)
-                no_of_grader = c.no_of_grader
-                if no_of_grader > len(g):
-                    no_of_grader = len(g)
-                groups_with_random_grader[group_id] = random.sample(
-                    g, no_of_grader)
-        temp_group = []
-        for g in groups_with_random_grader:
-            temp_group.append(g)
-        temp_group_combination = []
-        for i in range(len(temp_group)):
-            pg = []
-            pg.append((temp_group * 2)[i:i + 2][0])
-            pg.append((temp_group * 2)[i:i + 2][1])
-            for peer_grader in groups_with_random_grader[pg[1]]:
-                temp_group_combination.append(
-                    GroupCombinationModel(
-                        homework=c,
-                        course=course,
-                        group=HomeworkGroup.objects.get(group=pg[0]),
-                        grader_group=HomeworkGroup.objects.get(group=pg[1]),
-                        grader_user=UserModel.objects.get(pk=peer_grader)))
-        GroupCombinationModel.objects.bulk_create(temp_group_combination)
-        # select a default entry for each group
-        # ie if select A-B then delete B-A
-        for g in groups_with_random_grader:
-            # select A-B
-            current_group = GroupCombinationModel.objects.filter(
-                group=g).first()
-            if current_group:
-                # delete B-A
-                current_group_grader_group = current_group.grader_group.group
-                GroupCombinationModel.objects.filter(
-                    group=current_group_grader_group, grader_group=g).delete()
-                group = current_group.group.group
-                grader_group = current_group.grader_group.group
-                # now set all A-B active = True because of different grader
-                GroupCombinationModel.objects.filter(
-                    group=group, grader_group=grader_group).update(
-                    active=True, is_used=True)
-        GroupCombinationModel.objects.filter(active=False).delete()
-
+        make_group(course, c, t)
         # since primary group was none we need to make this current homework objects as primary group
         if primary_group is None:
             primary_group = HomeworkGroupMember.objects.filter(
@@ -913,37 +795,30 @@ def override_grade(request, pk):
 
 
 def download_all_assignments_of_homework(request, pk, name):
-    filenames = ["/home/ubuntu/small/instructor/urls.py"]
-    # Folder name in ZIP archive which contains the above files
-    # E.g [thearchive.zip]/somefiles/file2.txt
-    # FIXME: Set this to something better
-    attachments = HomeworkGroup.objects.filter(course_id=pk,homework_id=name,attachment__isnull=False).values_list('group_name','attachment')
-    print(attachments)
-
-    return HttpResponse('s')
-    zip_subdir = "assignments"
+    filenames = []
+    attachments = HomeworkGroup.objects.filter(course_id=pk, homework_id=name, attachment__isnull=False).values_list(
+        'group_name', 'attachment')
+    zip_subdir = "Assignment %s" % name
     zip_filename = "%s.zip" % zip_subdir
-
-    # Open StringIO to grab in-memory ZIP contents
     s = StringIO.StringIO()
-
-    # The zip compressor
     zf = zipfile.ZipFile(s, "w")
 
+    # first create a group wise file
+    for file in attachments:
+        fpath = BASE_DIR + file[1]
+        gname = file[0]
+        fdir, fname = os.path.split(fpath)
+        ext = fname.split('.')[-1]
+        dst = fdir + '/' + gname + '.' + ext
+        copyfile(fpath, dst)
+        filenames.append(dst)
+
+    # write file to zip
     for fpath in filenames:
-        # Calculate path for file in zip
         fdir, fname = os.path.split(fpath)
         zip_path = os.path.join(zip_subdir, fname)
-
-        # Add file, at correct path
         zf.write(fpath, zip_path)
-
-    # Must close zip for all contents to be written
     zf.close()
-
-    # Grab ZIP file from in-memory, make response with correct MIME-type
     resp = HttpResponse(s.getvalue(), content_type="application/x-zip-compressed")
-    # ..and correct content-disposition
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-
     return resp
