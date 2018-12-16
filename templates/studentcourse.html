@@ -326,85 +326,107 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                {% for c in grade %} {% if c.type == "grade" %}
-                                <div>
-                                    <label> Assignment: {{ c.homework_title }} Grader {{ c.index_grader }}: </label> {{ c.grade|grade_alphabet }}
-                                    <br>
-                                    <label>Feedback: </label> {{c.explanation}}
-                                    <br>
-                                </div>
-                                {% endif %} {% if c.type == "appeal" and c.appeal_done_status and c.do_all_first_grader_have_graded %}
-                                <form method="POST" action="{% url 'student__appeal' c.group %}" class="form-horizontal form-label-left">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_reason">Appeal Reason for group
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <textarea name="appeal_reason" class="form-control col-md-7 col-xs-12" required id="appeal_reason" rows="15"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="submit" value="Appeal" class="btn btn-primary">
-                                            <input type="button" value="Don't Appeal" class="btn appeal_cancel">
-                                        </div>
-                                    </div>
-                                </form>
-                                <br> {% endif %} {% endfor %}
-                                <hr>
-
-                                <!-- Late Submission -->
-                                <div class="x_title">
-                                    <h2>Late Submission</h2>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-                                    {% if late_homework %}
-                                        {% for c in late_homework %}
-                                            <label>Assignment  {{ c.homework_title }} Grade : </label> {{c.grade | grade_alphabet }}
-                                            <br> 
-                                            <label>Feedback : </label>
-                                                {% if c.is_override %}
-                                                    {{c.explanation }}
-                                                {% else %}
-                                                    Late Submission
-                                                {% endif %}
+                                {% for c in grade %}
+                                    {% if c.type == "grade" %}
+                                        <div>
+                                            <label> Assignment: {{ c.homework_title }} Grader {{ c.index_grader }}: </label> {{ c.grade|grade_alphabet }}
                                             <br>
-                                        {% endfor %}
-                                    {% else %}
-                                        No Late Submissions :)
+                                            <label>Feedback: </label> {{c.explanation}}<br>
+                                        </div>
                                     {% endif %}
-                                </div>
-                                <hr>
-                                <!-- Appeal Grades for All Homework -->
-                                {% if appeal_grade_result %}
+                                    {% if c.type == "appeal" and c.appeal_done_status and c.do_all_first_grader_have_graded %}
+                                        <form method="POST" action="{% url 'student__appeal' c.group %}" class="form-horizontal form-label-left">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="appeal_reason">Appeal Reason for group
+                                                </label>
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <textarea name="appeal_reason" class="form-control col-md-7 col-xs-12" required id="appeal_reason" rows="15"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                    <input type="submit" value="Appeal" class="btn btn-primary">
+                                                    <input type="button" value="Don't Appeal" class="btn appeal_cancel">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <!--<hr>-->
+                            <!-- Appeal Grades for All Homework -->
+                            {% if appeal_grade_result %}
                                 <div class="x_title">
                                     <h2> Appeal Grade </h2>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
                                     {% for c in appeal_grade_result %}
-                                    <div>
-                                        <label> Assignment {{ c.group.homework.homework_title }} Grade: </label>
-                                        {% if c.grade is not None %}
-                                            {{ c.grade|grade_alphabet }}
-                                        {% else %}
+                                        <div>
+                                            <label> Assignment {{ c.group.homework.homework_title }} Grade: </label>
+                                            {% if c.grade is not None %}
+                                                {{ c.grade|grade_alphabet }}
+                                            {% else %}
                                                 <td><span class="blinking">Waiting for grade </span> </td>
-                                        {% endif %}
-                                        <br>
-                                        <label>Feedback: </label>
-                                        {% if c.appeal_explanation %}
-                                            {{c.appeal_explanation}}
-                                        {% else %}
-                                                <td><span class="blinking">Waiting for explanation </span> </td>
-                                        {% endif %}                                        
-                                        <br>
-                                    </div>
+                                            {% endif %}
+                                            <br>
+                                            <label>Feedback: </label>
+                                            {% if c.appeal_explanation %}
+                                                {{c.appeal_explanation}}
+                                            {% else %}
+                                                    <td><span class="blinking">Waiting for explanation </span> </td>
+                                            {% endif %}
+                                            <br>
+                                        </div>
                                     {% endfor %}
                                 </div>
+                            {% endif %}
+                            <hr>
+                            <!-- Instructor Submission -->
+                            {% if instructor_grade_result %}
+                                <div class="x_title">
+                                    <h2> Instructor Grade </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    {% for c in instructor_grade_result %}
+                                        <div>
+                                            <label> Assignment {{ c.group.homework.homework_title }} Grade: </label>
+                                            {{ c.grade|grade_alphabet }}
+                                            <br>
+                                            <label>Feedback: </label>
+                                                {{c.explanation}}
+                                            <br>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <hr>
+                            <!-- Late Submission -->
+                            <div class="x_title">
+                                <h2>Late Submission</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                {% if late_homework %}
+                                    {% for c in late_homework %}
+                                        <label>Assignment  {{ c.homework_title }} Grade : </label> {{c.grade | grade_alphabet }}
+                                        <br>
+                                        <label>Feedback : </label>
+                                            {% if c.is_override %}
+                                                {{c.explanation }}
+                                            {% else %}
+                                                Late Submission
+                                            {% endif %}
+                                        <br>
+                                    {% endfor %}
+                                {% else %}
+                                    No Late Submissions :)
                                 {% endif %}
                             </div>
+                            <hr>
                         </div>
                     </div>
                 </div>
