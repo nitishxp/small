@@ -18,11 +18,11 @@
                     <span class="step_no">Group</span>
                 </a>
             </li>
-            <li>
-                <a href="#upload" class=" upload {% if file_upload %} selected timeline {% else %} disabled {% endif %}">
-                    <span class="step_no">Upload</span>
-                </a>
-            </li>
+            <!--<li>-->
+                <!--<a href="#upload" class=" upload {% if file_upload %} selected timeline {% else %} disabled {% endif %}">-->
+                    <!--<span class="step_no">Upload</span>-->
+                <!--</a>-->
+            <!--</li>-->
             <li>
                 <a href="#peer_evaluation" class="peer_evaluation {% if peerevalutation %} selected timeline {% else %} disabled {% endif %}">
                     <span class="step_no">Peer Evaluation</span>
@@ -90,7 +90,7 @@
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td>{{ c.homework_title }}</td>
+                                        <td data-toggle="modal" data-target="#{{c.group_id}}">{{ c.homework_title }}</td>
                                         <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                         <td>{{c.grade | grade_alphabet }} </td>
                                         {% if c.appeal_reject_status and not c.is_override %}
@@ -185,34 +185,44 @@
                                 <table class="table">
                                     <tr>
                                         <th>Assignment</th>
-                                        <th>Group</th>
+                                        <th>Group Member</th>
                                         <th>HW Deadline</th>
                                         <th>Grading Deadline</th>
+                                        <th>File</th>
                                         <th>Grade</th>
                                         <!-- <th>Feedback</th> -->
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td>{{ c.homework_title }} </td>
+                                        <td style="color: blue;cursor: grab;" data-toggle="modal" data-target="#{{c.group_id}}">{{ c.homework_title }}</td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade_deadline }}</td>
-                                        {% if c.deadline_miss %}
-                                            <!--  in case instructor has provided grade -->
-                                            {% if c.is_override %}
-                                                <td> {{ c.appeal_grade|grade_alphabet }}</td>
-                                            {% else %}
-                                                 <td> {{ c.grade | grade_alphabet }} </td>
+                                        <td>
+                                            {% if c.attachment  %}
+                                                <a href="{{ c.attachment }}" download="{{ c.homework_title }}"> Download </a>
                                             {% endif %}
+                                        </td>
+                                        <!--  in case instructor has provided grade -->
+                                        {% if c.is_override %}
+                                            <td> {{ c.instructor_grade.grade|grade_alphabet }}</td>
                                         {% else %}
-                                            {% if not c.appeal_done_status %}
-                                                {% if c.appeal_grade is not None %}
-                                                    <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                             {% if c.deadline_miss %}
+                                                {% if c.is_override %}
+                                                    <td> {{ c.instructor_grade.grade|grade_alphabet }}</td>
                                                 {% else %}
-                                                    <td> a<span class="blinking">Waiting for grade </span> </td>
+                                                    <td> {{ c.grade | grade_alphabet }} </td>
                                                 {% endif %}
                                             {% else %}
-                                                <td> {{ c.grade|grade_alphabet }} </td>
+                                                {% if not c.appeal_done_status %}
+                                                    {% if c.appeal_grade is not None %}
+                                                        <td> {{ c.appeal_grade|grade_alphabet }}</td>
+                                                    {% else %}
+                                                        <td> a<span class="blinking">Waiting for grade </span> </td>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <td> {{ c.grade|grade_alphabet }} </td>
+                                                {% endif %}
                                             {% endif %}
                                         {% endif %}
                                     </tr>
@@ -223,40 +233,19 @@
                     </div>
                 </div>
             </div>
-            <div id="upload" class="content" style="display: {% if file_upload %} none {% else %} none {% endif %}">
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2> Upload </h2>
-                                <div class="clearfix"></div>
-                            </div>
-                            {% for c in file_upload %}
-                            <div class="x_content">
-                                    <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Upload {{c.group.homework.assignment_title}}
-                                            <span class="required">*</span>
-                                        </label>
-                                        <div class="col-md-6 col-sm-6 col-xs-12">
-                                            <input type="file" name="{{ c.group.id }}" class="form-control col-md-7 col-xs-12" required id="assignment_upload">
-                                        </div>
-                                    </div>
-                                        <div class="form-group">
-                                            <div class="col-md-4 col-sm-3 col-xs-12"></div>
-                                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                                <input type="submit" value="Submit" class="btn btn-primary">
-                                            </div>
-                                        </div>
-                                    </form>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!--<div id="upload" class="content" style="display: {% if file_upload %} none {% else %} none {% endif %}">-->
+                <!--<div class="row">-->
+                    <!--<div class="col-md-12 col-sm-12 col-xs-12">-->
+                        <!--<div class="x_panel">-->
+                            <!--<div class="x_title">-->
+                                <!--<h2> Upload </h2>-->
+                                <!--<div class="clearfix"></div>-->
+                            <!--</div>-->
 
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
             <div id="peer_evaluation" class="content" style="display: {% if peerevalutation %} none {% else %} none {% endif %}">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -597,4 +586,35 @@
         </div>
     </div>
 </div>
+{% for c in file_upload %}
+    <div class="modal fade" id="{{c.group.group}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Upload {{c.group.homework.assignment_title}}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{% url 'student__upload_assignment' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="assignment_upload">Upload {{c.group.homework.assignment_title}}
+                                <span class="required">*</span>
+                            </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="file" name="{{ c.group.id }}" class="form-control col-md-7 col-xs-12" required id="assignment_upload">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Save changes" >
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endfor %}
 {% endblock %}

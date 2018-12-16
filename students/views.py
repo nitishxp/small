@@ -122,7 +122,7 @@ def return_member_name(group_id):
     name = []
     for c in name_obj:
         name.append(c.user.name)
-    return "\n".join(name)
+    return ",".join(name)
 
 
 def return_grade_explanation(group_id):
@@ -234,6 +234,7 @@ def student_course(request, course_id):
         t = {}
         t['assignment_name'] = group_details.homework.homework_name
         t['homework_title'] = group_details.homework.assignment_title
+        t['attachment'] = group_details.attachment
         t['members'] = return_member_name(group)
         t['deadline'] = group_details.homework.homework_deadline
         t['grade_deadline'] = group_details.homework.grade_deadline
@@ -243,41 +244,15 @@ def student_course(request, course_id):
         t['group_obj'] = group_details
         t['uploads'] = group_details.attachment
         t['is_override'] = group_details.is_override
-        # t['appeal_done_count'] = GroupCombinationModel.objects.filter(
-        #     group=group_details, peerevalutation=True).count()
+        t['instructor_grade'] = InstructorGradeOverRide.objects.filter(group=group).first()
         t['total_member'] = group_details.total_member
         t['deadline_miss'] = group_details.deadline_miss
         t['appeal_reject_status'] = group_details.appeal_reject_status
         t['appeal_done_status'] = group_details.appeal_done_status
-        # if t['appeal_done_count'] == group_details.total_member:
         appeal_grade, appeal_explanation = return_appeal_grade_explanation(
             group)
         t['appeal_grade'] = appeal_grade
         t['appeal_explanation'] = appeal_explanation
-        # else:
-        #     t['appeal_grade'] = ''
-        #     t['appeal_explanation'] = ''
-
-        # # to find out the grading quality
-        # grading_quality = PeerEvaluationModel.objects.filter(
-        #     course=course_obj,
-        #     group__homework__homework_name=t['assignment_name'],
-        #     peer_grader=request.user).aggregate(Avg('grade'))
-        # if grading_quality['grade__avg'] is not None:
-        #     grading_quality = round(grading_quality['grade__avg'])
-        # else:
-        #     # now check does this user have even done the grading
-        #     grading_done = HomeworkGroupGrade.objects.filter(
-        #         group__homework__course=course_obj,
-        #         group__homework__homework_name=t['assignment_name'],
-        #         grader=request.user)
-        #     if grading_done.exists():
-        #         grading_quality = 4.00
-        #     else:
-        #         grading_quality = None
-
-        # t['grading_quality'] = grading_quality
-
         assignment.append(t)
 
     peerevalutation = GroupCombinationModel.objects.filter(
