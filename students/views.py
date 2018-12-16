@@ -390,6 +390,7 @@ def student_course(request, course_id):
         course=course_obj,
         appeal_grader=request.user.id).select_related('group','group__homework')
 
+    # print appeal_grader_obj.query
     appeal_grader = []
     for c in appeal_grader_obj:
         if c.group.total_member == c.group.appeal_done_count:

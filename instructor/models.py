@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from users.models import UserModel
 
+
 # Create your models here.
 
 
@@ -30,7 +31,7 @@ class CourseHomeWorkModel(models.Model):
     no_of_group = models.IntegerField(null=True)
     no_of_grader = models.IntegerField(null=True)
     grade_rubric = models.TextField(null=True)
-    
+
     # will save constraints in array form
     constraints = models.TextField()
     course = models.ForeignKey(CourseModel)
@@ -151,3 +152,16 @@ class PeerEvaluationModel(models.Model):
     appeal_grader = models.ForeignKey(
         UserModel, related_name='appeal_grader', on_delete=models.CASCADE)
     homework = models.ForeignKey(CourseHomeWorkModel)
+
+
+class InstructorGradeOverRide(models.Model):
+    group = models.ForeignKey(
+        HomeworkGroup, to_field='group', on_delete=models.CASCADE)
+    explanation = models.TextField()
+    grade = models.DecimalField(null=True, decimal_places=2, max_digits=4)
+    course = models.ForeignKey(CourseModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        UserModel, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "instructor_overwrite"

@@ -20,6 +20,7 @@ from models import (
     HomeworkGroupGrade,
     AppealGraderModel,
     PeerEvaluationModel,
+    InstructorGradeOverRide,
 )
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
@@ -242,6 +243,13 @@ def return_appeal_grade_explanation(group_id):
     return "", "", ""
 
 
+def return_instructor_grade_comment(group_id):
+    obj = InstructorGradeOverRide.objects.filter(group=group_id).first()
+    if obj:
+        return grade_alphabet(obj.grade), obj.explanation
+    return "", ""
+
+
 @login_required(login_url='/')
 def edit_course(request, pk):
     if request.method == "POST":
@@ -298,7 +306,10 @@ def edit_course(request, pk):
             course=course, homework=h).order_by('group_name')
         #
         for g in homework_group:
-            if g.appeal_done_count == g.total_member:
+            # first check for instructor override grade
+            if g.is_override:
+                grade = g.grade
+            elif g.appeal_done_count == g.total_member:
                 appeal_grade, appeal_explanation = return_appeal_grade_explanation_1(
                     g.group)
                 grade = appeal_grade
@@ -353,6 +364,7 @@ def edit_course(request, pk):
             grade_explanation = return_grade_explanation(group.group)
             appeal_grade_explanation = return_appeal_grade_explanation(
                 group.group)
+            instructor_grade, instructor_comment = return_instructor_grade_comment(group.group)
             temp = {}
             temp['id'] = group.group
             temp['group'] = return_member_name(group.group)
@@ -366,6 +378,8 @@ def edit_course(request, pk):
             temp['file'] = group.attachment
             temp['updated_at'] = group.updated_at
             temp['group_id'] = group.group_name
+            temp['instructor_grade'] = instructor_grade
+            temp['instructor_comment'] = instructor_comment
             group_grades[h.homework_name]['value'].append(temp)
 
     # print group_grades
@@ -500,7 +514,7 @@ def make_group(course, c, t):
                 no_of_grader = len(g)
             groups_with_random_grader[group_id] = random.sample(
                 g, no_of_grader)
-    print groups_with_random_grader
+    # print groups_with_random_grader
     # return JsonResponse(groups_with_random_grader, safe=False)
     # now its time to iterate the group with random grader
     # in order to make the group_id list so that
@@ -770,7 +784,7 @@ def override_grade(request, pk):
 
     explanation = request.POST.get('explanation')
     if explanation:
-        update_data['appeal_explanation'] = explanation.strip()
+        update_data['explanation'] = explanation.strip()
         if not group.is_override:
             return HttpResponse("No Override")
 
@@ -779,12 +793,11 @@ def override_grade(request, pk):
         grade = grade_convert_alphabet_to_number(grade)
         update_data['grade'] = grade
 
-    update_data['appeal_by_user'] = request.user
+    update_data['user'] = request.user
     update_data['course'] = course
-    update_data['override'] = True
     if grade or explanation:
-        AppealGraderModel.objects.update_or_create(group=group,
-                                                   defaults=update_data)
+        InstructorGradeOverRide.objects.update_or_create(group=group,
+                                                         defaults=update_data)
     if grade:
         group.grade = grade
 

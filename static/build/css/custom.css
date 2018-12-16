@@ -2544,7 +2544,7 @@ span.tag a {
 ul.bar_tabs {
     overflow: visible;
     /*background: #F5F7FA;*/
-    height: 25px;
+    /*height: 25px;*/
     margin: 21px 0 14px;
     padding-left: 14px;
     position: relative;
