@@ -46,4 +46,7 @@ urlpatterns = [
     url(r'course/(?P<pk>[0-9]+)/download_all_homework/(?P<name>[0-9]+)/$',
         download_all_assignments_of_homework,
         name="instructor__download_all_assignments_of_homework"),
+    url(r'course/(?P<pk>[0-9]+)/custom_grouping/$',
+        custom_grouping_new,
+        name="instructor__custom_grouping_new"),
 ]

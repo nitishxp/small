@@ -29,7 +29,7 @@ class CourseHomeWorkModel(models.Model):
     grade_deadline = models.DateTimeField(null=True)
     homework_deadline = models.DateTimeField()
     no_of_group = models.IntegerField(null=True)
-    no_of_grader = models.IntegerField(null=True)
+    no_of_grader = models.TextField(null=True)
     grade_rubric = models.TextField(null=True)
 
     # will save constraints in array form
@@ -101,7 +101,7 @@ class GroupCombinationModel(models.Model):
         HomeworkGroup,
         to_field='group',
         on_delete=models.CASCADE,
-        related_name='group2')
+        related_name='group2',null=True)
     grader_user = models.ForeignKey(UserModel)
     # appeal_grader = models.ForeignKey(UserModel, to_field='username')
     homework = models.ForeignKey(CourseHomeWorkModel)

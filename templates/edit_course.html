@@ -28,6 +28,11 @@
                     <span class="step_no">Peer Grades</span>
                 </a>
             </li>
+            <li>
+                <a data-toggle="modal" data-target="#custom_grouping" class="selected timeline">
+                    <span class="step_no">Custom Grouping</span>
+                </a>
+            </li>
         </ul>
         <div class="stepContainer">
             <div id="course_info" class="content" style="display: none">
@@ -152,8 +157,19 @@
                                             <td>
                                                 <label>No. Of Graders</label>
                                                 <br>
-                                                <input type="number" min="1" name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control"
-                                                    required>
+                                                <select name="{{ c.homework_name }}___no_of_grader" value="{{c.no_of_grader}}" class="form-control" required>
+                                                    <option {% if c.no_of_grader == '1' %} selected {% endif %} value="1">1</option>
+                                                    <option {% if c.no_of_grader == '2' %} selected {% endif %} value="2">2</option>
+                                                    <option {% if c.no_of_grader == '3' %} selected {% endif %} value="3">3</option>
+                                                    <option {% if c.no_of_grader == '4' %} selected {% endif %} value="4">4</option>
+                                                    <option {% if c.no_of_grader == '5' %} selected {% endif %} value="5">5</option>
+                                                    <option {% if c.no_of_grader == '6' %} selected {% endif %} value="6">6</option>
+                                                    <option {% if c.no_of_grader == '7' %} selected {% endif %} value="7">7</option>
+                                                    <option {% if c.no_of_grader == '8' %} selected {% endif %} value="8">8</option>
+                                                    <option {% if c.no_of_grader == '9' %} selected {% endif %} value="9">9</option>
+                                                    <option {% if c.no_of_grader == '10' %} selected {% endif %} value="10">10</option>
+                                                    <option {% if c.no_of_grader == 'all' %} selected {% endif %} value="all">All</option>
+                                                </select>
                                             </td>
                                         </tr>
                                         <tr>
@@ -306,7 +322,7 @@
                                                             {% else %}
                                                                 <td><a href="{{v.file}}"> Download </a></td>
                                                         {% endif %}
-                                                        
+
                                                         <td>{{ v.appeal_grader|linebreaks }}</td>
                                                         <td>{{ v.appeal_grade }}</td>
                                                         <td>{{ v.appeal_explanation.strip }}</td>
@@ -452,9 +468,73 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
+ <div class="modal fade" id="custom_grouping" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form  method="post" action="{% url 'instructor__custom_grouping_new' course_pk %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>No Of Groups</label>
+                            <input type="number" id="no_of_groups_custom" class="form-control" min="1">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Assignment</label>
+                            <select class="form-control" name="custom_grouping_assignment" required>
+                                <option value="">Select</option>
+                                {% for c in homework %}
+                                    <option value="{{c.id}}">{{ c.assignment_title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                        <table class="table">
+                            <tr>
+                                <th>Group</th>
+                                <th>Name</th>
+                            </tr>
+                            {% for c in enrolled_student %}
+                                <tr>
+                                    <td>
+                                        <select class="id_custom form-control" name="custom_group_student__{{c.user.id}}" data-value="{{c.user.id}}">
+                                            <option></option>
+                                        </select>
+                                    </td>
+                                    <td>{{ c.user.name }}</td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Save changes" >
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $("#no_of_groups_custom").on('change', function () {
+        var c = $(this).val();
+        var option = "";
+        if (c < 1){
+            return false
+        }
+        for (let i = 1 ; i <= c ; i ++){
+            option += "<option>"+i+"</option>";
+        }
+        console.log(option);
+        $(".id_custom").each( function () {
+            $(this).html(option);
+        })
+    })
+</script>
+
 <script>
     $(document).on('ready', function () {
 
@@ -465,7 +545,7 @@
             bRetrieve: true,
             dom: "Bfrtip",
         });
-        
+
         {% for key , values in group_grades.items %}
             var datatable{{key}} = $('#table{{key}}').DataTable({
              "aoColumnDefs": [{ "bVisible": false, "aTargets": [] }],
@@ -483,41 +563,6 @@
                 dom: "Bfrtip",
                 bScrollCollapse : true,
             });
-
-        // datatable{{key}}.scroller.measure().draw(false);
-        //  var table{{key}} = $('#table{{key}}').DataTable();
-        //  table{{key}}.MakeCellsEditable({
-        //     "onUpdate": myCallbackFunction,
-        //     "columns": [8],
-        //     "allowNulls": {
-        //         "columns": [8],
-        //         "errorClass": 'error'
-        //     },
-        //     "inputTypes": [
-        //         {
-        //             "column": 8,
-        //             "type": "textarea",
-        //         },
-        //         {
-        //         "column":7,
-        //         "type": "list",
-        //         "options":[
-        //             { "value":  "" , "display": "" },
-        //             { "value":  "A" , "display": "A" },
-        //             { "value": "A-" , "display": "A-" },
-        //             { "value": "B+" , "display": "B+" },
-        //             { "value":  "B" , "display": "B" },
-        //             { "value": "B-" , "display": "B-" },
-        //             { "value": "C+" , "display": "C+" },
-        //             { "value":  "C" , "display": "C" },
-        //             { "value": "C-" , "display": "C-" },
-        //             { "value": "D+" , "display": "D+" },
-        //             { "value":  "D" , "display": "D" },
-        //             { "value": "D-" , "display": "D-" },
-        //             { "value":  "F" , "display": "F" },
-        //         ]
-        //     }]
-        // });
         {% endfor %}
 
         // function myCallbackFunction(updatedCell, updatedRow, oldValue) {

@@ -122,7 +122,7 @@ def return_member_name(group_id):
     name = []
     for c in name_obj:
         name.append(c.user.name)
-    return ",".join(name)
+    return ", ".join(name)
 
 
 def return_grade_explanation(group_id):
