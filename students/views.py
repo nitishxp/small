@@ -202,20 +202,6 @@ def student_course(request, course_id):
 
     constraints = []
     users_group = []
-    # for c in constraints_db:
-    #     t = {}
-    #     t['id'] = c.id
-    #     t['question'] = c.question
-    #     t['options'] = ast.literal_eval(c.options)
-    #     selected_db = StudentConstraintsModel.objects.filter(
-    #         user=request.user, constraint=c.id)
-    #     if selected_db.exists():
-    #         selected_db = selected_db.first()
-    #         t['selected'] = selected_db.response
-    #     else:
-    #         t['selected'] = ''
-    #     constraints.append(t)
-
     course = CourseModel.objects.all()
     course_obj = CourseModel.objects.filter(pk=course_id).first()
     assignment = []
