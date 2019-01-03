@@ -521,9 +521,9 @@ def do_shuffle_grouping(pk):
             # print ("partition", partition)
             t = [x for x in partition if x != []]
             # print ("t", t, c.homework_name)
-        # if c.no_of_grader != "all":
-        #     make_group(course, c, t)
-        # else:
+            # if c.no_of_grader != "all":
+            #     make_group(course, c, t)
+            # else:
             make_group_all(course, c, t, group)
     return True
 
@@ -715,16 +715,23 @@ def student_upload(request, pk):
     lines = csv.DictReader(file_data)
 
     for line in lines:
-        user = UserModel.objects.filter(username=line['SIS Login ID'])
+        if line.get('SIS User ID'):
+            username = line.get('SIS User ID')
+        elif line.get('SIS Login ID'):
+            username = line.get('SIS Login ID')
+        else:
+            return HttpResponse('Invalid Headers')
+        print (username)
+        user = UserModel.objects.filter(username=username)
 
         if not user.exists():
             user = UserModel.objects.create_user(
-                username=line['SIS Login ID'], name=line['Student'])
-            user.set_password(line['SIS Login ID'])
+                username=username, name=line['Student'])
+            user.set_password(username)
             user.save()
 
         course = CourseModel.objects.get(pk=pk)
-        student_user = UserModel.objects.get(username=line['SIS Login ID'])
+        student_user = UserModel.objects.get(username=username)
 
         StudentCourseModel.objects.update_or_create(
             user=student_user,
