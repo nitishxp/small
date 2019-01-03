@@ -10,14 +10,13 @@ from django.contrib.auth import authenticate, login as auth_login
 # Create your views here.
 def signup(request):
     if request.method == "POST":
-        print request.POST
         user = UserModel(
             username=request.POST['username'],
-            name=request.POST.get('name'),
+            name=request.POST.get('username'),
             role='instructor')
         user.set_password(request.POST['password'])
         user.save()
-        return HttpResponseRedirect(reverse('instructor__course'))
+        return HttpResponseRedirect('/')
     return render(request, 'registration/signup.html')
 
 
