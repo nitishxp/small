@@ -471,28 +471,24 @@ def re_grouping(request, pk):
                 counter = counter + 1
             else:
                 # update the number of grader as that of previous group
-                c.no_of_grader = no_of_grader
                 c.no_of_group = no_of_student_per_group
                 c.save()
             random.shuffle(t)
-            if c.no_of_grader != "all":
-                make_group(course, c, t)
-            else:
-                make_group_all(course, c, t, group)
+            # if c.no_of_grader != "all":
+            #     make_group(course, c, t)
+            # else:
+            make_group_all(course, c, t, group)
 
         else:
             random.shuffle(group)
-            if c.no_of_grader != "all":
-                no_of_group = len(group) / c.no_of_group
-                partition = chunkIt(group, no_of_group)
-                t = [x for x in partition if x != []]
-                make_group(course, c, t)
-            else:
-                # prepare a custom grouping in case of all
-                no_of_group = len(group) / c.no_of_group
-                partition = chunkIt(group, no_of_group)
-                t = [x for x in partition if x != []]
-                make_group_all(course, c, t, group)
+            no_of_group = len(group) / c.no_of_group
+            partition = chunkIt(group, no_of_group)
+            t = [x for x in partition if x != []]
+            # if c.no_of_grader != "all":
+            #     make_group(course, c, t)
+            # else:
+            #     # prepare a custom grouping in case of all
+            make_group_all(course, c, t, group)
 
     url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
     return HttpResponseRedirect(url)
@@ -525,9 +521,9 @@ def do_shuffle_grouping(pk):
             # print ("partition", partition)
             t = [x for x in partition if x != []]
             # print ("t", t, c.homework_name)
-        if c.no_of_grader != "all":
-            make_group(course, c, t)
-        else:
+        # if c.no_of_grader != "all":
+        #     make_group(course, c, t)
+        # else:
             make_group_all(course, c, t, group)
     return True
 
@@ -570,7 +566,7 @@ def do_same_grouping(pk):
             t = [x for x in partition if x != []]
         else:
             # update the number of grader as that of previous group
-            c.no_of_grader = primary_homework.no_of_grader
+            # c.no_of_grader = primary_homework.no_of_grader
             c.no_of_group = primary_homework.no_of_group
             c.save()
             x = {}
@@ -586,10 +582,10 @@ def do_same_grouping(pk):
                 t.append(x[prv_group])
 
         all_members = [e for x in t for e in x]
-        if c.no_of_grader != "all":
-            make_group(course, c, t)
-        else:
-            make_group_all(course, c, t, all_members)
+        # if c.no_of_grader != "all":
+        #     make_group(course, c, t)
+        # else:
+        make_group_all(course, c, t, all_members)
         # since primary group was none we need to make this current homework objects as primary group
         if primary_group is None:
             primary_group = HomeworkGroupMember.objects.filter(
@@ -625,6 +621,9 @@ def make_group_all(course, c, t, all_members):
     for i in temp_group:
         c_m = groups_with_member[i]
         rem_members = list(set(all_members) - set(c_m))
+        print (rem_members, c.no_of_grader)
+        if c.no_of_grader != 'all':
+            rem_members = random.sample(rem_members, int(c.no_of_grader))
         for peer_grader in rem_members:
             temp_group_combination.append(
                 GroupCombinationModel(
@@ -922,7 +921,6 @@ def custom_grouping_new(request, pk):
     t = []
     for c in r:
         t.append(r[c])
-
     print t
     make_group(course, homework, t)
     url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
