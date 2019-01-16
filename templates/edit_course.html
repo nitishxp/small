@@ -650,7 +650,7 @@
         });
 
 
-        $(".delete_btn").on('click', function(){
+        $(document).on('click',".delete_btn", function(){
             var user = $(this).data("user");
             var tr = this;
             $.ajax({
@@ -662,10 +662,16 @@
                        alert('Deleted');
                     }
             })
-        })
+        });
+         var first_tab = $("#myTab").find('li')[0];
+        if (first_tab){
+            console.log("Clicking Tab");
+            $('#myTab li a:first').tab('show');
+        }
     });
 
     function validate(form) {
         return confirm('Are you sure you want to redo grouping?');
     }
+
 </script> {% endblock %}
