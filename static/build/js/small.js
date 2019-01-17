@@ -18,11 +18,11 @@ $("#add_assignments").on('click', function () {
     template += "<tr class='assign_cl'>";
     template += "<td>";
     template += "<label>Assignment " + currentAssignmentLength + " Deadline</label><br>"
-    template += '<input type="datetime-local" name="' + currentAssignmentLength + '___homework_deadline" class="form-control" required>'
+    template += '<input type="text" name="' + currentAssignmentLength + '___homework_deadline" class="form-control datepicker" required>'
     template += '</td>'
     template += '<td>'
     template += '<label>Grading Deadline</label><br>'
-    template += '<input type="datetime-local" name="' + currentAssignmentLength + '___grade_deadline" class="form-control" required>'
+    template += '<input type="text" name="' + currentAssignmentLength + '___grade_deadline" class="form-control datepicker" required>'
     template += '</td>'
     template += '<td>'
     template += '<input type="hidden" name="' + currentAssignmentLength + '___constraints"  value="random" required>'

@@ -128,26 +128,15 @@
                                             <td>
                                                 <label> Assignment {{ c.homework_name }} Deadline </label>
                                                 <br>
-                                                <input type="datetime-local" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'c' }}"
-                                                    class="form-control" required>
+                                                <input type="text" name="{{ c.homework_name }}___homework_deadline" value="{{ c.homework_deadline|date:'m/d/Y H:i A' }}"
+                                                    class="form-control datepicker" required>
                                             </td>
                                             <td>
                                                 <label> Grading Deadline </label>
                                                 <br>
-                                                <input type="datetime-local" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'c' }}" class="form-control"
+                                                <input type="text" name="{{ c.homework_name }}___grade_deadline" value="{{ c.grade_deadline|date:'m/d/Y H:i A' }}" class="form-control datepicker"
                                                     required>
                                             </td>
-                                            <!-- <td>
-                                                <label> Grouping Constraints </label>
-                                                <br>
-                                                <select name="{{ c.homework_name }}___constraints" required>
-                                                    <option value="random" selected> Random Group</option>
-                                                    <option value="similar_schedule"> Group Similar Schedule </option>
-                                                    <option value="similar_commitment_level"> Group Similar Commitment Level </option>
-                                                    <option value="similar_skills"> Group Similar Skills </option>
-                                                    <option value="different_skills"> Group different Skills </option>
-                                                </select>
-                                            </td> -->
                                             <td>
                                                 <input type="hidden" name="{{ c.homework_name }}___constraints" value="random" required>
                                             </td>
@@ -538,8 +527,13 @@
 </script>
 
 <script>
+    $('body').on('focus',".datepicker", function() {
+        $(this).datetimepicker({
+            format: 'MM/DD/YYYY HH:mm A',
+            inline : true
+        });
+    });
     $(document).on('ready', function () {
-
         $('#group_all_grade').DataTable({
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -663,7 +657,7 @@
                     }
             })
         });
-         var first_tab = $("#myTab").find('li')[0];
+        var first_tab = $("#myTab").find('li')[0];
         if (first_tab){
             console.log("Clicking Tab");
             $('#myTab li a:first').tab('show');

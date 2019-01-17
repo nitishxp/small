@@ -4,7 +4,8 @@ import os
 import zipfile
 import StringIO
 from shutil import copyfile
-
+from django.utils.timezone import get_current_timezone
+from datetime import datetime
 from django.shortcuts import render
 from django.http import (
     HttpResponse,
@@ -269,12 +270,18 @@ def edit_course(request, pk):
             data = request.POST[d].strip()
             d = d.split("___")
             if len(d) > 1:
+                if d[1] in ('grade_deadline', 'homework_deadline'):
+                    tz = get_current_timezone()
+                    data = tz.localize(datetime.strptime(data, '%m/%d/%Y %H:%M %p'))
+
                 if d[0] in assignments.keys():
                     assignments[d[0]][d[1]] = data
                 else:
                     assignments[d[0]] = {}
                     assignments[d[0]]['homework_name'] = d[0]
                     assignments[d[0]][d[1]] = data
+
+        print (assignments)
 
         for c in assignments:
             CourseHomeWorkModel.objects.update_or_create(
