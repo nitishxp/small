@@ -530,7 +530,8 @@
     $('body').on('focus',".datepicker", function() {
         $(this).datetimepicker({
             format: 'MM/DD/YYYY HH:mm A',
-            inline : true
+            inline : true,
+            sideBySide: true
         });
     });
     $(document).on('ready', function () {
