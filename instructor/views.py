@@ -426,7 +426,8 @@ def edit_course(request, pk):
 
 
 def chunkIt(seq, num):
-    avg = len(seq) / float(num)
+    # avg = len(seq) / float(num)
+    avg = num
     out = []
     last = 0.0
 
@@ -473,7 +474,7 @@ def re_grouping(request, pk):
                 no_of_student_per_group = c.no_of_group
                 no_of_grader = c.no_of_grader
                 no_of_group = len(group) / c.no_of_group
-                partition = chunkIt(group, no_of_group)
+                partition = chunkIt(group, c.no_of_group)
                 t = [x for x in partition if x != []]
                 counter = counter + 1
             else:
@@ -489,7 +490,7 @@ def re_grouping(request, pk):
         else:
             random.shuffle(group)
             no_of_group = len(group) / c.no_of_group
-            partition = chunkIt(group, no_of_group)
+            partition = chunkIt(group, c.no_of_group)
             t = [x for x in partition if x != []]
             # if c.no_of_grader != "all":
             #     make_group(course, c, t)
@@ -523,7 +524,7 @@ def do_shuffle_grouping(pk):
             # here i can ask emma to provide me the range of students
             # and how many group i want to have
             no_of_group = float(len(group)) / c.no_of_group
-            partition = chunkIt(group, no_of_group)
+            partition = chunkIt(group, c.no_of_group)
             # print ("No Of Group", no_of_group, c.no_of_group,len(group))
             # print ("partition", partition)
             t = [x for x in partition if x != []]
@@ -569,7 +570,7 @@ def do_same_grouping(pk):
         t = []
         if primary_group is None:
             no_of_group = len(group) / c.no_of_group
-            partition = chunkIt(group, no_of_group)
+            partition = chunkIt(group, c.no_of_group)
             t = [x for x in partition if x != []]
         else:
             # update the number of grader as that of previous group
