@@ -470,25 +470,24 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label>No Of Groups</label>
-                            <input type="number" id="no_of_groups_custom" class="form-control" min="1">
+                            <input type="text" id="no_of_groups_custom" class="form-control" readonly="true">
                         </div>
                         <div class="col-md-6">
                             <label>Assignment</label>
-                            <select class="form-control" name="custom_grouping_assignment" required>
-                                <option value="">Select</option>
-                                {% for c in homework %}
-                                    <option value="{{c.id}}">{{ c.assignment_title }}</option>
-                                {% endfor %}
-                            </select>
+                            <input type="text" id="custom_grouping_assignment" class="form-control" readonly="true">
+                            <input type="hidden" id="custom_grouping_assignment_id" name="assignment_id">
                         </div>
                     </div>
                     <hr>
-                        <table class="table">
-                            <tr>
-                                <th>Group</th>
-                                <th>Name</th>
-                            </tr>
-                            {% for c in enrolled_student %}
+                        <table class="table" id="custom_grouping_table">
+                            <thead>
+                                <tr>
+                                    <th>Group</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for c in enrolled_student %}
                                 <tr>
                                     <td>
                                         <select class="id_custom form-control" name="custom_group_student__{{c.user.id}}" data-value="{{c.user.id}}">
@@ -497,10 +496,12 @@
                                     </td>
                                     <td>{{ c.user.name }}</td>
                                 </tr>
-                        {% endfor %}
+                                {% endfor %}
+                            </tbody>
                         </table>
-
                 </div>
+                <br/>
+                <br/>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <input type="submit" class="btn btn-primary" value="Save changes" >
@@ -510,23 +511,6 @@
     </div>
 </div>
 <script>
-    $("#no_of_groups_custom").on('change', function () {
-        var c = $(this).val();
-        var option = "";
-        if (c < 1){
-            return false
-        }
-        for (let i = 1 ; i <= c ; i ++){
-            option += "<option>"+i+"</option>";
-        }
-        console.log(option);
-        $(".id_custom").each( function () {
-            $(this).html(option);
-        })
-    })
-</script>
-
-<script>
     $('body').on('focus',".datepicker", function() {
         $(this).datetimepicker({
             format: 'MM/DD/YYYY HH:mm A',
@@ -534,6 +518,7 @@
             sideBySide: true
         });
     });
+
     $(document).on('ready', function () {
         $('#group_all_grade').DataTable({
             buttons: [
@@ -554,6 +539,46 @@
                             console.log(e,dt,node,config);
                             window.location = 'download_all_homework/{{ key }}/'
                         }
+                    },
+                    {
+                        text: 'Custom Grouping',
+                        action: function ( e, dt, node, config ) {
+                            $.ajax({
+                                url : "fetch_homework_group_members/{{ key }}/",
+                                success: function(result){
+
+                                    // set the no_of_group
+                                    var no_of_group = result.no_of_group
+                                    var assignment_name = result.assignment_title
+                                    var assignment_id = result.assignment_id
+
+                                    $("#custom_grouping_assignment").val(assignment_name)
+                                    $("#no_of_groups_custom").val(no_of_group)
+                                    $("#custom_grouping_assignment_id").val(assignment_id)
+                                    var option = "";
+                                    if (no_of_group < 1){
+                                        return false
+                                    }
+                                    for (let i = 1 ; i <= no_of_group ; i ++){
+                                        option += "<option>"+i+"</option>";
+                                    }
+                                    $(".id_custom").each( function () {
+                                        $(this).html(option);
+                                    })
+
+
+                                    // show the modal
+                                    $('#custom_grouping_table').DataTable({
+                                        buttons: [],
+                                        bRetrieve: true,
+                                        dom: "Bfrtip",
+                                        fndestroy: true
+                                    });
+
+                                    $("#custom_grouping").modal('show')
+                                }
+                            })
+                        }
                     }
                 ],
                 bRetrieve: true,
@@ -561,30 +586,6 @@
                 bScrollCollapse : true,
             });
         {% endfor %}
-
-        // function myCallbackFunction(updatedCell, updatedRow, oldValue) {
-        //     if (updatedCell.data() != "NA" || updatedCell.data()){
-        //         console.log("FIre ajax to db");
-        //         data = updatedRow.data();
-        //         console.log(data);
-        //         if (!confirm("Are u sure u want to edit")){
-        //             return
-        //         }
-        //         if (data[7] === "")
-        //         {
-        //             return;
-        //         }
-        //         data[7] = data[7].replace("<p>","");
-        //         data[7] = data[7].replace("</p>","").trim();
-        //         data[8] = data[8].replace("<p>","");
-        //         data[8] = data[8].replace("</p>","").trim();
-        //         $.ajax({
-        //             url : "override/",
-        //             method : 'POST',
-        //             data : {'explanation':data[8],'id':data[0]},
-        //         })
-        //     }
-        // }
 
         $('.instructor_override_explanation').on('focusout', function() {
           let id = $(this).data('group');

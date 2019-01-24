@@ -920,14 +920,23 @@ def download_all_assignments_of_homework(request, pk, name):
     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
     return resp
 
+def fetch_homework_group_members(request,pk,name):
+    homework_obj = CourseHomeWorkModel.objects.get(id=name)
+    result = {}
+    result['no_of_group'] = homework_obj.no_of_group
+    result['assignment_title'] = homework_obj.assignment_title
+    result['assignment_id'] = name
+    return JsonResponse(result)
+
 
 def custom_grouping_new(request, pk):
-    homework = request.POST['custom_grouping_assignment']
+    homework = request.POST['assignment_id']
     homework = CourseHomeWorkModel.objects.filter(pk=homework).first()
     course = CourseModel.objects.get(pk=pk)
     r = {}
+    print(request.POST)
     for c in request.POST.keys():
-        if c == "csrfmiddlewaretoken" or c == "custom_grouping_assignment":
+        if c == "csrfmiddlewaretoken" or c == "assignment_id":
             continue
         gp = request.POST[c]
         if gp not in r.keys():
