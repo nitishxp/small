@@ -950,8 +950,12 @@ def custom_grouping_new(request, pk):
         if gp not in r.keys():
             r[gp] = []
         r[gp].append(c.split("__")[1])
+
+    a = r.keys()
+    a.sort()
+    print("Stored Group",a)
     t = []
-    for c in r:
+    for c in a:
         t.append(r[c])
     print t
     make_group(course, homework, t)
