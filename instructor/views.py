@@ -922,10 +922,18 @@ def download_all_assignments_of_homework(request, pk, name):
 
 def fetch_homework_group_members(request,pk,name):
     homework_obj = CourseHomeWorkModel.objects.get(id=name)
-    result = {}
-    result['no_of_group'] = homework_obj.no_of_group
+    result = {}   
     result['assignment_title'] = homework_obj.assignment_title
     result['assignment_id'] = name
+    # fetch the group_members of the designated group
+    homework_member = HomeworkGroupMember.objects.filter(group__homework=homework_obj).order_by('group__group_name').values_list('user','group__group_name')
+    members = {}
+    for c in homework_member:
+        if c[1] not in members.keys():
+            members[c[1]] = []
+        members[c[1]].append(c[0])
+    result['no_of_group'] = len(members)
+    result['members'] = members
     return JsonResponse(result)
 
 

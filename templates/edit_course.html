@@ -484,6 +484,7 @@
                                 <tr>
                                     <th>Group</th>
                                     <th>Name</th>
+                                    <!-- <th> User Id</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -495,6 +496,7 @@
                                         </select>
                                     </td>
                                     <td>{{ c.user.name }}</td>
+                                    <!-- <td> {{ c.user.id }} </td> -->
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -520,6 +522,7 @@
     });
 
     $(document).on('ready', function () {
+
         $('#group_all_grade').DataTable({
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
@@ -536,13 +539,13 @@
                      'csv', 'pdf', 'print',{
                         text: 'Download Homework',
                         action: function ( e, dt, node, config ) {
-                            console.log(e,dt,node,config);
                             window.location = 'download_all_homework/{{ key }}/'
                         }
                     },
                     {
                         text: 'Custom Grouping',
                         action: function ( e, dt, node, config ) {
+                            console.log("Populating Option");
                             $.ajax({
                                 url : "fetch_homework_group_members/{{ key }}/",
                                 success: function(result){
@@ -559,21 +562,35 @@
                                     if (no_of_group < 1){
                                         return false
                                     }
+                                    console.log("Populating Option");
+
                                     for (let i = 1 ; i <= no_of_group ; i ++){
-                                        option += "<option>"+i+"</option>";
+                                        option += '<option value="'+i+'">'+i+'</option>';
                                     }
+
                                     $(".id_custom").each( function () {
                                         $(this).html(option);
-                                    })
+                                    });
 
+                                    console.log(result);
+                                    for (let c in result.members){
+                                        // c is the group id
+                                        for (let u in result.members[c]){
+                                            userId = result.members[c][u];
+                                            var sel = '[name="custom_group_student__'+userId+'"] option[value="'+c+'"]';
+                                            console.log(sel);
+                                            $(sel).attr("selected", "selected");
+                                        }
+                                        console.log(c,result.members[c])
+                                    }
 
                                     // show the modal
-                                    $('#custom_grouping_table').DataTable({
-                                        buttons: [],
-                                        bRetrieve: true,
-                                        dom: "Bfrtip",
-                                        fndestroy: true
-                                    });
+                                    // $('#custom_grouping_table').DataTable({
+                                    //     buttons: [],
+                                    //     bRetrieve: true,
+                                    //     dom: "Bfrtip",
+                                    //     fndestroy: true
+                                    // });
 
                                     $("#custom_grouping").modal('show')
                                 }
