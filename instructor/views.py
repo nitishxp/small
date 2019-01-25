@@ -417,7 +417,7 @@ def edit_course(request, pk):
         request, 'edit_course.html', {
             'course': course,
             'homework': homework,
-            'enrolled_student': enrolled_student,
+            'enrolled_student': enrolled_student.order_by("user__name"),
             'course_pk': pk,
             'all_grades': all_grades,
             'group_grades': group_grades_sort,
