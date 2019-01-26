@@ -185,6 +185,7 @@
                                 <table class="table">
                                     <tr>
                                         <th>Assignment</th>
+                                        <th>Group Id</th>
                                         <th>Group Member</th>
                                         <th>HW Deadline</th>
                                         <th>Grading Deadline</th>
@@ -195,6 +196,7 @@
                                     {% for c in homework %}
                                     <tr>
                                         <td style="color: blue;cursor: grab;" data-toggle="modal" data-target="#{{c.group_id}}">{{ c.homework_title }}</td>
+                                        <td> {{ c.group_name }} </td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.deadline }}</td>
                                         <td>{{ c.grade_deadline }}</td>

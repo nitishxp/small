@@ -235,6 +235,7 @@ def student_course(request, course_id):
         t['deadline_miss'] = group_details.deadline_miss
         t['appeal_reject_status'] = group_details.appeal_reject_status
         t['appeal_done_status'] = group_details.appeal_done_status
+        t['group_name'] = group_details.group_name
         appeal_grade, appeal_explanation = return_appeal_grade_explanation(
             group)
         t['appeal_grade'] = appeal_grade
@@ -401,6 +402,7 @@ def student_course(request, course_id):
     late_group_obj = HomeworkGroup.objects.filter(
         group__in=users_group, deadline_miss=True).select_related('homework').order_by(
         "homework__homework_name")
+
 
     for c in late_group_obj:
         t = {}
