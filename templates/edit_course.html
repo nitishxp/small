@@ -532,7 +532,8 @@
         });
 
         {% for key , values in group_grades.items %}
-            var datatable{{key}} = $('#table{{key}}').DataTable({
+            try {
+                var datatable{{key}} = $('#table{{key}}').DataTable({
              "aoColumnDefs": [{ "bVisible": false, "aTargets": [] }],
 
                 buttons: [
@@ -602,6 +603,9 @@
                 dom: "Bfrtip",
                 bScrollCollapse : true,
             });
+            }catch(e){
+                console.log(e)
+            }
         {% endfor %}
 
         $('.instructor_override_explanation').on('focusout', function() {
