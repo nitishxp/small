@@ -60,6 +60,7 @@ def change_password(request):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
+
 @login_required(login_url='/')
 def enroll(request):
     if request.method == "POST":
@@ -118,11 +119,13 @@ def enroll(request):
 def return_member_name(group_id):
     name_obj = HomeworkGroupMember.objects.filter(
         group=HomeworkGroup.objects.get(
-            group=group_id)).select_related('group')
+            group=group_id)).select_related('user')
     name = []
+    email = []
     for c in name_obj:
         name.append(c.user.name)
-    return ", ".join(name)
+        email.append(c.user.username)
+    return ",".join(name),",".join(email)
 
 
 def return_grade_explanation(group_id):
@@ -217,11 +220,13 @@ def student_course(request, course_id):
         group_details = HomeworkGroup.objects.get(group=group)
         users_group.append(group_details.group)
         grade, explanation = return_grade_explanation(group)
+        member_name,member_email = return_member_name(group)
         t = {}
         t['assignment_name'] = group_details.homework.homework_name
         t['homework_title'] = group_details.homework.assignment_title
         t['attachment'] = group_details.attachment
-        t['members'] = return_member_name(group)
+        t['members'] = member_name
+        t['members_email'] = member_email
         t['deadline'] = group_details.homework.homework_deadline
         t['grade_deadline'] = group_details.homework.grade_deadline
         t['explanation'] = explanation

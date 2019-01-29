@@ -374,7 +374,7 @@ def edit_course(request, pk):
             instructor_grade, instructor_comment = return_instructor_grade_comment(group.group)
             temp = {}
             temp['id'] = group.group
-            temp['group'] = return_member_name(group.group)
+            temp['group'] = return_member_name(group.group)[0]
             temp['grader'] = grade_explanation[2]
             temp['grade'] = grade_explanation[0]
             temp['explanation'] = grade_explanation[1]
