@@ -318,8 +318,8 @@
                                                         <td>{{ v.appeal_grade }}</td>
                                                         <td>{{ v.appeal_explanation.strip }}</td>
                                                         <td>
-                                                            <select class="form-control instructor_override" data-group="{{ v.id }}" >
-                                                                <option value=""> Select </option>
+                                                            <select class="form-control instructor_override" data-group="{{ v.id }}" data-default-value="{{ v.instructor_grade }}" >
+                                                                <option value="" {% if v.instructor_grade is None or v.instructor_grade == '' %} selected {% endif %} > Select {{v.instructor_grade}} </option>
                                                                 <option value="A"  {% if v.instructor_grade == "A" %}   selected {% endif %}> A</option>
                                                                 <option value="A-" {% if v.instructor_grade == "A-" %}  selected {% endif %}> A-</option>
                                                                 <option value="B+" {% if v.instructor_grade == "B+" %}  selected {% endif %}> B+</option>
@@ -623,16 +623,26 @@
 
         $(document).on("change",".instructor_override",function () {
             if (!confirm("Are u sure u want to edit")){
-                    return false;
+                $(this).val($(this).data('default-value'));
+                return false;   
             }
             let id = $(this).data('group');
             let grade = $(this).val();
+            var element = this
             $.ajax({
                 url : "override/",
                 method : 'POST',
                 data : {'grade':grade,'id':id },
                 success : function (result) {
                     alert('Updated');
+                    $(element).attr('data-default-value',grade);
+                    // $(element).find('option').each(function(){
+                    //     console.log($(this).val(),grade)
+                    //     if($(this).val() == grade){
+                    //         console.log("Selecting");
+                    //         $(this).attr('selected','selected');
+                    //     }
+                    // })
                 }
             })
         });

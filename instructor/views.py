@@ -223,7 +223,7 @@ def return_grade_explanation(group_id):
         explanation[index] = c.explanation
 
     if len(grader) > 0:
-        return "\n".join(grade), "\n".join(explanation), ",".join(grader)
+        return "\n".join(grade), "\n".join(explanation), ",\n".join(grader)
 
     return "", "", ""
 

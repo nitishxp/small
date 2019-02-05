@@ -1,5 +1,11 @@
 {% extends "website/_base.html" %} {% block main_content %}
 {% load filter %}
+<style type="text/css">
+    .click_assignment{
+        color: blue;
+        border-bottom: 1px solid blue;
+    }
+</style>
 <div class="x_content">
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
@@ -90,7 +96,7 @@
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td data-toggle="modal" data-target="#{{c.group_id}}">{{ c.homework_title }}</td>
+                                        <td><a data-toggle="modal" data-target="#{{c.group_id}}" style="cursor: pointer;" class="click_assignment">{{ c.homework_title }} </a></td>
                                         <td>{% if c.uploads %} &#x2713;  {% else %} &#x2717; {% endif %}</td>
                                         <td>{{c.grade | grade_alphabet }} </td>
                                         {% if c.appeal_reject_status and not c.is_override %}
@@ -196,7 +202,7 @@
                                     </tr>
                                     {% for c in homework %}
                                     <tr>
-                                        <td style="color: blue;cursor: grab;" data-toggle="modal" data-target="#{{c.group_id}}">{{ c.homework_title }}</td>
+                                        <td> <a style="cursor: pointer;" data-toggle="modal" data-target="#{{c.group_id}}" class="click_assignment">{{ c.homework_title }} </a></td>
                                         <td> {{ c.group_name }} </td>
                                         <td>{{ c.members|linebreaks }}</td>
                                         <td>{{ c.members_email|linebreaks }}</td>

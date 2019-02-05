@@ -125,7 +125,7 @@ def return_member_name(group_id):
     for c in name_obj:
         name.append(c.user.name)
         email.append(c.user.username)
-    return ",".join(name),",".join(email)
+    return ",\n".join(name),",\n".join(email)
 
 
 def return_grade_explanation(group_id):
