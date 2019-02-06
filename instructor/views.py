@@ -48,7 +48,7 @@ from django.db.models import Avg
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models.query import QuerySet
 from grade.settings import BASE_DIR
-
+from utils import instructor_ta_only
 
 @login_required(login_url='/')
 def index(request):
@@ -253,6 +253,7 @@ def return_instructor_grade_comment(group_id):
 
 
 @login_required(login_url='/')
+@instructor_ta_only
 def edit_course(request, pk):
     if request.method == "POST":
 
