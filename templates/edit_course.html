@@ -9,7 +9,7 @@
                 </a>
             </li>
             <li>
-                <a href="#student_enrollment" class="selected timeline">
+                <a href="#student_enrollment" class="selected timeline student_enrollment">
                     <span class="step_no">Enrollment</span>
                 </a>
             </li>
@@ -212,6 +212,30 @@
                                         <div class="col-md-4 col-sm-3 col-xs-12"></div>
                                         <div class="col-md-6 col-sm-6 col-xs-12">
                                             <input type="submit" value="Upload" class="btn btn-primary">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> TA </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form action="{% url 'instructor__ta_assign' course_pk %}" method="POST" enctype="multipart/form-data" class="form-horizontal form-label-left">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="course_id">Enter Email
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="email" class="form-control col-md-7 col-xs-12" required="True" name="email" value="{{ ta.user.username }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4 col-sm-3 col-xs-12"></div>
+                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                            <input type="submit" value="Share Authorization" class="btn btn-primary">
                                         </div>
                                     </div>
                                 </form>

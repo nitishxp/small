@@ -2,6 +2,13 @@
 <div class="x_content">
     <div class="form_wizard wizard_verticle">
         <ul class="list-unstyled wizard_steps anchor">
+            {% if ta %}
+            <li>
+                <a href="#ta" class="selected timeline">
+                    <span class="step_no">TA</span>
+                </a>
+            </li>
+            {% endif %}
             <li>
                 <a href="#course_list" class="selected timeline">
                     <span class="step_no">List Course</span>
@@ -14,6 +21,38 @@
             </li>
         </ul>
         <div class="stepContainer">
+            <div id="ta" class="content" style="display: none">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2> List Course</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <table class="table table-border">
+                                    <tr>
+                                        <th>
+                                            Course Name
+                                        </th>
+                                        <th>
+                                            Course Id
+                                        </th>
+                                    </tr>
+                                    {% for c in ta %}
+                                    <tr>
+                                        <td> {{ c.course.course_name }} </td>
+                                        <td>
+                                            <a href="{% url 'instructor__edit_course' c.course.id %}" class="btn btn-download"> Goto Course </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="profile" class="content" style="display: none">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">

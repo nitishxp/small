@@ -165,3 +165,10 @@ class InstructorGradeOverRide(models.Model):
 
     class Meta:
         db_table = "instructor_overwrite"
+
+
+class TA(models.Model):
+    user = models.ForeignKey(UserModel)
+    course = models.ForeignKey(CourseModel)
+    class Meta:
+        db_table = 'ta_master'

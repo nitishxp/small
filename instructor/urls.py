@@ -52,4 +52,7 @@ urlpatterns = [
     url(r'course/(?P<pk>[0-9]+)/custom_grouping/$',
         custom_grouping_new,
         name="instructor__custom_grouping_new"),
+    url(r'instructor__ta_assign/(?P<pk>[0-9]+)/$',
+        ta_assign,
+        name="instructor__ta_assign"),
 ]

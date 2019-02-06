@@ -22,6 +22,7 @@ from models import (
     AppealGraderModel,
     PeerEvaluationModel,
     InstructorGradeOverRide,
+    TA,
 )
 from constraints.models import Constraints
 from grade.settings import BASE_DIR
@@ -421,7 +422,8 @@ def edit_course(request, pk):
             'course_pk': pk,
             'all_grades': all_grades,
             'group_grades': group_grades_sort,
-            'first_grader_grading': first_grader_grading
+            'first_grader_grading': first_grader_grading,
+            'ta': TA.objects.filter(course=course).first()
         })
 
 
@@ -960,4 +962,24 @@ def custom_grouping_new(request, pk):
     print t
     make_group(course, homework, t)
     url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
+    return HttpResponseRedirect(url)
+
+
+def ta_assign(request,pk):
+    email = request.POST['email']
+
+    # first find the given email is crated or not
+    user = UserModel.objects.filter(username=email).first()
+    if not user:
+        # create a new user and assign the course
+        user = UserModel.objects.create_user(
+                username=email, name=email)
+        user.set_password(email)
+        user.save()
+
+    TA.objects.update_or_create(course=CourseModel.objects.get(pk=pk),defaults={
+        'user':user
+        })
+
+    url = request.META.get('HTTP_REFERER', '/') + '#tab=student_enrollment'
     return HttpResponseRedirect(url)

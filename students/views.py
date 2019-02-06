@@ -21,6 +21,7 @@ from instructor.models import (
     AppealGraderModel,
     PeerEvaluationModel,
     InstructorGradeOverRide,
+    TA,
 )
 from grade.settings import BASE_DIR
 from django.db.models import Avg
@@ -35,9 +36,11 @@ from django.utils import timezone
 @login_required(login_url='/')
 def index(request):
     student_course = StudentCourseModel.objects.filter(user=request.user)
+    ta = TA.objects.filter(user=request.user)
     return render(request, 'student.html', {
         'student_course': student_course,
-        'user': request.user
+        'user': request.user,
+        'ta': ta
     })
 
 
