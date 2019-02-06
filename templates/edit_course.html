@@ -335,7 +335,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <textarea class="instructor_override_explanation" data-group="{{ v.id }}">{{ v.instructor_comment.strip }}</textarea>
+                                                            <textarea class="instructor_override_explanation" data-group="{{ v.id }}" data-default-value="{{ v.instructor_comment.strip }}">{{ v.instructor_comment.strip }}</textarea>
                                                         </td>
                                                     </tr>
                                                     {% endfor %}
@@ -608,18 +608,26 @@
             }
         {% endfor %}
 
-        $('.instructor_override_explanation').on('focusout', function() {
-          let id = $(this).data('group');
-          let explanation = $(this).val();
-          console.log(explanation);
-          $.ajax({
-                url : "override/",
-                method : 'POST',
-                data : {'explanation':explanation,'id':id },
-                success : function (result) {
-                }
-            })
-        });
+        setInterval(function(){ 
+            $('.instructor_override_explanation').each(function(){
+                var element = this
+                let odata = $(this).attr('data-default-value').trim();
+                let id = $(this).data('group');
+                let explanation = $(this).val().trim();
+                if (odata != explanation) {           
+                    console.log(odata, explanation, odata==explanation);
+                    $.ajax({
+                        url : "override/",
+                        method : 'POST',
+                        data : {'explanation':explanation,'id':id },
+                        success : function (result) {
+                                console.log("Setting value",explanation);
+                                $(element).attr('data-default-value',explanation);
+                            }
+                        })
+                    }
+                });
+        },2000);
 
         $(document).on("change",".instructor_override",function () {
             if (!confirm("Are u sure u want to edit")){
