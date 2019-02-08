@@ -553,6 +553,7 @@
             ],
             bRetrieve: true,
             dom: "Bfrtip",
+            fndestroy:true
         });
 
         {% for key , values in group_grades.items %}
@@ -735,30 +736,25 @@
     }
 
     // group edit
-    $(".group_id_edit").on('click',function(){
+    var timeout;
+    $(".group_id_edit").on('click keyup',function(){
+        let element = this;
+        let id = $(this).data('group');
+        let name = $(this).val().trim();
         $('.group_id_edit').attr('readonly',true);
         $(this).attr('readonly',false);
-    })
+        clearTimeout(timeout);
+        timeout = setTimeout(function(){ 
+                $.ajax({
+                    url : "override_group_name/",
+                    method : 'POST',
+                    data : {'name':name,'id':id },
+                    success : function (result) {
+                            console.log("Setting value",name);
+                    }   
+                })
+        },1000);
 
-    setInterval(function(){ 
-            $('.group_id_edit').each(function(){
-                var element = this
-                let odata = $(this).attr('data-value').trim();
-                let id = $(this).data('group');
-                let newData = $(this).val().trim();
-                if (odata != newData) {           
-                    console.log(odata, newData, odata==newData);
-                    $.ajax({
-                        url : "override_group_name/",
-                        method : 'POST',
-                        data : {'name':newData,'id':id },
-                        success : function (result) {
-                                console.log("Setting value",newData);
-                                $(element).attr('data-value',newData);
-                            }
-                    })
-                }
-            });
-    },2000);
+    })
 
 </script> {% endblock %}
