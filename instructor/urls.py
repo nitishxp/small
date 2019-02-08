@@ -55,4 +55,7 @@ urlpatterns = [
     url(r'instructor__ta_assign/(?P<pk>[0-9]+)/$',
         ta_assign,
         name="instructor__ta_assign"),
+    url(r'course/(?P<pk>[0-9]+)/override_group_name/$',
+        override_group_name,
+        name="instructor__override_group_name"),
 ]

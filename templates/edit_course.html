@@ -311,7 +311,7 @@
                                                 <tbody>
                                                     {% for v in values.value %}
                                                     <tr>
-                                                        <td>{{ v.group_id }}</td>
+                                                        <td><input type="text" class="form-control group_id_edit" style="width: 100px" value="{{ v.group_id }}" readonly="true" data-group="{{ v.id }}" data-value="{{ v.group_id }}"></td>
                                                         <td>{{ v.group|linebreaks }}</td>
                                                         <td>{{ v.grader|linebreaks }}</td>
                                                         <td>
@@ -576,21 +576,21 @@
                                 success: function(result){
 
                                     // set the no_of_group
-                                    var no_of_group = result.no_of_group
+                                    var group_names = result.group_names
                                     var assignment_name = result.assignment_title
                                     var assignment_id = result.assignment_id
 
                                     $("#custom_grouping_assignment").val(assignment_name)
-                                    $("#no_of_groups_custom").val(no_of_group)
+                                    $("#no_of_groups_custom").val(group_names.length)
                                     $("#custom_grouping_assignment_id").val(assignment_id)
                                     var option = "";
-                                    if (no_of_group < 1){
+                                    if (group_names < 1){
                                         return false
                                     }
                                     console.log("Populating Option");
 
-                                    for (let i = 1 ; i <= no_of_group ; i ++){
-                                        option += '<option value="'+i+'">'+i+'</option>';
+                                    for (let i = 0 ; i < group_names.length ; i++ ){
+                                        option += '<option value="'+group_names[i]+'">'+group_names[i]+'</option>';
                                     }
 
                                     $(".id_custom").each( function () {
@@ -632,6 +632,7 @@
             }
         {% endfor %}
 
+        // saving the instructor comments
         setInterval(function(){ 
             $('.instructor_override_explanation').each(function(){
                 var element = this
@@ -654,7 +655,7 @@
         },2000);
 
         $(document).on("change",".instructor_override",function () {
-            if (!confirm("Are u sure u want to edit")){
+            if (!confirm("Are you sure you want to edit")){
                 $(this).val($(this).data('default-value'));
                 return false;   
             }
@@ -732,5 +733,32 @@
     function validate(form) {
         return confirm('Are you sure you want to redo grouping?');
     }
+
+    // group edit
+    $(".group_id_edit").on('click',function(){
+        $('.group_id_edit').attr('readonly',true);
+        $(this).attr('readonly',false);
+    })
+
+    setInterval(function(){ 
+            $('.group_id_edit').each(function(){
+                var element = this
+                let odata = $(this).attr('data-value').trim();
+                let id = $(this).data('group');
+                let newData = $(this).val().trim();
+                if (odata != newData) {           
+                    console.log(odata, newData, odata==newData);
+                    $.ajax({
+                        url : "override_group_name/",
+                        method : 'POST',
+                        data : {'name':newData,'id':id },
+                        success : function (result) {
+                                console.log("Setting value",newData);
+                                $(element).attr('data-value',newData);
+                            }
+                    })
+                }
+            });
+    },2000);
 
 </script> {% endblock %}

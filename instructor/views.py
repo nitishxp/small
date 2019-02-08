@@ -484,7 +484,7 @@ def re_grouping(request, pk):
                 # update the number of grader as that of previous group
                 c.no_of_group = no_of_student_per_group
                 c.save()
-            random.shuffle(t)
+            # random.shuffle(t)
             # if c.no_of_grader != "all":
             #     make_group(course, c, t)
             # else:
@@ -571,6 +571,7 @@ def do_same_grouping(pk):
 
         # check if there any group exists to replicate it or do reshuffling
         t = []
+        group_names = None
         if primary_group is None:
             no_of_group = len(group) / c.no_of_group
             partition = chunkIt(group, c.no_of_group)
@@ -583,46 +584,52 @@ def do_same_grouping(pk):
             x = {}
             for pggg in primary_group:
                 user = pggg.user.id
-                group = pggg.group.group
+                group = pggg.group.group_name
                 if group in x.keys():
                     x[group].append(user)
                 else:
                     x[group] = []
                     x[group].append(user)
-            for prv_group in x:
+            group_names = x.keys()
+            group_names.sort()
+            for prv_group in group_names:
                 t.append(x[prv_group])
 
         all_members = [e for x in t for e in x]
         # if c.no_of_grader != "all":
         #     make_group(course, c, t)
         # else:
-        make_group_all(course, c, t, all_members)
+        make_group_all(course, c, t, all_members, group_names)
         # since primary group was none we need to make this current homework objects as primary group
         if primary_group is None:
             primary_group = HomeworkGroupMember.objects.filter(
                 group__course=course, group__homework=c)
+            primary_homework = c
 
 
-def make_group_all(course, c, t, all_members):
+def make_group_all(course, c, t, all_members, group_names=None):
     groups_with_member = {}
     HomeworkGroup.objects.filter(homework=c, course=course).delete()
-    group_name = 1
-    for g in t:
-        if len(g) > 0:
+    for g in range(0,len(t)):
+        if len(t[g]) > 0:
             import uuid
             group_id = uuid.uuid1().hex
             # create group id
+            if group_names:
+                group_name = group_names[g]
+            else:
+                group_name = g + 1
             group_obj = HomeworkGroup.objects.create(
-                homework=c, course=course, group=group_id, total_member=len(g), group_name=group_name)
+                homework=c, course=course, group=group_id, total_member=len(t[g]), group_name=group_name)
+            
             # now insert group member to the group
-            group_name = group_name + 1
             temp_member_create = []
-            for m in g:
+            for m in t[g]:
                 temp_member_create.append(
                     HomeworkGroupMember(
                         user=UserModel.objects.get(pk=m), group=group_obj))
             HomeworkGroupMember.objects.bulk_create(temp_member_create)
-            groups_with_member[group_id] = g
+            groups_with_member[group_id] = t[g]
 
     temp_group = []
     for g in groups_with_member:
@@ -646,76 +653,76 @@ def make_group_all(course, c, t, all_members):
     GroupCombinationModel.objects.bulk_create(temp_group_combination)
 
 
-def make_group(course, c, t):
-    groups_with_random_grader = {}
-    HomeworkGroup.objects.filter(homework=c, course=course).delete()
-    group_name = 1
-    for g in t:
-        if len(g) > 0:
-            import uuid
-            group_id = uuid.uuid1().hex
-            # create group id
-            group_obj = HomeworkGroup.objects.create(
-                homework=c, course=course, group=group_id, total_member=len(g), group_name=group_name)
-            # now insert group member to the group
-            group_name = group_name + 1
-            temp_member_create = []
-            for m in g:
-                temp_member_create.append(
-                    HomeworkGroupMember(
-                        user=UserModel.objects.get(pk=m), group=group_obj))
-            HomeworkGroupMember.objects.bulk_create(temp_member_create)
-            no_of_grader = c.no_of_grader
-            if no_of_grader != "all":
-                no_of_grader = int(no_of_grader)
-                if no_of_grader > len(g):
-                    no_of_grader = len(g)
-            print (g, no_of_grader)
-            groups_with_random_grader[group_id] = random.sample(
-                g, no_of_grader)
+# def make_group(course, c, t):
+#     groups_with_random_grader = {}
+#     HomeworkGroup.objects.filter(homework=c, course=course).delete()
+#     group_name = 1
+#     for g in t:
+#         if len(g) > 0:
+#             import uuid
+#             group_id = uuid.uuid1().hex
+#             # create group id
+#             group_obj = HomeworkGroup.objects.create(
+#                 homework=c, course=course, group=group_id, total_member=len(g), group_name=group_name)
+#             # now insert group member to the group
+#             group_name = group_name + 1
+#             temp_member_create = []
+#             for m in g:
+#                 temp_member_create.append(
+#                     HomeworkGroupMember(
+#                         user=UserModel.objects.get(pk=m), group=group_obj))
+#             HomeworkGroupMember.objects.bulk_create(temp_member_create)
+#             no_of_grader = c.no_of_grader
+#             if no_of_grader != "all":
+#                 no_of_grader = int(no_of_grader)
+#                 if no_of_grader > len(g):
+#                     no_of_grader = len(g)
+#             print (g, no_of_grader)
+#             groups_with_random_grader[group_id] = random.sample(
+#                 g, no_of_grader)
 
-    # print groups_with_random_grader
-    # return JsonResponse(groups_with_random_grader, safe=False)
-    # now its time to iterate the group with random grader
-    # in order to make the group_id list so that
-    # we can make a permutations to the group id
-    # print ("groups_with_random_grader", groups_with_random_grader)
-    temp_group = []
-    for g in groups_with_random_grader:
-        temp_group.append(g)
-    temp_group_combination = []
-    for i in range(len(temp_group)):
-        pg = list()
-        pg.append((temp_group * 2)[i:i + 2][0])
-        pg.append((temp_group * 2)[i:i + 2][1])
-        for peer_grader in groups_with_random_grader[pg[1]]:
-            temp_group_combination.append(
-                GroupCombinationModel(
-                    homework=c,
-                    course=course,
-                    group=HomeworkGroup.objects.get(group=pg[0]),
-                    grader_group=HomeworkGroup.objects.get(group=pg[1]),
-                    grader_user=UserModel.objects.get(pk=peer_grader)))
-    GroupCombinationModel.objects.bulk_create(temp_group_combination)
+#     # print groups_with_random_grader
+#     # return JsonResponse(groups_with_random_grader, safe=False)
+#     # now its time to iterate the group with random grader
+#     # in order to make the group_id list so that
+#     # we can make a permutations to the group id
+#     # print ("groups_with_random_grader", groups_with_random_grader)
+#     temp_group = []
+#     for g in groups_with_random_grader:
+#         temp_group.append(g)
+#     temp_group_combination = []
+#     for i in range(len(temp_group)):
+#         pg = list()
+#         pg.append((temp_group * 2)[i:i + 2][0])
+#         pg.append((temp_group * 2)[i:i + 2][1])
+#         for peer_grader in groups_with_random_grader[pg[1]]:
+#             temp_group_combination.append(
+#                 GroupCombinationModel(
+#                     homework=c,
+#                     course=course,
+#                     group=HomeworkGroup.objects.get(group=pg[0]),
+#                     grader_group=HomeworkGroup.objects.get(group=pg[1]),
+#                     grader_user=UserModel.objects.get(pk=peer_grader)))
+#     GroupCombinationModel.objects.bulk_create(temp_group_combination)
 
-    # print groups_with_random_grader
-    # select a default entry for each group
-    # ie if select A-B then delete B-A
-    for g in groups_with_random_grader:
-        # select A-B
-        current_group = GroupCombinationModel.objects.filter(group=g).first()
-        if current_group:
-            # delete B-A
-            current_group_grader_group = current_group.grader_group.group
-            GroupCombinationModel.objects.filter(
-                group=current_group_grader_group, grader_group=g).delete()
-            group = current_group.group.group
-            grader_group = current_group.grader_group.group
-            # now set all A-B active = True because of different grader
-            GroupCombinationModel.objects.filter(
-                group=group, grader_group=grader_group).update(
-                active=True, is_used=True)
-    GroupCombinationModel.objects.filter(active=False).delete()
+#     # print groups_with_random_grader
+#     # select a default entry for each group
+#     # ie if select A-B then delete B-A
+#     for g in groups_with_random_grader:
+#         # select A-B
+#         current_group = GroupCombinationModel.objects.filter(group=g).first()
+#         if current_group:
+#             # delete B-A
+#             current_group_grader_group = current_group.grader_group.group
+#             GroupCombinationModel.objects.filter(
+#                 group=current_group_grader_group, grader_group=g).delete()
+#             group = current_group.group.group
+#             grader_group = current_group.grader_group.group
+#             # now set all A-B active = True because of different grader
+#             GroupCombinationModel.objects.filter(
+#                 group=group, grader_group=grader_group).update(
+#                 active=True, is_used=True)
+#     GroupCombinationModel.objects.filter(active=False).delete()
 
 
 @login_required(login_url='/')
@@ -935,7 +942,9 @@ def fetch_homework_group_members(request,pk,name):
         if c[1] not in members.keys():
             members[c[1]] = []
         members[c[1]].append(c[0])
-    result['no_of_group'] = len(members)
+    group_names = members.keys()
+    group_names.sort()
+    result['group_names'] = group_names
     result['members'] = members
     return JsonResponse(result)
 
@@ -960,8 +969,10 @@ def custom_grouping_new(request, pk):
     t = []
     for c in a:
         t.append(r[c])
-    print t
-    make_group(course, homework, t)
+    all_members = [e for x in t for e in x]
+    # print(all_members)
+    print("Group Names",a)
+    make_group_all(course, homework, t, all_members, a)
     url = request.META.get('HTTP_REFERER', '/') + '#tab=student_grouping'
     return HttpResponseRedirect(url)
 
@@ -984,3 +995,12 @@ def ta_assign(request,pk):
 
     url = request.META.get('HTTP_REFERER', '/') + '#tab=student_enrollment'
     return HttpResponseRedirect(url)
+
+
+@csrf_exempt
+def override_group_name(request,pk):
+    group_id = request.POST.get('id')
+    name = request.POST.get('name')
+    print("Updating Group",group_id, name)
+    HomeworkGroup.objects.filter(group=group_id).update(group_name=name)
+    return HttpResponse("Updated")
