@@ -607,9 +607,9 @@ def do_same_grouping(pk):
             primary_homework = c
 
 
-def make_group_all(course, c, t, all_members, group_names=None):
+def make_group_all(course, homework, t, all_members, group_names=None):
     groups_with_member = {}
-    HomeworkGroup.objects.filter(homework=c, course=course).delete()
+    HomeworkGroup.objects.filter(homework=homework, course=course).delete()
     for g in range(0,len(t)):
         if len(t[g]) > 0:
             import uuid
@@ -620,7 +620,7 @@ def make_group_all(course, c, t, all_members, group_names=None):
             else:
                 group_name = g + 1
             group_obj = HomeworkGroup.objects.create(
-                homework=c, course=course, group=group_id, total_member=len(t[g]), group_name=group_name)
+                homework=homework, course=course, group=group_id, total_member=len(t[g]), group_name=group_name)
             
             # now insert group member to the group
             temp_member_create = []
@@ -635,17 +635,25 @@ def make_group_all(course, c, t, all_members, group_names=None):
     for g in groups_with_member:
         temp_group.append(g)
 
+    peer_grader_group = {}
+    for c in range(len(temp_group)):
+        group = (temp_group*2)[c:c+2][0]
+        grader_group = (temp_group*2)[c:c+2][1]
+        peer_grader_group[group] = grader_group
+    # print("groups_with_member",groups_with_member)
+    # print("temp_group",temp_group)
+
+    print(peer_grader_group)
     temp_group_combination = []
     for i in temp_group:
         c_m = groups_with_member[i]
         rem_members = list(set(all_members) - set(c_m))
-        print (rem_members, c.no_of_grader)
-        if c.no_of_grader != 'all':
-            rem_members = random.sample(rem_members, int(c.no_of_grader))
+        if homework.no_of_grader != 'all':
+            rem_members = random.sample(groups_with_member[peer_grader_group[i]], int(homework.no_of_grader))
         for peer_grader in rem_members:
             temp_group_combination.append(
                 GroupCombinationModel(
-                    homework=c,
+                    homework=homework,
                     course=course,
                     group=HomeworkGroup.objects.get(group=i),
                     grader_user=UserModel.objects.get(pk=peer_grader),
